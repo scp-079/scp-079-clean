@@ -128,18 +128,28 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str,
     # Forward the message to the logging channel as evidence
     result = None
     try:
+        # Should not forward service messages
+        if message.service:
+            return message
+
         uid = message.from_user.id
         text = (f"项目编号：{code(glovar.sender)}\n"
                 f"用户 ID：{code(uid)}\n"
                 f"操作等级：{code(level)}\n"
                 f"规则：{code(rule)}\n")
+
+        # Detected + wb's name = ban
         if "昵称" in rule:
             name = get_full_name(message.from_user)
             if name:
                 text += f"用户昵称：{code(name)}\n"
 
         if more:
-            text += f"附加信息：{code(more)}\n"
+            text += f"附加信息：{code(glovar.names[more])}\n"
+            # Protect user's privacy
+            if more in glovar.types["privacy"]:
+                result = send_message(client, glovar.logging_channel_id, text)
+                return result
 
         flood_wait = True
         while flood_wait:
@@ -346,7 +356,7 @@ def update_score(client: Client, uid: int) -> bool:
     # Update a user's score, share it
     try:
         count = len(glovar.user_ids[uid]["detected"])
-        score = count * 0.6
+        score = count * 0.3
         glovar.user_ids[uid]["score"][glovar.sender.lower()] = score
         save("user_ids")
         share_data(

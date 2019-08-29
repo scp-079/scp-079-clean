@@ -38,6 +38,11 @@ logger = logging.getLogger(__name__)
 
 all_commands: List[str] = ["config", "config_clean", "version"]
 
+contents: Dict[str, str] = {}
+# contents = {
+#     "content": "tgl"
+# }
+
 declared_message_ids: Dict[int, Set[int]] = {}
 # declared_message_ids = {
 #     -10012345678: {123}
@@ -172,6 +177,11 @@ regex: Dict[str, str] = {
 sender: str = "CLEAN"
 
 should_hide: bool = False
+
+types: Dict[str, Set[str]] = {
+    "privacy": {"con", "loc", "vdn", "voi"},
+    "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp"}
+}
 
 url_list: Set[str] = set()
 
@@ -335,14 +345,10 @@ bad_ids: Dict[str, Set[Union[int, str]]] = {
 # }
 
 except_ids: Dict[str, Set[int]] = {
-    "channels": set(),
-    "long": set(),
-    "temp": set()
+    "channels": set()
 }
 # except_ids = {
-#     "channels": {-10012345678},
-#     "long": {"file_id or hash"},
-#     "temp": {"file_id or hash"}
+#     "channels": {-10012345678}
 # }
 
 user_ids: Dict[int, Dict[str, Union[float, Dict[Union[int, str], Union[float, int]], Set[int]]]] = {}
