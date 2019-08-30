@@ -107,7 +107,8 @@ left_group_ids: Set[int] = set()
 
 locks: Dict[str, Lock] = {
     "message": Lock(),
-    "regex": Lock()
+    "regex": Lock(),
+    "test": Lock()
 }
 
 names: Dict[str, str] = {
