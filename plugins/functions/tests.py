@@ -23,7 +23,7 @@ from pyrogram import Client, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import code, get_entity_text, get_text, thread, user_mention
+from .etc import code, get_channel_link, get_entity_text, get_links, get_stripped_link, get_text, thread, user_mention
 from .file import delete_file, get_downloaded_path
 from .filters import is_detected_url, is_regex_text
 from .image import get_file_id, get_qrcode
@@ -85,7 +85,10 @@ def clean_test(client: Client, message: Message) -> bool:
                 text += f"短链接：{code('True')}\n"
 
             # Telegram link
-            if is_regex_text("tgl", message_text):
+            bypass = get_stripped_link(get_channel_link(message))
+            links = get_links(message)
+            tg_links = filter(lambda l: is_regex_text("tgl", l), links)
+            if not all([bypass in link for link in tg_links]):
                 text += f"TG 链接：{code('True')}\n"
             elif message.entities:
                 for en in message.entities:

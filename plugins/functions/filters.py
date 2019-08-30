@@ -24,7 +24,7 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import get_command_type, get_entity_text, get_now, get_links, get_text
+from .etc import get_channel_link, get_command_type, get_entity_text, get_now, get_links, get_stripped_link, get_text
 from .file import delete_file, get_downloaded_path, save
 from .ids import init_group_id
 from .image import get_file_id, get_qrcode
@@ -435,9 +435,13 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # Telegram link
                 if is_in_config(gid, "tgl"):
-                    if is_regex_text("tgl", text):
+                    bypass = get_stripped_link(get_channel_link(message))
+                    links = get_links(message)
+                    tg_links = filter(lambda l: is_regex_text("tgl", l), links)
+                    if not all([bypass in link for link in tg_links]):
                         return "tgl"
-                    elif message.entities:
+
+                    if message.entities:
                         for en in message.entities:
                             if en.type == "mention":
                                 username = get_entity_text(message, en)[1:]

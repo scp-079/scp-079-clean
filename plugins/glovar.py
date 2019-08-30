@@ -179,9 +179,10 @@ sender: str = "CLEAN"
 
 should_hide: bool = False
 
-types: Dict[str, Set[str]] = {
-    "all": {"aff", "ast", "aud", "bmd", "con", "doc", "exe", "gam", "gif", "iml", "loc", "qrc", "vdn", "via", "vid",
-            "voi", "ser", "sho", "sti", "tgl", "tgp"},
+types: Dict[str, Union[List[str], Set[str]]] = {
+    "all": ["con", "loc", "vdn", "voi", "ast", "aud", "bmd", "doc", "gam", "gif", "via", "vid", "ser", "sti", "aff",
+            "exe", "iml", "sho", "tgl", "tgp", "qrc"],
+    "function": ["sde", "tcl", "ttd"],
     "privacy": {"con", "loc", "vdn", "voi"},
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
