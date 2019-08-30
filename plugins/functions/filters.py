@@ -28,7 +28,7 @@ from .etc import get_channel_link, get_command_type, get_entity_text, get_now, g
 from .file import delete_file, get_downloaded_path, save
 from .ids import init_group_id
 from .image import get_file_id, get_qrcode
-from .user import resolve_username
+from .telegram import resolve_username
 
 # Enable logging
 logger = logging.getLogger(__name__)

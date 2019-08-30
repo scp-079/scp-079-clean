@@ -20,17 +20,16 @@ import logging
 from time import sleep
 
 from pyrogram import Client, Message
-from pyrogram.api.types import InputPeerUser, InputPeerChannel
 
 from .. import glovar
-from .etc import crypt_str, get_full_name, get_int, get_now, thread
+from .etc import crypt_str, get_full_name, get_now, thread
 from .channel import ask_for_help, declare_message, forward_evidence, send_debug, share_bad_user
 from .channel import share_watch_ban_user, update_score
 from .file import save
 from .group import delete_message
 from .filters import is_class_d, is_detected_user, is_high_score_user, is_regex_text, is_watch_ban, is_watch_delete
 from .ids import init_user_id
-from .telegram import kick_chat_member, resolve_peer, unban_chat_member
+from .telegram import kick_chat_member, unban_chat_member
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -108,27 +107,6 @@ def kick_user(client: Client, gid: int, uid: int) -> bool:
         logger.warning(f"Kick user error: {e}", exc_info=True)
 
     return False
-
-
-def resolve_username(client: Client, username: str) -> (str, int):
-    # Resolve peer by username
-    peer_type = ""
-    peer_id = 0
-    try:
-        if username:
-            result = resolve_peer(client, username)
-            if result:
-                if isinstance(result, InputPeerChannel):
-                    peer_type = "channel"
-                    peer_id = result.channel_id
-                    peer_id = get_int(f"-100{peer_id}")
-                elif isinstance(result, InputPeerUser):
-                    peer_type = "user"
-                    peer_id = result.user_id
-    except Exception as e:
-        logger.warning(f"Resolve username error: {e}", exc_info=True)
-
-    return peer_type, peer_id
 
 
 def terminate_user(client: Client, message: Message, the_type: str) -> bool:
