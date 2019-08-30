@@ -135,7 +135,8 @@ names: Dict[str, str] = {
     "qrc": "二维码",
     "sde": "自助删除消息",
     "tcl": "每日自动清理群成员",
-    "ttd": "定时删除贴纸动图"
+    "ttd": "定时删除贴纸动图",
+    "pur": "命令清空消息"
 }
 
 other_commands: Set[str] = {

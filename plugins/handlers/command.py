@@ -184,7 +184,7 @@ def dafm(client: Client, message: Message) -> bool:
                         if result:
                             glovar.deleted_ids[gid].add(uid)
                             ask_for_help(client, "delete", gid, uid)
-                            send_debug(client, message.chat, "自动删除", uid, mid, result)
+                            send_debug(client, message.chat, "自助删除", uid, mid, result)
                             text = (f"用户：{user_mention(uid)}\n"
                                     f"操作：{code('自助删除')}\n"
                                     f"状态：{code('成功执行')}\n")
@@ -211,22 +211,22 @@ def purge(client: Client, message: Message) -> bool:
             # Check validation
             r_message = message.reply_to_message
             if r_message and gid not in glovar.purged_ids:
-                glovar.purged_ids.add(gid)
                 aid = message.from_user.id
-                text = (f"管理员：{code(aid)}\n"
-                        f"执行操作：{code('清除消息')}\n")
                 r_mid = r_message.message_id
                 if mid - r_mid <= 1000:
-                    thread(delete_messages, (client, gid, range(r_mid, mid)))
-                    text += f"状态：{code('已执行')}\n"
-                    reason = get_command_type(message)
-                    if reason:
-                        text += f"原因：{code(reason)}\n"
-                else:
-                    text += (f"状态：{code('未执行')}\n"
-                             f"原因：{code('消息条数过多')}\n")
+                    result = forward_evidence(client, message, "自动删除", "群组自定义", "pur")
+                    if result:
+                        glovar.purged_ids.add(gid)
+                        thread(delete_messages, (client, gid, range(r_mid, mid)))
+                        send_debug(client, message.chat, "指定删除", aid, mid, result)
+                        text = (f"管理员：{code(aid)}\n"
+                                f"执行操作：{code('清除消息')}\n"
+                                f"状态：{code('已执行')}\n")
+                        reason = get_command_type(message)
+                        if reason:
+                            text += f"原因：{code(reason)}\n"
 
-                thread(send_report_message, (30, client, gid, text))
+                        thread(send_report_message, (30, client, gid, text))
 
         thread(delete_message, (client, gid, mid))
 

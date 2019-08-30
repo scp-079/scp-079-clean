@@ -151,6 +151,8 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             text += f"附加信息：{code('由于可能涉及隐私而未转发证据')}\n"
         elif the_type == "sde":
             text += f"附加信息：{code('应用户主动要求删除其全部消息')}\n"
+        elif the_type == "pur":
+            text += f"附加信息：{code('应群管要求删除指定的全部消息')}\n"
 
         # Protect user's privacy
         if the_type in glovar.types["privacy"]:
