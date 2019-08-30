@@ -183,7 +183,7 @@ types: Dict[str, Set[str]] = {
     "all": {"aff", "ast", "aud", "bmd", "con", "doc", "exe", "gam", "gif", "iml", "loc", "qrc", "vdn", "via", "vid",
             "voi", "ser", "sho", "sti", "tgl", "tgp"},
     "privacy": {"con", "loc", "vdn", "voi"},
-    "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp"}
+    "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
 version: str = "0.0.1"

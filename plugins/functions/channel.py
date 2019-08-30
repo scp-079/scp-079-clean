@@ -123,7 +123,7 @@ def format_data(sender: str, receivers: List[str], action: str, action_type: str
     return text
 
 
-def forward_evidence(client: Client, message: Message, level: str, rule: str,
+def forward_evidence(client: Client, message: Message, level: str, rule: str, the_type: str,
                      more: str = None) -> Optional[Union[bool, Message]]:
     # Forward the message to the logging channel as evidence
     result = None
@@ -136,7 +136,8 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str,
         text = (f"项目编号：{code(glovar.sender)}\n"
                 f"用户 ID：{code(uid)}\n"
                 f"操作等级：{code(level)}\n"
-                f"规则：{code(rule)}\n")
+                f"规则：{code(rule)}\n"
+                f"消息类别：{code(glovar.names[the_type])}\n")
 
         # Detected + wb's name = ban
         if "昵称" in rule:
@@ -145,11 +146,14 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str,
                 text += f"用户昵称：{code(name)}\n"
 
         if more:
-            text += f"附加信息：{code(glovar.names[more])}\n"
-            # Protect user's privacy
-            if more in glovar.types["privacy"]:
-                result = send_message(client, glovar.logging_channel_id, text)
-                return result
+            text += f"附加信息：{code(more)}\n"
+        elif the_type in glovar.types["privacy"]:
+            text += f"附加信息：{code('由于可能涉及隐私而未转发证据')}\n"
+
+        # Protect user's privacy
+        if the_type in glovar.types["privacy"]:
+            result = send_message(client, glovar.logging_channel_id, text)
+            return result
 
         flood_wait = True
         while flood_wait:

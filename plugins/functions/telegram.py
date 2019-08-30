@@ -17,10 +17,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from typing import Iterable, List, Optional, Union
+from typing import Generator, Iterable, List, Optional, Union
 
 from pyrogram import Chat, ChatMember, Client, InlineKeyboardMarkup, Message
-from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
+from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid, UsernameInvalid
+from pyrogram.api.types import InputPeerUser, InputPeerChannel
 
 from .. import glovar
 from .etc import delay, wait_flood
@@ -122,6 +123,24 @@ def get_group_info(client: Client, chat: Union[int, Chat]) -> (str, str):
     return group_name, group_link
 
 
+def get_members(client: Client, cid: int, query: str = "all") -> Optional[Generator[ChatMember]]:
+    # Get a members generator of a chat
+    result = None
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.iter_chat_members(chat_id=cid, filter=query)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+    except Exception as e:
+        logger.warning(f"Get members error: {e}", exc_info=True)
+
+    return result
+
+
 def get_messages(client: Client, cid: int, mids: Iterable[int]) -> Optional[List[Message]]:
     # Get some messages
     result = None
@@ -175,6 +194,26 @@ def leave_chat(client: Client, cid: int) -> bool:
         logger.warning(f"Leave chat {cid} error: {e}", exc_info=True)
 
     return False
+
+
+def resolve_peer(client: Client, pid: Union[int, str]) -> Optional[Union[bool, InputPeerChannel, InputPeerUser]]:
+    # Get an input peer by id
+    result = None
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.resolve_peer(pid)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+            except UsernameInvalid:
+                return False
+    except Exception as e:
+        logger.warning(f"Resolve peer error: {e}", exc_info=True)
+
+    return result
 
 
 def send_document(client: Client, cid: int, file: str, text: str = None, mid: int = None,
@@ -261,5 +300,22 @@ def send_report_message(secs: int, client: Client, cid: int, text: str, mid: int
             delay(secs, delete_messages, [client, cid, mids])
     except Exception as e:
         logger.warning(f"Send message to {cid} error: {e}", exc_info=True)
+
+    return result
+
+
+def unban_chat_member(client: Client, cid: int, uid: int) -> Optional[bool]:
+    result = None
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.unban_chat_member(chat_id=cid, user_id=uid)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+    except Exception as e:
+        logger.warning(f"Unban chat member {uid} in {cid} error: {e}")
 
     return result
