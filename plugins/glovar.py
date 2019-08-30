@@ -203,7 +203,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.0.1"
+version: str = "0.0.2"
 
 watch_ids: Dict[str, Dict[int, int]] = {
     "ban": {},

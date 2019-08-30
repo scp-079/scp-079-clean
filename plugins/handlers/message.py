@@ -25,9 +25,9 @@ from ..functions.channel import get_content, get_debug_text
 from ..functions.etc import code, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_c, class_d, class_e, declared_message, exchange_channel, hide_channel
-from ..functions.filters import is_declared_message, is_detected_url, is_not_allowed
+from ..functions.filters import is_declared_message, is_detected_url, is_in_config, is_not_allowed
 from ..functions.filters import new_group, test_group
-from ..functions.group import leave_group
+from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_config_reply
 from ..functions.receive import receive_declared_message, receive_preview, receive_leave_approve
@@ -41,7 +41,7 @@ from ..functions.user import terminate_user
 logger = logging.getLogger(__name__)
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & ~Filters.service
+@Client.on_message(Filters.incoming & Filters.group & ~test_group & ~Filters.new_chat_members
                    & ~class_c & ~class_d & ~class_e & ~declared_message)
 def check(client: Client, message: Message) -> bool:
     # Check the messages sent from groups
@@ -70,6 +70,33 @@ def check(client: Client, message: Message) -> bool:
         return True
     except Exception as e:
         logger.warning(f"Check error: {e}", exc_info=True)
+
+    return False
+
+
+@Client.on_message(Filters.incoming & Filters.group & ~test_group & Filters.new_chat_members
+                   & ~class_c & ~class_d & ~class_e & ~declared_message)
+def check_join(client: Client, message: Message) -> bool:
+    # Check new joined user
+    if glovar.locks["message"].acquire():
+        try:
+            if not message.from_user:
+                return True
+
+            gid = message.chat.id
+            mid = message.message_id
+            if is_in_config(gid, "ser"):
+                if glovar.message_ids[gid]["service"]:
+                    thread(delete_message, (client, gid, glovar.message_ids[gid]["service"]))
+
+                glovar.message_ids[gid]["service"] = mid
+                save("message_ids")
+
+            return True
+        except Exception as e:
+            logger.warning(f"Check join error: {e}", exc_info=True)
+        finally:
+            glovar.locks["message"].release()
 
     return False
 

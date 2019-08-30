@@ -185,6 +185,10 @@ def dafm(client: Client, message: Message) -> bool:
                             glovar.deleted_ids[gid].add(uid)
                             ask_for_help(client, "delete", gid, uid)
                             send_debug(client, message.chat, "自动删除", uid, mid, result)
+                            text = (f"用户：{user_mention(uid)}\n"
+                                    f"操作：{code('自助删除')}\n"
+                                    f"状态：{code('成功执行')}\n")
+                            thread(send_report_message, (15, client, gid, text))
 
         thread(delete_message, (client, gid, mid))
 
@@ -221,6 +225,8 @@ def purge(client: Client, message: Message) -> bool:
                 else:
                     text += (f"状态：{code('未执行')}\n"
                              f"原因：{code('消息条数过多')}\n")
+
+                thread(send_report_message, (30, client, gid, text))
 
         thread(delete_message, (client, gid, mid))
 
