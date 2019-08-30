@@ -106,9 +106,8 @@ default_user_status: Dict[str, Dict[Union[int, str], Union[float, int]]] = {
 left_group_ids: Set[int] = set()
 
 locks: Dict[str, Lock] = {
-    "image": Lock(),
-    "regex": Lock(),
-    "text": Lock()
+    "message": Lock(),
+    "regex": Lock()
 }
 
 names: Dict[str, str] = {
