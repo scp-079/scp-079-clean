@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 def clean_test(client: Client, message: Message) -> bool:
     # Test image porn score in the test group
-    if glovar.lock["image"].acquire():
+    if glovar.locks["message"].acquire():
         try:
             message_text = get_text(message)
             if re.search("^管理员：[0-9]", message_text):
@@ -120,6 +120,6 @@ def clean_test(client: Client, message: Message) -> bool:
         except Exception as e:
             logger.warning(f"Clean test error: {e}", exc_info=True)
         finally:
-            glovar.lock["image"].release()
+            glovar.locks["message"].release()
 
     return False

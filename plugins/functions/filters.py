@@ -304,8 +304,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
     else:
         need_delete = []
 
-    if (((message.text and not image_path) or message.service) and glovar.lock["text"].acquire()
-            or ((not message.text or image_path) and glovar.lock["image"].acquire())):
+    if glovar.locks["message"].acquire():
         try:
             gid = message.chat.id
 
@@ -514,10 +513,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
         except Exception as e:
             logger.warning(f"Is not allowed error: {e}", exc_info=True)
         finally:
-            if (message.text and not image_path) or message.service:
-                glovar.lock["text"].release()
-            else:
-                glovar.lock["image"].release()
+            glovar.locks["message"].release()
 
             for file in need_delete:
                 delete_file(file)
