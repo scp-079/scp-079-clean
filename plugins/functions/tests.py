@@ -61,7 +61,6 @@ def clean_test(client: Client, message: Message) -> bool:
                 text += f"AFF 链接：{code('True')}\n"
 
             # Executive file
-
             if message.document:
                 if message.document.file_name:
                     file_name = message.document.file_name
