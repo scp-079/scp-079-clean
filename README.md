@@ -8,8 +8,9 @@ See [this article](https://scp-079.org/clean/).
 
 ## To Do List
 
-- [ ] Basic functions
-- [ ] /dafm function
+- [x] Basic functions
+- [x] /dafm
+- [x] /purge
 
 ## Requirements
 
@@ -34,7 +35,6 @@ See [this article](https://scp-079.org/clean/).
         - `timers.py` : Timer functions
         - `user.py` : Functions about user and channel object
     - handlers
-        - `callback.py` : Handle callbacks
         - `command.py` : Handle commands
         - `message.py`: Handle messages
     - `glovar.py` : Global variables

@@ -174,13 +174,13 @@ def dafm(client: Client, message: Message) -> bool:
         gid = message.chat.id
         mid = message.message_id
         if init_group_id(gid):
-            if glovar.configs[gid]["sed"] or is_class_c(None, message):
+            if glovar.configs[gid]["sde"] or is_class_c(None, message):
                 uid = message.from_user.id
                 confirm_text = get_command_type(message)
                 if confirm_text and re.search("^yes$|^y$", confirm_text, re.I):
                     if uid not in glovar.deleted_ids[gid]:
                         # Forward the request command message as evidence
-                        result = forward_evidence(client, message, "自动删除", "群组自定义", "sed")
+                        result = forward_evidence(client, message, "自动删除", "群组自定义", "sde")
                         if result:
                             glovar.deleted_ids[gid].add(uid)
                             ask_for_help(client, "delete", gid, uid)
