@@ -216,8 +216,8 @@ def purge(client: Client, message: Message) -> bool:
                 text = (f"管理员：{code(aid)}\n"
                         f"执行操作：{code('清除消息')}\n")
                 r_mid = r_message.message_id
-                if r_mid - mid <= 1000:
-                    thread(delete_messages, (client, gid, range(mid, r_mid)))
+                if mid - r_mid <= 1000:
+                    thread(delete_messages, (client, gid, range(r_mid, mid)))
                     text += f"状态：{code('已执行')}\n"
                     reason = get_command_type(message)
                     if reason:
