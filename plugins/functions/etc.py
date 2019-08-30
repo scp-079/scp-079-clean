@@ -24,11 +24,11 @@ from random import choice, uniform
 from string import ascii_letters, digits
 from threading import Thread, Timer
 from time import sleep, time
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from cryptography.fernet import Fernet
 from opencc import convert
-from pyrogram import Message, User
+from pyrogram import InlineKeyboardMarkup, Message, MessageEntity, User
 from pyrogram.errors import FloodWait
 
 # Enable logging
@@ -183,6 +183,22 @@ def get_command_type(message: Message) -> str:
     return result
 
 
+def get_entity_text(message: Message, entity: MessageEntity) -> str:
+    # Get a message's entity text
+    result = ""
+    try:
+        text = get_text(message)
+        if text and entity:
+            offset = entity.offset
+            length = entity.length
+            text = text.encode("utf-16-le")
+            result = text[offset * 2:(offset + length) * 2].decode("utf-16-le")
+    except Exception as e:
+        logger.warning(f"Get entity text error: {e}", exc_info=True)
+
+    return result
+
+
 def get_full_name(user: User) -> str:
     # Get user's full name
     text = ""
@@ -207,6 +223,27 @@ def get_int(text: str) -> int:
         result = int(text)
     except Exception as e:
         logger.info(f"Get int error: {e}", exc_info=True)
+
+    return result
+
+
+def get_links(message: Message) -> List[str]:
+    # Get a message's links
+    result = []
+    try:
+        if message.entities:
+            for en in message.entities:
+                link = ""
+                if en.type == "url":
+                    link = get_entity_text(message, en)
+                elif en.url:
+                    link = en.url
+
+                link = get_stripped_link(link)
+                if link:
+                    result.append(link)
+    except Exception as e:
+        logger.warning(f"Get links error: {e}", exc_info=True)
 
     return result
 
@@ -242,8 +279,23 @@ def get_now() -> int:
     return result
 
 
+def get_stripped_link(link: str) -> str:
+    # Get stripped link
+    result = ""
+    try:
+        if link:
+            result = link.replace("http://", "")
+            result = result.replace("https://", "")
+            if result and result[-1] == "/":
+                result = result[:-1]
+    except Exception as e:
+        logger.warning(f"Get stripped link error: {e}", exc_info=True)
+
+    return result
+
+
 def get_text(message: Message) -> str:
-    # Get message's text
+    # Get message's text, including link and mentioned user's name
     text = ""
     try:
         if message.text or message.caption:
@@ -251,6 +303,35 @@ def get_text(message: Message) -> str:
                 text += message.text
             else:
                 text += message.caption
+
+            if message.entities or message.caption_entities:
+                if message.entities:
+                    entities = message.entities
+                else:
+                    entities = message.caption_entities
+
+                for en in entities:
+                    if en.url:
+                        text += f"\n{en.url}"
+
+                    if en.user:
+                        text += f"\n{get_full_name(en.user)}"
+
+        if message.reply_markup and isinstance(message.reply_markup, InlineKeyboardMarkup):
+            reply_markup = message.reply_markup
+            if reply_markup.inline_keyboard:
+                inline_keyboard = reply_markup.inline_keyboard
+                if inline_keyboard:
+                    for button_row in inline_keyboard:
+                        for button in button_row:
+                            if button.text:
+                                text += f"\n{button.text}"
+
+                            if button.url:
+                                text += f"\n{button.url}"
+
+        if text:
+            text = t2s(text)
     except Exception as e:
         logger.warning(f"Get text error: {e}", exc_info=True)
 

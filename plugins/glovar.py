@@ -52,32 +52,32 @@ default_config: Dict[str, Union[bool, int]] = {
     "default": True,
     "lock": 0,
     "con": True,
-    "via": False,
-    "gif": False,
-    "bmd": False,
-    "vid": False,
+    "loc": True,
     "vdn": True,
-    "sti": False,
+    "voi": True,
     "ast": False,
     "aud": False,
-    "voi": True,
-    "gam": False,
-    "ser": True,
-    "ttd": False,
-    "sde": False,
-    "loc": True,
+    "bmd": False,
     "doc": False,
-    "exe": False,
-    "tcl": False,
+    "gam": False,
+    "gif": False,
+    "via": False,
+    "vid": False,
+    "ser": True,
+    "sti": False,
     "aff": False,
+    "exe": False,
+    "iml": False,
     "sho": False,
     "tgl": False,
     "tgp": False,
-    "iml": False,
-    "qrc": False
+    "qrc": False,
+    "sde": False,
+    "tcl": False,
+    "ttd": False
 }
 
-default_user_status: Dict[str, Union[Dict[int, int], Dict[str, float]]] = {
+default_user_status: Dict[str, Dict[Union[int, str], Union[float, int]]] = {
     "detected": {},
     "score": {
         "captcha": 0.0,
@@ -92,43 +92,39 @@ default_user_status: Dict[str, Union[Dict[int, int], Dict[str, float]]] = {
     }
 }
 
-file_ids: Dict[str, Set[str]] = {
-    "qrcode": set(),
-    "safe": set()
-}
-
 left_group_ids: Set[int] = set()
 
 lock: Dict[str, Lock] = {
     "image": Lock(),
-    "regex": Lock()
+    "regex": Lock(),
+    "text": Lock()
 }
 
 names: Dict[str, str] = {
     "con": "联系人",
-    "via": "通过 Bot 发送的消息",
-    "gif": "GIF 动图",
-    "bmd": "机器人命令",
-    "vid": "视频",
+    "loc": "定位地址",
     "vdn": "圆视频",
-    "sti": "贴纸",
+    "voi": "语音",
     "ast": "动态贴纸",
     "aud": "音频",
-    "voi": "语音",
-    "gam": "游戏",
-    "ser": "服务类消息",
-    "ttd": "定时删除贴纸动图",
-    "sde": "自助删除消息",
-    "loc": "定位地址",
+    "bmd": "机器人命令",
     "doc": "文件",
-    "exe": "可执行文件",
-    "tcl": "每日自动清理群成员",
+    "gam": "游戏",
+    "gif": "GIF 动图",
+    "via": "通过 Bot 发送的消息",
+    "vid": "视频",
+    "ser": "服务类消息",
+    "sti": "贴纸",
     "aff": "AFF 链接",
+    "exe": "可执行文件",
+    "iml": "即时通讯软件联系方式",
     "sho": "短链接",
     "tgl": "TG 链接",
     "tgp": "TG 代理",
-    "iml": "即时通讯软件联系方式",
-    "qrc": "二维码"
+    "qrc": "二维码",
+    "sde": "自助删除消息",
+    "tcl": "每日自动清理群成员",
+    "ttd": "定时删除贴纸动图"
 }
 
 other_commands: Set[str] = {
@@ -171,6 +167,11 @@ recorded_ids: Dict[int, Set[int]] = {}
 # }
 
 regex: Dict[str, str] = {
+    "aff": "AFF 链接",
+    "iml": "IM 链接",
+    "sho": "短链接",
+    "tgl": "TG 链接",
+    "tgp": "TG 代理",
     "wb": "追踪封禁"
 }
 
@@ -179,11 +180,11 @@ sender: str = "CLEAN"
 should_hide: bool = False
 
 types: Dict[str, Set[str]] = {
+    "all": {"aff", "ast", "aud", "bmd", "con", "doc", "exe", "gam", "gif", "iml", "loc", "qrc", "vdn", "via", "vid",
+            "voi", "ser", "sho", "sti", "tgl", "tgp"},
     "privacy": {"con", "loc", "vdn", "voi"},
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp"}
 }
-
-url_list: Set[str] = set()
 
 version: str = "0.0.1"
 
@@ -351,7 +352,7 @@ except_ids: Dict[str, Set[int]] = {
 #     "channels": {-10012345678}
 # }
 
-user_ids: Dict[int, Dict[str, Union[float, Dict[Union[int, str], Union[float, int]], Set[int]]]] = {}
+user_ids: Dict[int, Dict[str, Dict[Union[int, str], Union[float, int]]]] = {}
 # user_ids = {
 #     12345678: {
 #         "detected": {},
@@ -377,35 +378,45 @@ configs: Dict[int, Dict[str, Union[bool, int]]] = {}
 #         "default": True,
 #         "lock": 0,
 #         "con": True,
-#         "via": False,
-#         "gif": False,
-#         "bmd": False,
-#         "vid": False,
+#         "loc": True,
 #         "vdn": True,
-#         "sti": False,
+#         "voi": True,
 #         "ast": False,
 #         "aud": False,
-#         "voi": True,
-#         "gam": False,
-#         "ser": True,
-#         "ttd": False,
-#         "sde": False,
-#         "loc": True,
+#         "bmd": False,
 #         "doc": False,
-#         "exe": False,
-#         "tcl": False,
+#         "gam": False,
+#         "gif": False,
+#         "via": False,
+#         "vid": False,
+#         "ser": True,
+#         "sti": False,
 #         "aff": False,
+#         "exe": False,
+#         "iml": False,
 #         "sho": False,
 #         "tgl": False,
 #         "tgp": False,
-#         "iml": False,
-#         "qrc": False
+#         "qrc": False,
+#         "sde": False,
+#         "tcl": False,
+#         "ttd": False
+#     }
+# }
+
+message_ids: Dict[int, Dict[str, Union[int, List[int]]]] = {}
+# message_ids = {
+#     -10012345678: {
+#         "service": 123,
+#         "stickers": [456, 789]
 #     }
 # }
 
 # Init word variables
 
-wb_words: Dict[str, int] = {}
+for word_type in regex:
+    locals()[f"{word_type}_words"]: Dict[str, Dict[str, Union[float, int]]] = {}
+
 # type_words = {
 #     "regex": 0
 # }
