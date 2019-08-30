@@ -29,7 +29,7 @@ from ..functions.file import save
 from ..functions.filters import is_class_c, test_group
 from ..functions.group import delete_message
 from ..functions.ids import init_group_id
-from ..functions.telegram import get_group_info, send_message, send_report_message
+from ..functions.telegram import delete_messages, get_group_info, send_message, send_report_message
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -169,6 +169,7 @@ def config_directly(client: Client, message: Message) -> bool:
 @Client.on_message(Filters.incoming & Filters.group & ~test_group
                    & Filters.command(["dafm"], glovar.prefix))
 def dafm(client: Client, message: Message) -> bool:
+    # Delete all from me
     try:
         gid = message.chat.id
         mid = message.message_id
@@ -190,6 +191,42 @@ def dafm(client: Client, message: Message) -> bool:
         return True
     except Exception as e:
         logger.warning(f"DAFM error: {e}", exc_info=True)
+
+    return False
+
+
+@Client.on_message(Filters.incoming & Filters.group & ~test_group
+                   & Filters.command(["purge"], glovar.prefix))
+def purge(client: Client, message: Message) -> bool:
+    # Purge messages
+    try:
+        gid = message.chat.id
+        mid = message.message_id
+        # Check permission
+        if is_class_c(None, message):
+            # Check validation
+            r_message = message.reply_to_message
+            if r_message and gid not in glovar.purged_ids:
+                glovar.purged_ids.add(gid)
+                aid = message.from_user.id
+                text = (f"管理员：{code(aid)}\n"
+                        f"执行操作：{code('清除消息')}\n")
+                r_mid = r_message.message_id
+                if r_mid - mid <= 1000:
+                    thread(delete_messages, (client, gid, range(mid, r_mid)))
+                    text += f"状态：{code('已执行')}\n"
+                    reason = get_command_type(message)
+                    if reason:
+                        text += f"原因：{code(reason)}\n"
+                else:
+                    text += (f"状态：{code('未执行')}\n"
+                             f"原因：{code('消息条数过多')}\n")
+
+        thread(delete_message, (client, gid, mid))
+
+        return True
+    except Exception as e:
+        logger.warning(f"Purge error: {e}", exc_info=True)
 
     return False
 

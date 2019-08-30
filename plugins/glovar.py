@@ -36,7 +36,13 @@ logger = logging.getLogger(__name__)
 
 # Init
 
-all_commands: List[str] = ["config", "config_clean", "version"]
+all_commands: List[str] = [
+    "config",
+    "config_clean",
+    "dafm",
+    "purge",
+    "version"
+]
 
 contents: Dict[str, str] = {}
 # contents = {
@@ -146,10 +152,12 @@ other_commands: Set[str] = {
     "config_nospam",
     "config_tip",
     "config_user",
+    "config_warn",
     "dafm",
     "forgive",
     "l",
     "long",
+    "purge",
     "report",
     "undo",
     "version",
