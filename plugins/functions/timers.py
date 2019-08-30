@@ -97,6 +97,11 @@ def interval_hour_03(client: Client) -> bool:
 def interval_min_10() -> bool:
     # Execute every 10 minutes
     try:
+        for gid in list(glovar.deleted_ids):
+            glovar.deleted_ids[gid] = set()
+
+        glovar.purged_ids = set()
+
         for gid in list(glovar.recorded_ids):
             glovar.recorded_ids[gid] = set()
 

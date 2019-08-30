@@ -48,6 +48,11 @@ declared_message_ids: Dict[int, Set[int]] = {}
 #     -10012345678: {123}
 # }
 
+deleted_ids: Dict[int, Set[int]] = {}
+# deleted_ids = {
+#     -10012345678: {12345678}
+# }
+
 default_config: Dict[str, Union[bool, int]] = {
     "default": True,
     "lock": 0,
@@ -150,6 +155,9 @@ other_commands: Set[str] = {
     "version",
     "warn"
 }
+
+purged_ids: Set[int] = set()
+# purged_ids = {-10012345678}
 
 receivers: Dict[str, List[str]] = {
     "bad": ["ANALYZE", "APPEAL", "CAPTCHA", "CLEAN", "LANG", "LONG", "NOFLOOD", "NOPORN",
@@ -423,7 +431,7 @@ for word_type in regex:
 # }
 
 # Load data
-file_list: List[str] = ["admin_ids", "bad_ids", "except_ids", "user_ids", "configs"]
+file_list: List[str] = ["admin_ids", "bad_ids", "configs", "except_ids", "message_ids", "user_ids"]
 file_list += [f"{f}_words" for f in regex]
 for file in file_list:
     try:
