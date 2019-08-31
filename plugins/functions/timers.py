@@ -94,7 +94,7 @@ def interval_hour_01(client: Client) -> bool:
         for gid in list(glovar.message_ids):
             if is_in_config(gid, "ttd"):
                 mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
-                mid_list = list(filter(lambda m: mid_dict[m] - get_now() > glovar.time_sticker, mid_dict))
+                mid_list = list(filter(lambda m: get_now() - mid_dict[m] >= glovar.time_sticker, mid_dict))
                 if mid_list:
                     thread(delete_messages, (client, gid, mid_list))
                     for mid in mid_list:
