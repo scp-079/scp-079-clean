@@ -144,7 +144,7 @@ def reset_data() -> bool:
         save("bad_ids")
 
         glovar.except_ids = {
-            "channels": set()
+            "tmp": set()
         }
         save("except_ids")
 
