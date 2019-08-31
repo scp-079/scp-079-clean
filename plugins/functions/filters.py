@@ -485,7 +485,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                                 and message.document.mime_type
                                 and "gif" in message.document.mime_type)):
                         mid = message.message_id
-                        glovar.message_ids[gid]["stickers"].append(mid)
+                        glovar.message_ids[gid]["stickers"][mid] = get_now()
                         save("message_ids")
                         return ""
 
