@@ -63,7 +63,7 @@ def get_qrcode(path: str) -> str:
         if decoded_list:
             for decoded in decoded_list:
                 if decoded.type == "QRCODE":
-                    result += f"{decoded[0].data}\n"
+                    result += f"{decoded.data}\n"
 
             if result:
                 result = result[:-1]
