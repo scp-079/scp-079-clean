@@ -76,6 +76,7 @@ def clean_members(client: Client) -> bool:
                     if count:
                         text = get_debug_text(client, gid)
                         text += (f"执行操作：{code('清理用户')}\n"
+                                 f"规则：{code('群组自定义')}\n"
                                  f"失效用户：{code(f'{count} 名')}\n")
                         thread(send_message, (client, glovar.debug_channel_id, text))
 
@@ -98,6 +99,7 @@ def interval_hour_03(client: Client) -> bool:
                 if mid_lists:
                     text = get_debug_text(client, gid)
                     text += (f"执行操作：{code('定时删除')}\n"
+                             f"规则：{code('群组自定义')}\n"
                              f"匹配消息：{code(f'{len(mid_lists)} 条')}\n")
                     thread(send_message, (client, glovar.debug_channel_id, text))
 

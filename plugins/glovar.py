@@ -426,11 +426,14 @@ configs: Dict[int, Dict[str, Union[bool, int]]] = {}
 #     }
 # }
 
-message_ids: Dict[int, Dict[str, Union[int, List[int]]]] = {}
+message_ids: Dict[int, Dict[str, Union[int, Dict[int, int]]]] = {}
 # message_ids = {
 #     -10012345678: {
 #         "service": 123,
-#         "stickers": [456, 789]
+#         "stickers": {
+#             456: 1512345678,
+#             789: 1512346678
+#         }
 #     }
 # }
 

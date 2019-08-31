@@ -37,7 +37,7 @@ def init_group_id(gid: int) -> bool:
             if glovar.message_ids.get(gid) is None:
                 glovar.message_ids[gid] = {
                     "service": 0,
-                    "stickers": []
+                    "stickers": {}
                 }
                 save("message_ids")
 
