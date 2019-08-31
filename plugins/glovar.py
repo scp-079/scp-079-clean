@@ -255,6 +255,7 @@ project_name: str = ""
 punish_time: int = 0
 reset_day: str = ""
 time_ban: int = 0
+time_sticker: int = 0
 
 # [encrypt]
 key: Union[str, bytes] = ""
@@ -293,6 +294,7 @@ try:
     punish_time = int(config["custom"].get("punish_time", punish_time))
     reset_day = config["custom"].get("reset_day", reset_day)
     time_ban = int(config["custom"].get("time_ban", time_ban))
+    time_sticker = int(config["custom"].get("time_sticker", time_sticker))
     # [encrypt]
     key = config["encrypt"].get("key", key)
     key = key.encode("utf-8")
@@ -327,6 +329,7 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or punish_time == 0
         or reset_day in {"", "[DATA EXPUNGED]"}
         or time_ban == 0
+        or time_sticker == 0
         or key in {"", b"[DATA EXPUNGED]"}
         or password in {"", "[DATA EXPUNGED]"}):
     logger.critical("No proper settings")

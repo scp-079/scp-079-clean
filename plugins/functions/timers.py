@@ -24,7 +24,7 @@ from pyrogram import Client
 
 from .. import glovar
 from .channel import get_debug_text, share_data, share_regex_count
-from .etc import code, general_link, thread
+from .etc import code, general_link, get_now, thread
 from .file import save
 from .filters import is_in_config
 from .group import leave_group
@@ -93,14 +93,17 @@ def interval_hour_03(client: Client) -> bool:
         # Delete stickers and animations in groups
         for gid in list(glovar.message_ids):
             if is_in_config(gid, "ttd"):
-                mid_lists = deepcopy(glovar.message_ids[gid]["stickers"])
-                thread(delete_messages, (client, gid, mid_lists))
-                glovar.message_ids[gid]["stickers"] = []
-                if mid_lists:
+                mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
+                mid_list = list(filter(lambda m: mid_dict[m] - get_now() > glovar.time_sticker, mid_dict))
+                if mid_list:
+                    thread(delete_messages, (client, gid, mid_list))
+                    for mid in mid_list:
+                        glovar.message_ids[gid]["stickers"].pop(mid, 0)
+
                     text = get_debug_text(client, gid)
                     text += (f"执行操作：{code('定时删除')}\n"
                              f"规则：{code('群组自定义')}\n"
-                             f"匹配消息：{code(f'{len(mid_lists)} 条')}\n")
+                             f"匹配消息：{code(f'{len(mid_list)} 条')}\n")
                     thread(send_message, (client, glovar.debug_channel_id, text))
 
         save("message_ids")
