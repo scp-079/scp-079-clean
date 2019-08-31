@@ -87,8 +87,8 @@ def clean_members(client: Client) -> bool:
     return False
 
 
-def interval_hour_03(client: Client) -> bool:
-    # Execute every 3 hours
+def interval_hour_01(client: Client) -> bool:
+    # Execute every hour
     try:
         # Delete stickers and animations in groups
         for gid in list(glovar.message_ids):
@@ -108,7 +108,7 @@ def interval_hour_03(client: Client) -> bool:
 
         save("message_ids")
     except Exception as e:
-        logger.warning(f"Interval hour 03 error: {e}", exc_info=True)
+        logger.warning(f"Interval hour 01 error: {e}", exc_info=True)
 
     return False
 
