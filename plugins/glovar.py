@@ -126,7 +126,7 @@ names: Dict[str, str] = {
     "vid": "视频",
     "ser": "服务类消息",
     "sti": "贴纸",
-    "aff": "AFF 链接",
+    "aff": "推广链接",
     "exe": "可执行文件",
     "iml": "即时通讯软件联系方式",
     "sho": "短链接",
@@ -184,7 +184,7 @@ recorded_ids: Dict[int, Set[int]] = {}
 # }
 
 regex: Dict[str, str] = {
-    "aff": "AFF 链接",
+    "aff": "推广链接",
     "iml": "IM 链接",
     "sho": "短链接",
     "tgl": "TG 链接",

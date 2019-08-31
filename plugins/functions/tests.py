@@ -58,7 +58,7 @@ def clean_test(client: Client, message: Message) -> bool:
 
             # AFF link
             if is_regex_text("aff", message_text):
-                text += f"AFF 链接：{code('True')}\n"
+                text += f"推广链接：{code('True')}\n"
 
             # Executive file
             if message.document:
