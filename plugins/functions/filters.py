@@ -388,7 +388,10 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                     # Via Bot
                     if is_in_config(gid, "via"):
                         if message.via_bot:
-                            return "via"
+                            if message.game:
+                                return "gam"
+                            else:
+                                return "via"
 
                     # Video
                     if is_in_config(gid, "vid"):
