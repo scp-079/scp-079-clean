@@ -33,7 +33,7 @@ def get_file_id(message: Message) -> str:
     file_id = ""
     try:
         if (message.photo
-                or message.sticker
+                or (message.sticker and not message.sticker.is_animated)
                 or message.document):
             if message.photo:
                 file_id = message.photo.file_id
