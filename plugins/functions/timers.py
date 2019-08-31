@@ -67,16 +67,16 @@ def clean_members(client: Client) -> bool:
                 members = get_members(client, gid, "all")
                 if members:
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
-                    i = 0
+                    count = 0
                     for member in deleted_members:
                         uid = member.user.id
                         thread(kick_user, (client, gid, uid))
-                        i += 1
+                        count += 1
 
-                    if i:
+                    if count:
                         text = get_debug_text(client, gid)
                         text += (f"执行操作：{code('清理用户')}\n"
-                                 f"失效用户：{code(f'{i} 名')}\n")
+                                 f"失效用户：{code(f'{count} 名')}\n")
                         thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
