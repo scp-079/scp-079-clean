@@ -212,6 +212,9 @@ def is_declared_message_id(gid: int, mid: int) -> bool:
 def is_detected_url(message: Message) -> str:
     # Check if the message include detected url, return detected types as set
     try:
+        if is_class_c(None, message):
+            return ""
+
         gid = message.chat.id
         links = get_links(message)
         for link in links:
@@ -308,16 +311,18 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
             # Regular message
             if not (text or image_path):
-                # If the user is being punished
-                if is_detected_user(message):
-                    return "true"
+                # Check detected records first
+                if not is_class_c(None, message):
+                    # If the user is being punished
+                    if is_detected_user(message):
+                        return "true"
 
-                # If the message has been detected
-                content = get_content(client, message)
-                if content:
-                    detection = glovar.contents.get(content, "")
-                    if detection and is_in_config(gid, detection):
-                        return detection
+                    # If the message has been detected
+                    content = get_content(client, message)
+                    if content:
+                        detection = glovar.contents.get(content, "")
+                        if detection and is_in_config(gid, detection):
+                            return detection
 
                 # Privacy messages
 
@@ -343,16 +348,6 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # Basic types messages
 
-                # Animated Sticker
-                # if is_in_config(gid, "ast"):
-                #     if message.sticker and message.sticker.is_animated:
-                #         return "ast"
-
-                # Audio
-                if is_in_config(gid, "aud"):
-                    if message.audio:
-                        return "aud"
-
                 # Bot command
                 if is_in_config(gid, "bmd"):
                     text = get_text(message)
@@ -361,108 +356,120 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                         if not get_command_type(message):
                             return "bmd"
 
-                # Document
-                if is_in_config(gid, "doc"):
-                    if message.document:
-                        return "doc"
+                if not is_class_c(None, message):
+                    # Animated Sticker
+                    # if is_in_config(gid, "ast"):
+                    #     if message.sticker and message.sticker.is_animated:
+                    #         return "ast"
 
-                # Game
-                if is_in_config(gid, "gam"):
-                    if message.game:
-                        return "gam"
+                    # Audio
+                    if is_in_config(gid, "aud"):
+                        if message.audio:
+                            return "aud"
 
-                # GIF
-                if is_in_config(gid, "gif"):
-                    if (message.animation
-                            or (message.document
-                                and message.document.mime_type
-                                and "gif" in message.document.mime_type)):
-                        return "gif"
+                    # Document
+                    if is_in_config(gid, "doc"):
+                        if message.document:
+                            return "doc"
 
-                # Via Bot
-                if is_in_config(gid, "via"):
-                    if message.via_bot:
-                        return "via"
+                    # Game
+                    if is_in_config(gid, "gam"):
+                        if message.game:
+                            return "gam"
 
-                # Video
-                if is_in_config(gid, "vid"):
-                    if message.video:
-                        return "vid"
+                    # GIF
+                    if is_in_config(gid, "gif"):
+                        if (message.animation
+                                or (message.document
+                                    and message.document.mime_type
+                                    and "gif" in message.document.mime_type)):
+                            return "gif"
 
-                # Service
-                if is_in_config(gid, "ser"):
-                    if message.service:
-                        return "ser"
+                    # Via Bot
+                    if is_in_config(gid, "via"):
+                        if message.via_bot:
+                            return "via"
 
-                # Sticker
-                if is_in_config(gid, "sti"):
-                    return "sti"
+                    # Video
+                    if is_in_config(gid, "vid"):
+                        if message.video:
+                            return "vid"
+
+                    # Service
+                    if is_in_config(gid, "ser"):
+                        if message.service:
+                            return "ser"
+
+                    # Sticker
+                    if is_in_config(gid, "sti"):
+                        return "sti"
 
                 # Spam messages
 
-                text = get_text(message)
+                if not (is_class_c(None, message) or is_class_e(None, message)):
+                    text = get_text(message)
 
-                # AFF link
-                if is_in_config(gid, "aff"):
-                    if is_regex_text("aff", text):
-                        return "aff"
+                    # AFF link
+                    if is_in_config(gid, "aff"):
+                        if is_regex_text("aff", text):
+                            return "aff"
 
-                # Executive file
-                if is_in_config(gid, "exe"):
-                    if message.document:
-                        if message.document.file_name:
-                            file_name = message.document.file_name
-                            for file_type in ["apk", "bat", "cmd", "com", "exe", "vbs"]:
-                                if re.search(f"{file_type}$", file_name, re.I):
+                    # Executive file
+                    if is_in_config(gid, "exe"):
+                        if message.document:
+                            if message.document.file_name:
+                                file_name = message.document.file_name
+                                for file_type in ["apk", "bat", "cmd", "com", "exe", "vbs"]:
+                                    if re.search(f"{file_type}$", file_name, re.I):
+                                        return "exe"
+
+                            if message.document.mime_type:
+                                mime_type = message.document.mime_type
+                                if "executable" in mime_type:
                                     return "exe"
 
-                        if message.document.mime_type:
-                            mime_type = message.document.mime_type
-                            if "executable" in mime_type:
-                                return "exe"
+                    # Instant messenger link
+                    if is_in_config(gid, "iml"):
+                        if is_regex_text("iml", text):
+                            return "iml"
 
-                # Instant messenger link
-                if is_in_config(gid, "iml"):
-                    if is_regex_text("iml", text):
-                        return "iml"
+                    # Short link
+                    if is_in_config(gid, "sho"):
+                        if is_regex_text("sho", text):
+                            return "sho"
 
-                # Short link
-                if is_in_config(gid, "sho"):
-                    if is_regex_text("sho", text):
-                        return "sho"
+                    # Telegram link
+                    if is_in_config(gid, "tgl"):
+                        bypass = get_stripped_link(get_channel_link(message))
+                        links = get_links(message)
+                        tg_links = filter(lambda l: is_regex_text("tgl", l), links)
+                        if not all([bypass in link for link in tg_links]):
+                            return "tgl"
 
-                # Telegram link
-                if is_in_config(gid, "tgl"):
-                    bypass = get_stripped_link(get_channel_link(message))
-                    links = get_links(message)
-                    tg_links = filter(lambda l: is_regex_text("tgl", l), links)
-                    if not all([bypass in link for link in tg_links]):
-                        return "tgl"
+                        if message.entities:
+                            for en in message.entities:
+                                if en.type == "mention":
+                                    username = get_entity_text(message, en)[1:]
+                                    peer_type, _ = resolve_username(client, username)
+                                    if peer_type == "channel":
+                                        return "tgl"
 
-                    if message.entities:
-                        for en in message.entities:
-                            if en.type == "mention":
-                                username = get_entity_text(message, en)[1:]
-                                peer_type, _ = resolve_username(client, username)
-                                if peer_type == "channel":
-                                    return "tgl"
+                    # Telegram proxy
+                    if is_in_config(gid, "tgp"):
+                        if is_regex_text("tgp", text):
+                            return "tgp"
 
-                # Telegram proxy
-                if is_in_config(gid, "tgp"):
-                    if is_regex_text("tgp", text):
-                        return "tgp"
-
-                # QR code
-                if is_in_config(gid, "qrc"):
-                    file_id = get_file_id(message)
-                    image_path = get_downloaded_path(client, file_id)
-                    if is_declared_message(None, message):
-                        return ""
-                    elif image_path:
-                        need_delete.append(image_path)
-                        qrcode = get_qrcode(image_path)
-                        if qrcode:
-                            return "qrc"
+                    # QR code
+                    if is_in_config(gid, "qrc"):
+                        file_id = get_file_id(message)
+                        image_path = get_downloaded_path(client, file_id)
+                        if is_declared_message(None, message):
+                            return ""
+                        elif image_path:
+                            need_delete.append(image_path)
+                            qrcode = get_qrcode(image_path)
+                            if qrcode:
+                                return "qrc"
 
                 # Schedule to delete stickers and animations
                 if is_in_config(gid, "ttd"):

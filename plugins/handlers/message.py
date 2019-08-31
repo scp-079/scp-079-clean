@@ -24,7 +24,7 @@ from .. import glovar
 from ..functions.channel import get_content, get_debug_text
 from ..functions.etc import code, thread, user_mention
 from ..functions.file import save
-from ..functions.filters import class_c, class_d, class_e, declared_message, exchange_channel, hide_channel
+from ..functions.filters import class_d, declared_message, exchange_channel, hide_channel
 from ..functions.filters import is_declared_message, is_detected_url, is_in_config, is_not_allowed
 from ..functions.filters import new_group, test_group
 from ..functions.group import delete_message, leave_group
@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 
 
 @Client.on_message(Filters.incoming & Filters.group & ~test_group & ~Filters.new_chat_members
-                   & ~class_c & ~class_d & ~class_e & ~declared_message)
+                   & ~class_d & ~declared_message)
 def check(client: Client, message: Message) -> bool:
     # Check the messages sent from groups
     try:
@@ -75,7 +75,7 @@ def check(client: Client, message: Message) -> bool:
 
 
 @Client.on_message(Filters.incoming & Filters.group & ~test_group & Filters.new_chat_members
-                   & ~class_c & ~class_d & ~class_e & ~declared_message)
+                   & ~class_d & ~declared_message)
 def check_join(client: Client, message: Message) -> bool:
     # Check new joined user
     if glovar.locks["message"].acquire():
