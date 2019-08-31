@@ -344,9 +344,9 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                 # Basic types messages
 
                 # Animated Sticker
-                if is_in_config(gid, "ast"):
-                    if message.sticker and message.sticker.is_animated:
-                        return "ast"
+                # if is_in_config(gid, "ast"):
+                #     if message.sticker and message.sticker.is_animated:
+                #         return "ast"
 
                 # Audio
                 if is_in_config(gid, "aud"):
