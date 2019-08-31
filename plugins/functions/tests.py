@@ -25,7 +25,7 @@ from .. import glovar
 from .channel import get_content
 from .etc import code, get_channel_link, get_entity_text, get_links, get_stripped_link, get_text, thread, user_mention
 from .file import delete_file, get_downloaded_path
-from .filters import is_detected_url, is_regex_text
+from .filters import is_class_e, is_detected_url, is_regex_text
 from .image import get_file_id, get_qrcode
 from .telegram import resolve_username, send_message
 
@@ -112,6 +112,7 @@ def clean_test(client: Client, message: Message) -> bool:
                 delete_file(image_path)
 
             if text:
+                text += f"白名单：{code(is_class_e(None, message))}\n"
                 text = f"管理员：{user_mention(aid)}\n\n" + text
                 thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
