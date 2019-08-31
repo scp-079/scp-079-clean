@@ -180,9 +180,7 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
                         the_message = get_message(client, gid, mid)
                         if the_message:
                             url = get_stripped_link(preview["url"])
-                            if url:
-                                glovar.contents[url] = detection
-
+                            glovar.contents[url] = detection
                             terminate_user(client, the_message, "url")
 
         return True
