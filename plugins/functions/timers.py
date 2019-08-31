@@ -17,12 +17,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from copy import deepcopy
 from time import sleep
 
 from pyrogram import Client
 
 from .. import glovar
-from .channel import share_data, share_regex_count
+from .channel import get_debug_text, share_data, share_regex_count
 from .etc import code, general_link, thread
 from .file import save
 from .filters import is_in_config
@@ -66,10 +67,17 @@ def clean_members(client: Client) -> bool:
                 members = get_members(client, gid, "all")
                 if members:
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
+                    i = 0
                     for member in deleted_members:
-                        if member.user.is_deleted:
-                            uid = member.user.id
-                            thread(kick_user, (client, gid, uid))
+                        uid = member.user.id
+                        thread(kick_user, (client, gid, uid))
+                        i += 1
+
+                    if i:
+                        text = get_debug_text(client, gid)
+                        text += (f"执行操作：{code('清理用户')}\n"
+                                 f"失效用户：{code(f'{i} 名')}\n")
+                        thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
     except Exception as e:
@@ -84,8 +92,14 @@ def interval_hour_03(client: Client) -> bool:
         # Delete stickers and animations in groups
         for gid in list(glovar.message_ids):
             if is_in_config(gid, "ttd"):
-                thread(delete_messages, (client, gid, glovar.message_ids[gid]["stickers"]))
+                mid_lists = deepcopy(glovar.message_ids[gid]["stickers"])
+                thread(delete_messages, (client, gid, mid_lists))
                 glovar.message_ids[gid]["stickers"] = []
+                if mid_lists:
+                    text = get_debug_text(client, gid)
+                    text += (f"执行操作：{code('定时删除')}\n"
+                             f"匹配消息：{code(f'{len(mid_lists)} 条')}\n")
+                    thread(send_message, (client, glovar.debug_channel_id, text))
 
         save("message_ids")
     except Exception as e:
