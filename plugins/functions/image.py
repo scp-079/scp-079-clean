@@ -59,9 +59,14 @@ def get_qrcode(path: str) -> str:
         image = Image.open(path)
         image = image.convert("L")
         image = image.point(lambda x: 0 if x < 150 else 255)
-        decoded = decode(image)
-        if decoded:
-            result = decoded[0].data
+        decoded_list = decode(image)
+        if decoded_list:
+            for decoded in decoded_list:
+                if decoded.type == "QRCODE":
+                    result += f"{decoded[0].data}\n"
+
+            if result:
+                result = result[:-1]
     except Exception as e:
         logger.warning(f"Get qrcode error: {e}", exc_info=True)
 
