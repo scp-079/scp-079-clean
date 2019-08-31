@@ -79,6 +79,12 @@ def is_class_e(_, message: Message) -> bool:
             cid = message.forward_from_chat.id
             if cid in glovar.except_ids["channels"]:
                 return True
+
+        content = get_content(None, message)
+        if content:
+            if (content in glovar.except_ids["long"]
+                    or content in glovar.except_ids["temp"]):
+                return True
     except Exception as e:
         logger.warning(f"Is class e error: {e}", exc_info=True)
 

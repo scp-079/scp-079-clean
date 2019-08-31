@@ -25,7 +25,7 @@ from typing import Any
 from pyrogram import Client, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from .. import glovar
-from .channel import get_debug_text
+from .channel import get_content, get_debug_text
 from .etc import code, crypt_str, get_int, get_stripped_link, get_text, thread, user_mention
 from .file import crypt_file, delete_file, get_new_path, get_downloaded_path, save
 from .filters import is_declared_message_id, is_detected_user_id, is_not_allowed
@@ -38,14 +38,25 @@ from .user import terminate_user
 logger = logging.getLogger(__name__)
 
 
-def receive_add_except(data: dict) -> bool:
-    # Receive a channel and add it to except lists
+def receive_add_except(client: Client, data: dict) -> bool:
+    # Receive a object and add it to except list
     try:
         the_id = data["id"]
         the_type = data["type"]
+        # Receive except channels
         if the_type == "channel":
             glovar.except_ids["channels"].add(the_id)
             save("except_ids")
+        # Receive except contents
+        elif the_type in {"long", "temp"}:
+            content = get_content(client, the_id)
+            if content:
+                if the_type == "long":
+                    glovar.except_ids["long"].add(content)
+                elif the_type == "temp":
+                    glovar.except_ids["temp"].add(content)
+
+                save("except_ids")
 
         return True
     except Exception as e:
@@ -267,14 +278,25 @@ def receive_remove_bad(sender: str, data: dict) -> bool:
     return False
 
 
-def receive_remove_except(data: dict) -> bool:
-    # Receive a message and remove it from except lists
+def receive_remove_except(client: Client, data: dict) -> bool:
+    # Receive a object and remove it from except list
     try:
         the_id = data["id"]
         the_type = data["type"]
+        # Receive except channels
         if the_type == "channel":
             glovar.except_ids["channels"].discard(the_id)
             save("except_ids")
+        # Receive except contents
+        elif the_type in {"long", "temp"}:
+            content = get_content(client, the_id)
+            if content:
+                if the_type == "long":
+                    glovar.except_ids["long"].discard(content)
+                elif the_type == "temp":
+                    glovar.except_ids["temp"].discard(content)
+
+                save("except_ids")
 
         return True
     except Exception as e:
