@@ -180,11 +180,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     declare_message(client, gid, mid)
                 else:
                     result = forward_evidence(client, message, "自动删除", "群组自定义", the_type)
-                    # TEMP
-                    if result or message.game:
-                        if message.game:
-                            result = message
-
+                    if result:
                         glovar.recorded_ids[gid].add(uid)
                         delete_message(client, gid, mid)
                         declare_message(client, gid, mid)
