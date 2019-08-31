@@ -350,9 +350,8 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # Bot command
                 if is_in_config(gid, "bmd"):
-                    text = get_text(message)
                     if (message.command
-                            and not any([re.search(f"^/{c}", text) for c in glovar.other_commands])):
+                            and not any([c == message.command[0] for c in glovar.other_commands])):
                         if not get_command_type(message):
                             return "bmd"
 
