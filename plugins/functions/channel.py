@@ -154,7 +154,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
         elif the_type == "pur":
             text += f"附加信息：{code('群管要求删除指定消息')}\n"
         elif message.game:
-            text += f"附加信息：{code('此类信息无法转发至频道')}\n"
+            text += f"附加信息：{code('此类消息无法转发至频道')}\n"
 
         # Protect user's privacy
         if the_type in glovar.types["privacy"] or message.game:
