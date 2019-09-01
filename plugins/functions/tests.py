@@ -25,7 +25,7 @@ from .. import glovar
 from .channel import get_content
 from .etc import code, get_channel_link, get_entity_text, get_links, get_stripped_link, get_text, thread, user_mention
 from .file import delete_file, get_downloaded_path
-from .filters import is_class_e, is_detected_url, is_regex_text
+from .filters import is_class_e, is_regex_text
 from .image import get_file_id, get_qrcode
 from .telegram import resolve_username, send_message
 
@@ -52,7 +52,19 @@ def clean_test(client: Client, message: Message) -> bool:
                 text += f"过滤记录：{code(glovar.names[detection])}\n"
 
             # Detected url
-            detection = is_detected_url(message)
+            detection = ""
+            links = get_links(message)
+            for link in links:
+                detected_type = glovar.contents.get(link, "")
+                if detected_type:
+                    detection = detected_type
+                    break
+
+                for file_type in ["apk", "bat", "cmd", "exe", "vbs"]:
+                    if re.search(f"[.]{file_type}$", link, re.I):
+                        detection = "exe"
+                        break
+
             if detection:
                 text += f"过滤链接：{code(glovar.names[detection])}\n"
 
