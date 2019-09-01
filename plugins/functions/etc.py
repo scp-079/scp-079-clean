@@ -324,11 +324,12 @@ def get_text(message: Message) -> str:
                 if inline_keyboard:
                     for button_row in inline_keyboard:
                         for button in button_row:
-                            if button.text:
-                                text += f"\n{button.text}"
+                            if button:
+                                if button.text:
+                                    text += f"\n{button.text}"
 
-                            if button.url:
-                                text += f"\n{button.url}"
+                                if button.url:
+                                    text += f"\n{button.url}"
 
         if text:
             text = t2s(text)
