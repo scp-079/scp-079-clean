@@ -141,9 +141,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             if name:
                 text += f"用户昵称：{code(name)}\n"
 
-        if more:
-            text += f"附加信息：{code(more)}\n"
-        elif the_type in glovar.types["privacy"]:
+        if the_type in glovar.types["privacy"]:
             text += f"附加信息：{code('可能涉及隐私而未转发')}\n"
         elif the_type == "sde":
             text += f"附加信息：{code('用户要求删除其全部消息')}\n"
@@ -151,6 +149,8 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             text += f"附加信息：{code('群管要求删除指定消息')}\n"
         elif message.game or message.service:
             text += f"附加信息：{code('此类消息无法转发至频道')}\n"
+        elif more:
+            text += f"附加信息：{code(more)}\n"
 
         # DO NOT try to forward these types of message
         if the_type in glovar.types["privacy"] or message.game or message.service:
