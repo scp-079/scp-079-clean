@@ -128,10 +128,6 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
     # Forward the message to the logging channel as evidence
     result = None
     try:
-        # Should not forward service messages
-        if message.service:
-            return message
-
         uid = message.from_user.id
         text = (f"项目编号：{code(glovar.sender)}\n"
                 f"用户 ID：{code(uid)}\n"
@@ -153,11 +149,11 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             text += f"附加信息：{code('用户要求删除其全部消息')}\n"
         elif the_type == "pur":
             text += f"附加信息：{code('群管要求删除指定消息')}\n"
-        elif message.game:
+        elif message.game or message.service:
             text += f"附加信息：{code('此类消息无法转发至频道')}\n"
 
-        # Protect user's privacy
-        if the_type in glovar.types["privacy"] or message.game:
+        # DO NOT try to forward these types of message
+        if the_type in glovar.types["privacy"] or message.game or message.service:
             result = send_message(client, glovar.logging_channel_id, text)
             return result
 
