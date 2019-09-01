@@ -20,9 +20,9 @@ import logging
 from typing import Generator, Iterable, List, Optional, Union
 
 from pyrogram import Chat, ChatMember, Client, InlineKeyboardMarkup, Message
+from pyrogram.api.types import InputPeerUser, InputPeerChannel
 from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
 from pyrogram.errors import UsernameInvalid, UsernameNotOccupied
-from pyrogram.api.types import InputPeerUser, InputPeerChannel
 
 from .. import glovar
 from .etc import delay, get_int, wait_flood
