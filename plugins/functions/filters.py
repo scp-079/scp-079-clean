@@ -223,10 +223,17 @@ def is_detected_url(message: Message) -> str:
 
         gid = message.chat.id
         links = get_links(message)
+        check_exe = is_in_config(gid, "exe")
+
         for link in links:
             detected_type = glovar.contents.get(link, "")
             if detected_type and is_in_config(gid, detected_type):
                 return detected_type
+
+            if check_exe:
+                for file_type in ["apk", "bat", "cmd", "exe", "vbs"]:
+                    if re.search(f"[.]{file_type}$", link, re.I):
+                        return "exe"
     except Exception as e:
         logger.warning(f"Is detected url error: {e}", exc_info=True)
 
@@ -426,7 +433,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                             if message.document.file_name:
                                 file_name = message.document.file_name
                                 for file_type in ["apk", "bat", "cmd", "com", "exe", "vbs"]:
-                                    if re.search(f"{file_type}$", file_name, re.I):
+                                    if re.search(f"[.]{file_type}$", file_name, re.I):
                                         return "exe"
 
                             if message.document.mime_type:
