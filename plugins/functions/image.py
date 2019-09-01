@@ -34,7 +34,8 @@ def get_file_id(message: Message) -> str:
     try:
         if (message.photo
                 or (message.sticker and not message.sticker.is_animated)
-                or message.document):
+                or message.document
+                or message.game):
             if message.photo:
                 file_id = message.photo.file_id
             elif message.sticker:
@@ -46,6 +47,8 @@ def get_file_id(message: Message) -> str:
                         and message.document.file_size
                         and message.document.file_size < glovar.image_size):
                     file_id = message.document.file_id
+            elif message.game:
+                file_id = message.game.photo
     except Exception as e:
         logger.warning(f"Get file id error: {e}", exc_info=True)
 
