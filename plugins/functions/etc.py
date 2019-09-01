@@ -242,6 +242,19 @@ def get_links(message: Message) -> List[str]:
                 link = get_stripped_link(link)
                 if link:
                     result.append(link)
+
+        if message.reply_markup and isinstance(message.reply_markup, InlineKeyboardMarkup):
+            reply_markup = message.reply_markup
+            if reply_markup.inline_keyboard:
+                inline_keyboard = reply_markup.inline_keyboard
+                if inline_keyboard:
+                    for button_row in inline_keyboard:
+                        for button in button_row:
+                            if button:
+                                if button.url:
+                                    url = get_stripped_link(button.url)
+                                    if url:
+                                        result.append(get_stripped_link(url))
     except Exception as e:
         logger.warning(f"Get links error: {e}", exc_info=True)
 

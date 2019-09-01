@@ -183,13 +183,16 @@ recorded_ids: Dict[int, Set[int]] = {}
 #     -10012345678: {12345678}
 # }
 
-regex: Dict[str, str] = {
-    "aff": "推广链接",
-    "iml": "IM 链接",
-    "sho": "短链接",
-    "tgl": "TG 链接",
-    "tgp": "TG 代理",
-    "wb": "追踪封禁"
+regex: Dict[str, bool] = {
+    "ad": False,
+    "aff": True,
+    "ban": False,
+    "con": False,
+    "iml": True,
+    "sho": True,
+    "tgl": True,
+    "tgp": True,
+    "wb": True
 }
 
 sender: str = "CLEAN"
@@ -377,6 +380,17 @@ except_ids: Dict[str, Set[Union[int, str]]] = {
 #     "temp": {content}
 # }
 
+message_ids: Dict[int, Dict[str, Union[int, Dict[int, int]]]] = {}
+# message_ids = {
+#     -10012345678: {
+#         "service": 123,
+#         "stickers": {
+#             456: 1512345678,
+#             789: 1512346678
+#         }
+#     }
+# }
+
 user_ids: Dict[int, Dict[str, Dict[Union[int, str], Union[float, int]]]] = {}
 # user_ids = {
 #     12345678: {
@@ -429,17 +443,6 @@ configs: Dict[int, Dict[str, Union[bool, int]]] = {}
 #     }
 # }
 
-message_ids: Dict[int, Dict[str, Union[int, Dict[int, int]]]] = {}
-# message_ids = {
-#     -10012345678: {
-#         "service": 123,
-#         "stickers": {
-#             456: 1512345678,
-#             789: 1512346678
-#         }
-#     }
-# }
-
 # Init word variables
 
 for word_type in regex:
@@ -450,7 +453,7 @@ for word_type in regex:
 # }
 
 # Load data
-file_list: List[str] = ["admin_ids", "bad_ids", "configs", "except_ids", "message_ids", "user_ids"]
+file_list: List[str] = ["admin_ids", "bad_ids", "except_ids", "message_ids", "user_ids", "configs"]
 file_list += [f"{f}_words" for f in regex]
 for file in file_list:
     try:
