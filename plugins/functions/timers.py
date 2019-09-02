@@ -70,8 +70,9 @@ def clean_members(client: Client) -> bool:
                     count = 0
                     for member in deleted_members:
                         uid = member.user.id
-                        thread(kick_user, (client, gid, uid))
-                        count += 1
+                        if uid not in glovar.admin_ids[gid]:
+                            thread(kick_user, (client, gid, uid))
+                            count += 1
 
                     if count:
                         text = get_debug_text(client, gid)
@@ -150,6 +151,12 @@ def reset_data() -> bool:
 
         glovar.user_ids = {}
         save("user_ids")
+
+        glovar.watch_ids = {
+            "ban": {},
+            "delete": {}
+        }
+        save("watch_ids")
 
         return True
     except Exception as e:
