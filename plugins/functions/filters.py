@@ -470,7 +470,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                         bypass = get_stripped_link(get_channel_link(message))
                         links = get_links(message)
                         tg_links = filter(lambda l: is_regex_text("tgl", l), links)
-                        if not all([bypass in link for link in tg_links]):
+                        if not all([f"{bypass}/" in f"{link}/" for link in tg_links]):
                             return "tgl"
 
                         if message.entities:
