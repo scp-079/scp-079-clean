@@ -477,6 +477,9 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                             for en in message.entities:
                                 if en.type == "mention":
                                     username = get_entity_text(message, en)[1:]
+                                    if message.chat.username and username == message.chat.username:
+                                        continue
+
                                     peer_type, peer_id = resolve_username(client, username)
                                     if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
                                         return "tgl"
