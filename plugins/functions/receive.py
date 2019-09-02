@@ -162,6 +162,9 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
         gid = data["group_id"]
         if glovar.admin_ids.get(gid):
             uid = data["user_id"]
+            if uid in glovar.admin_ids[gid]:
+                return True
+
             mid = data["message_id"]
             preview = receive_file_data(client, message, True)
             if preview:
