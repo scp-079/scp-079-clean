@@ -93,6 +93,24 @@ def get_admins(client: Client, cid: int) -> Optional[Union[bool, List[ChatMember
     return result
 
 
+def get_chat_member(client: Client, cid: int, uid: int) -> Optional[ChatMember]:
+    # Get information about one member of a chat
+    result = None
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.get_chat_member(chat_id=cid, user_id=uid)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+    except Exception as e:
+        logger.warning(f"Get chat member error: {e}", exc_info=True)
+
+    return result
+
+
 def get_group_info(client: Client, chat: Union[int, Chat]) -> (str, str):
     # Get a group's name and link
     group_name = "Unknown Group"

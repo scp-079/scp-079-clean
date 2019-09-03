@@ -28,7 +28,7 @@ from .etc import get_channel_link, get_command_type, get_entity_text, get_now, g
 from .file import delete_file, get_downloaded_path, save
 from .ids import init_group_id
 from .image import get_file_id, get_qrcode
-from .telegram import resolve_username
+from .telegram import get_chat_member, resolve_username
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -483,6 +483,10 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                                     peer_type, peer_id = resolve_username(client, username)
                                     if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
                                         return "tgl"
+                                    elif peer_type == "user":
+                                        member = get_chat_member(client, gid, peer_id)
+                                        if member and member.status not in {"creator", "administrator", "member"}:
+                                            return "tgl"
 
                     # Telegram proxy
                     if is_in_config(gid, "tgp"):

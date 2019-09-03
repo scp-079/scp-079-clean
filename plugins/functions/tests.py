@@ -27,7 +27,7 @@ from .etc import code, get_channel_link, get_entity_text, get_links, get_strippe
 from .file import delete_file, get_downloaded_path
 from .filters import is_class_e, is_regex_text
 from .image import get_file_id, get_qrcode
-from .telegram import resolve_username, send_message
+from .telegram import get_chat_member, resolve_username, send_message
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -104,10 +104,18 @@ def clean_test(client: Client, message: Message) -> bool:
                 for en in message.entities:
                     if en.type == "mention":
                         username = get_entity_text(message, en)[1:]
-                        peer_type, _ = resolve_username(client, username)
-                        if peer_type == "channel":
+                        if message.chat.username and username == message.chat.username:
+                            continue
+
+                        peer_type, peer_id = resolve_username(client, username)
+                        if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
                             text += f"TG 链接：{code('True')}\n"
                             break
+                        elif peer_type == "user":
+                            member = get_chat_member(client, message.chat.id, peer_id)
+                            if member and member.status not in {"creator", "administrator", "member"}:
+                                text += f"TG 链接：{code('True')}\n"
+                                break
 
             # Telegram proxy
             if is_regex_text("tgp", message_text):
