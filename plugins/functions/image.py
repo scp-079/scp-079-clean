@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_file_id(message: Message) -> (str, bool):
-    # Get media message's file id
+    # Get media message's image file id
     file_id = ""
     big = False
     try:
@@ -51,10 +51,25 @@ def get_file_id(message: Message) -> (str, bool):
             elif message.game:
                 file_id = message.game.photo.file_id
 
-            if file_id:
-                big = True
+        if file_id:
+            big = True
+        elif ((message.animation and message.animation.thumbs)
+              or (message.audio and message.audio.thumbs)
+              or (message.video and message.video.thumbs)
+              or (message.video_note and message.video_note.thumbs)
+              or (message.document and message.document.thumbs)):
+            if message.animation:
+                file_id = message.animation.thumbs[-1].file_id
+            elif message.audio:
+                file_id = message.audio.thumbs[-1].file_id
+            elif message.video:
+                file_id = message.video.thumbs[-1].file_id
+            elif message.video_note:
+                file_id = message.video_note.thumbs[-1].file_id
+            elif message.document:
+                file_id = message.document.thumbs[-1].file_id
     except Exception as e:
-        logger.warning(f"Get file id error: {e}", exc_info=True)
+        logger.warning(f"Get image status error: {e}", exc_info=True)
 
     return file_id, big
 

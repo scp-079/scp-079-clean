@@ -499,15 +499,16 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                     # QR code
                     if is_in_config(gid, "qrc"):
-                        file_id, _ = get_file_id(message)
-                        image_path = get_downloaded_path(client, file_id)
-                        if is_declared_message(None, message):
-                            return ""
-                        elif image_path:
-                            need_delete.append(image_path)
-                            qrcode = get_qrcode(image_path)
-                            if qrcode:
-                                return "qrc"
+                        file_id, big = get_file_id(message)
+                        if big:
+                            image_path = get_downloaded_path(client, file_id)
+                            if is_declared_message(None, message):
+                                return ""
+                            elif image_path:
+                                need_delete.append(image_path)
+                                qrcode = get_qrcode(image_path)
+                                if qrcode:
+                                    return "qrc"
 
                 # Schedule to delete stickers and animations
                 if is_in_config(gid, "ttd"):

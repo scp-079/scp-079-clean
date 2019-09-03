@@ -85,14 +85,15 @@ def clean_test(client: Client, message: Message) -> bool:
                 text += f"TG 代理：{code('True')}\n"
 
             # QR code
-            file_id, _ = get_file_id(message)
-            image_path = get_downloaded_path(client, file_id)
-            if image_path:
-                qrcode = get_qrcode(image_path)
-                if qrcode:
-                    text += f"二维码：{code('True')}\n"
+            file_id, big = get_file_id(message)
+            if big:
+                image_path = get_downloaded_path(client, file_id)
+                if image_path:
+                    qrcode = get_qrcode(image_path)
+                    if qrcode:
+                        text += f"二维码：{code('True')}\n"
 
-                delete_file(image_path)
+                    delete_file(image_path)
 
             if text:
                 text += f"白名单：{code(is_class_e(None, message))}\n"
