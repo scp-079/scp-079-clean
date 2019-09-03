@@ -26,7 +26,7 @@ from ..functions.etc import code, get_text, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, hide_channel
 from ..functions.filters import is_ban_text, is_declared_message, is_detected_url, is_in_config, is_not_allowed
-from ..functions.filters import new_group, test_group
+from ..functions.filters import is_watch_user, new_group, test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_config_reply
@@ -54,6 +54,9 @@ def check(client: Client, message: Message) -> bool:
         gid = message.chat.id
         if glovar.nospam_id in glovar.admin_ids[gid]:
             if is_ban_text(get_text(message)):
+                return False
+
+            if is_watch_user(message, "ban"):
                 return False
 
         # Detected url
