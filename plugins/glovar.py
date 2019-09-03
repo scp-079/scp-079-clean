@@ -160,6 +160,7 @@ other_commands: Set[str] = {
     "long",
     "mention",
     "print",
+    "push",
     "purge",
     "report",
     "undo",
