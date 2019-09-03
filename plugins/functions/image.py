@@ -28,9 +28,10 @@ from .. import glovar
 logger = logging.getLogger(__name__)
 
 
-def get_file_id(message: Message) -> str:
+def get_file_id(message: Message) -> (str, bool):
     # Get media message's file id
     file_id = ""
+    big = False
     try:
         if (message.photo
                 or (message.sticker and not message.sticker.is_animated)
@@ -49,10 +50,12 @@ def get_file_id(message: Message) -> str:
                     file_id = message.document.file_id
             elif message.game:
                 file_id = message.game.photo.file_id
+
+            big = True
     except Exception as e:
         logger.warning(f"Get file id error: {e}", exc_info=True)
 
-    return file_id
+    return file_id, big
 
 
 def get_qrcode(path: str) -> str:

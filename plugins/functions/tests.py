@@ -85,7 +85,7 @@ def clean_test(client: Client, message: Message) -> bool:
                 text += f"TG 代理：{code('True')}\n"
 
             # QR code
-            file_id = get_file_id(message)
+            file_id, _ = get_file_id(message)
             image_path = get_downloaded_path(client, file_id)
             if image_path:
                 qrcode = get_qrcode(image_path)
