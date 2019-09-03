@@ -163,6 +163,7 @@ other_commands: Set[str] = {
     "push",
     "purge",
     "report",
+    "status",
     "undo",
     "version",
     "warn"
