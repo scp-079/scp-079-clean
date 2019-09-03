@@ -218,6 +218,20 @@ def is_ban_text(text: str) -> bool:
     return False
 
 
+def is_bmd(message: Message) -> bool:
+    # Check if the message is bot command:
+    try:
+        text = get_text(message)
+        if (re.search("^/[a-z]|^/$", text) and "/" not in text.split(" ")[0][1:]
+                and not any([re.search(f"^/{c}$", text) for c in glovar.other_commands])):
+            if not get_command_type(message):
+                return True
+    except Exception as e:
+        logger.warning(f"Is bmd error: {e}", exc_info=True)
+
+    return False
+
+
 def is_declared_message_id(gid: int, mid: int) -> bool:
     # Check if the message's ID is declared by other bots
     try:
@@ -237,7 +251,7 @@ def is_detected_url(message: Message) -> str:
 
         gid = message.chat.id
         links = get_links(message)
-        check_exe = is_in_config(gid, "exe")
+        check_exe = is_in_config(gid, "exe") or gid == glovar.test_group_id
 
         for link in links:
             detected_type = glovar.contents.get(link, "")
@@ -278,6 +292,26 @@ def is_detected_user_id(gid: int, uid: int) -> bool:
                 return True
     except Exception as e:
         logger.warning(f"Is detected user id error: {e}", exc_info=True)
+
+    return False
+
+
+def is_exe(message: Message) -> bool:
+    # Check if the message contain a exe
+    try:
+        if message.document:
+            if message.document.file_name:
+                file_name = message.document.file_name
+                for file_type in ["apk", "bat", "cmd", "com", "exe", "vbs"]:
+                    if re.search(f"[.]{file_type}$", file_name, re.I):
+                        return True
+
+            if message.document.mime_type:
+                mime_type = message.document.mime_type
+                if "executable" in mime_type:
+                    return True
+    except Exception as e:
+        logger.warning(f"Is exe error: {e}", exc_info=True)
 
     return False
 
@@ -377,11 +411,8 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # Bot command
                 if is_in_config(gid, "bmd"):
-                    text = get_text(message)
-                    if (re.search("^/[a-z]|^/$", text) and "/" not in text.split(" ")[0][1:]
-                            and not any([re.search(f"^/{c}$", text) for c in glovar.other_commands])):
-                        if not get_command_type(message):
-                            return "bmd"
+                    if is_bmd(message):
+                        return "bmd"
 
                 if not is_class_c(None, message):
                     # Animated Sticker
@@ -443,17 +474,8 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                     # Executive file
                     if is_in_config(gid, "exe"):
-                        if message.document:
-                            if message.document.file_name:
-                                file_name = message.document.file_name
-                                for file_type in ["apk", "bat", "cmd", "com", "exe", "vbs"]:
-                                    if re.search(f"[.]{file_type}$", file_name, re.I):
-                                        return "exe"
-
-                            if message.document.mime_type:
-                                mime_type = message.document.mime_type
-                                if "executable" in mime_type:
-                                    return "exe"
+                        if is_exe(message):
+                            return "exe"
 
                     # Instant messenger link
                     if is_in_config(gid, "iml"):
@@ -467,26 +489,8 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                     # Telegram link
                     if is_in_config(gid, "tgl"):
-                        bypass = get_stripped_link(get_channel_link(message))
-                        links = get_links(message)
-                        tg_links = filter(lambda l: is_regex_text("tgl", l), links)
-                        if not all([f"{bypass}/" in f"{link}/" for link in tg_links]):
+                        if is_tgl(client, message):
                             return "tgl"
-
-                        if message.entities:
-                            for en in message.entities:
-                                if en.type == "mention":
-                                    username = get_entity_text(message, en)[1:]
-                                    if message.chat.username and username == message.chat.username:
-                                        continue
-
-                                    peer_type, peer_id = resolve_username(client, username)
-                                    if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
-                                        return "tgl"
-                                    elif peer_type == "user":
-                                        member = get_chat_member(client, gid, peer_id)
-                                        if member and member.status not in {"creator", "administrator", "member"}:
-                                            return "tgl"
 
                     # Telegram proxy
                     if is_in_config(gid, "tgp"):
@@ -592,6 +596,39 @@ def is_regex_text(word_type: str, text: str, again: bool = False) -> bool:
         logger.warning(f"Is regex text error: {e}", exc_info=True)
 
     return result
+
+
+def is_tgl(client: Client, message: Message) -> bool:
+    # Check if the message includes the Telegram link
+    try:
+        bypass = get_stripped_link(get_channel_link(message))
+        links = get_links(message)
+        tg_links = filter(lambda l: is_regex_text("tgl", l), links)
+        if not all([f"{bypass}/" in f"{link}/" for link in tg_links]):
+            return True
+
+        if message.entities:
+            for en in message.entities:
+                if en.type == "mention":
+                    username = get_entity_text(message, en)[1:]
+                    if message.chat.username and username == message.chat.username:
+                        continue
+
+                    peer_type, peer_id = resolve_username(client, username)
+                    if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
+                        return True
+
+                    if peer_type == "user":
+                        member = get_chat_member(client, message.chat.id, peer_id)
+                        if member is False:
+                            return True
+
+                        if member and member.status not in {"creator", "administrator", "member"}:
+                            return True
+    except Exception as e:
+        logger.warning(f"Is tgl error: {e}", exc_info=True)
+
+    return False
 
 
 def is_watch_user(message: Message, the_type: str) -> bool:

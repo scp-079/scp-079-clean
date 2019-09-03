@@ -23,11 +23,11 @@ from pyrogram import Client, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import code, get_channel_link, get_entity_text, get_links, get_stripped_link, get_text, thread, user_mention
+from .etc import code, get_text, thread, user_mention
 from .file import delete_file, get_downloaded_path
-from .filters import is_class_e, is_regex_text
+from .filters import is_bmd, is_class_e, is_detected_url, is_exe, is_regex_text, is_tgl
 from .image import get_file_id, get_qrcode
-from .telegram import get_chat_member, resolve_username, send_message
+from .telegram import send_message
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -52,39 +52,21 @@ def clean_test(client: Client, message: Message) -> bool:
                 text += f"过滤记录：{code(glovar.names[detection])}\n"
 
             # Detected url
-            detection = ""
-            links = get_links(message)
-            for link in links:
-                detected_type = glovar.contents.get(link, "")
-                if detected_type:
-                    detection = detected_type
-                    break
-
-                for file_type in ["apk", "bat", "cmd", "exe", "vbs"]:
-                    if re.search(f"[.]{file_type}$", link, re.I):
-                        detection = "exe"
-                        break
-
+            detection = is_detected_url(message)
             if detection:
                 text += f"过滤链接：{code(glovar.names[detection])}\n"
+
+            # Bot command
+            if is_bmd(message):
+                text += f"机器人命令：{code('True')}\n"
 
             # AFF link
             if is_regex_text("aff", message_text):
                 text += f"推广链接：{code('True')}\n"
 
             # Executive file
-            if message.document:
-                if message.document.file_name:
-                    file_name = message.document.file_name
-                    for file_type in ["apk", "bat", "cmd", "com", "exe", "vbs"]:
-                        if re.search(f"{file_type}$", file_name, re.I):
-                            text += f"可执行文件：{code('True')}\n"
-                            break
-
-                if "可执行文件" not in text and message.document.mime_type:
-                    mime_type = message.document.mime_type
-                    if "executable" in mime_type:
-                        text += f"可执行文件：{code('True')}\n"
+            if is_exe(message):
+                text += f"可执行文件：{code('True')}\n"
 
             # Instant messenger link
             if is_regex_text("iml", message_text):
@@ -95,27 +77,8 @@ def clean_test(client: Client, message: Message) -> bool:
                 text += f"短链接：{code('True')}\n"
 
             # Telegram link
-            bypass = get_stripped_link(get_channel_link(message))
-            links = get_links(message)
-            tg_links = filter(lambda l: is_regex_text("tgl", l), links)
-            if not all([f"{bypass}/" in f"{link}/" for link in tg_links]):
+            if is_tgl(client, message):
                 text += f"TG 链接：{code('True')}\n"
-            elif message.entities:
-                for en in message.entities:
-                    if en.type == "mention":
-                        username = get_entity_text(message, en)[1:]
-                        if message.chat.username and username == message.chat.username:
-                            continue
-
-                        peer_type, peer_id = resolve_username(client, username)
-                        if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
-                            text += f"TG 链接：{code('True')}\n"
-                            break
-                        elif peer_type == "user":
-                            member = get_chat_member(client, message.chat.id, peer_id)
-                            if member and member.status not in {"creator", "administrator", "member"}:
-                                text += f"TG 链接：{code('True')}\n"
-                                break
 
             # Telegram proxy
             if is_regex_text("tgp", message_text):

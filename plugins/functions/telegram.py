@@ -22,7 +22,7 @@ from typing import Generator, Iterable, List, Optional, Union
 from pyrogram import Chat, ChatMember, Client, InlineKeyboardMarkup, Message
 from pyrogram.api.types import InputPeerUser, InputPeerChannel
 from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
-from pyrogram.errors import UsernameInvalid, UsernameNotOccupied
+from pyrogram.errors import UsernameInvalid, UsernameNotOccupied, UserNotParticipant
 
 from .. import glovar
 from .etc import delay, get_int, wait_flood
@@ -105,6 +105,8 @@ def get_chat_member(client: Client, cid: int, uid: int) -> Optional[ChatMember]:
             except FloodWait as e:
                 flood_wait = True
                 wait_flood(e)
+            except UserNotParticipant:
+                result = False
     except Exception as e:
         logger.warning(f"Get chat member error: {e}", exc_info=True)
 
