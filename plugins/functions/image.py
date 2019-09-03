@@ -51,7 +51,8 @@ def get_file_id(message: Message) -> (str, bool):
             elif message.game:
                 file_id = message.game.photo.file_id
 
-            big = True
+            if file_id:
+                big = True
     except Exception as e:
         logger.warning(f"Get file id error: {e}", exc_info=True)
 
