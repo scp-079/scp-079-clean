@@ -78,9 +78,19 @@ def get_qrcode(path: str) -> str:
     # Get QR code
     result = ""
     try:
+        # Open
         image = Image.open(path)
+
+        # Gray
         image = image.convert("L")
+
+        # Contrast
         image = ImageEnhance.Contrast(image).enhance(4.0)
+
+        # Thresholding
+        image = image.point(lambda x: 0 if x < 150 else 255)
+
+        # Decode
         decoded_list = decode(image)
         if decoded_list:
             for decoded in decoded_list:
