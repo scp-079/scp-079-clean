@@ -154,6 +154,7 @@ other_commands: Set[str] = {
     "config_tip",
     "config_user",
     "config_warn",
+    "count",
     "dafm",
     "forgive",
     "l",
