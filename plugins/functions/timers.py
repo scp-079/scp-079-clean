@@ -70,7 +70,7 @@ def clean_members(client: Client) -> bool:
                     count = 0
                     for member in deleted_members:
                         uid = member.user.id
-                        if uid not in glovar.admin_ids[gid]:
+                        if member.status not in {"creator", "administrator"}:
                             thread(kick_user, (client, gid, uid))
                             count += 1
 
