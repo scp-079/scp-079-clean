@@ -18,7 +18,7 @@
 
 import logging
 
-from PIL import Image
+from PIL import Image, ImageEnhance
 from pyrogram import Message
 from pyzbar.pyzbar import decode
 
@@ -80,7 +80,7 @@ def get_qrcode(path: str) -> str:
     try:
         image = Image.open(path)
         image = image.convert("L")
-        image = image.point(lambda x: 0 if x < 150 else 255)
+        image = ImageEnhance.Contrast(image).enhance(4.0)
         decoded_list = decode(image)
         if decoded_list:
             for decoded in decoded_list:
