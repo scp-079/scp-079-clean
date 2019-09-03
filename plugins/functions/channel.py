@@ -24,7 +24,8 @@ from pyrogram import Chat, Client, Message
 from pyrogram.errors import FloodWait
 
 from .. import glovar
-from .etc import code, code_block, general_link, get_full_name, get_md5sum, get_text, message_link, thread, wait_flood
+from .etc import code, code_block, general_link, get_forward_name, get_full_name, get_md5sum, get_text, message_link
+from .etc import thread, wait_flood
 from .file import crypt_file, data_to_file, delete_file, get_new_path, save
 from .group import get_message
 from .image import get_file_id
@@ -135,11 +136,14 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
                 f"规则：{code(rule)}\n"
                 f"消息类别：{code(glovar.names[the_type])}\n")
 
-        # Detected + wb's name = ban
-        if "昵称" in rule:
+        if "名称" in rule:
             name = get_full_name(message.from_user)
             if name:
                 text += f"用户昵称：{code(name)}\n"
+
+            forward_name = get_forward_name(message)
+            if forward_name and forward_name != name:
+                text += f"来源名称：{code(forward_name)}\n"
 
         if the_type in glovar.types["privacy"]:
             text += f"附加信息：{code('可能涉及隐私而未转发')}\n"
@@ -153,7 +157,12 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             text += f"附加信息：{code(more)}\n"
 
         # DO NOT try to forward these types of message
-        if the_type in glovar.types["privacy"] or message.game or message.service:
+        if (message.contact or message.location
+                or message.venue
+                or message.video_note
+                or message.voice
+                or message.game
+                or message.service):
             result = send_message(client, glovar.logging_channel_id, text)
             return result
 

@@ -124,7 +124,7 @@ names: Dict[str, str] = {
     "gif": "GIF 动图",
     "via": "通过 Bot 发送的消息",
     "vid": "视频",
-    "ser": "服务类消息",
+    "ser": "服务消息",
     "sti": "贴纸",
     "aff": "推广链接",
     "exe": "可执行文件",
