@@ -41,7 +41,8 @@ all_commands: List[str] = [
     "config_clean",
     "dafm",
     "purge",
-    "version"
+    "version",
+    "mention"
 ]
 
 contents: Dict[str, str] = {}

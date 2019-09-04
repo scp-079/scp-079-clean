@@ -18,6 +18,7 @@
 
 import logging
 from time import sleep
+from typing import Union
 
 from pyrogram import Client, Message
 
@@ -83,7 +84,7 @@ def add_watch_user(client: Client, the_type: str, uid: int) -> bool:
     return False
 
 
-def ban_user(client: Client, gid: int, uid: int) -> bool:
+def ban_user(client: Client, gid: int, uid: Union[int, str]) -> bool:
     # Ban a user
     try:
         thread(kick_chat_member, (client, gid, uid))
@@ -95,7 +96,7 @@ def ban_user(client: Client, gid: int, uid: int) -> bool:
     return False
 
 
-def kick_user(client: Client, gid: int, uid: int) -> bool:
+def kick_user(client: Client, gid: int, uid: Union[int, str]) -> bool:
     # Kick a user
     try:
         kick_chat_member(client, gid, uid)
