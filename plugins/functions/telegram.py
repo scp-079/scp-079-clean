@@ -229,7 +229,7 @@ def resolve_peer(client: Client, pid: Union[int, str]) -> Optional[Union[bool, I
             except FloodWait as e:
                 flood_wait = True
                 wait_flood(e)
-            except (UsernameInvalid, UsernameNotOccupied):
+            except (PeerIdInvalid, UsernameInvalid, UsernameNotOccupied):
                 return False
     except Exception as e:
         logger.warning(f"Resolve peer error: {e}", exc_info=True)
