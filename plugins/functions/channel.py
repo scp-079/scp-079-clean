@@ -133,8 +133,9 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
         text = (f"项目编号：{code(glovar.sender)}\n"
                 f"用户 ID：{code(uid)}\n"
                 f"操作等级：{code(level)}\n"
-                f"规则：{code(rule)}\n"
-                f"消息类别：{code(glovar.names[the_type])}\n")
+                f"规则：{code(rule)}\n")
+
+        text += f"消息类别：{code(glovar.names[the_type])}\n"
 
         if "名称" in rule:
             name = get_full_name(message.from_user)
