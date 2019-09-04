@@ -366,201 +366,199 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
     else:
         need_delete = []
 
-    if glovar.locks["message"].acquire():
-        try:
-            gid = message.chat.id
+    try:
+        gid = message.chat.id
 
-            # Regular message
-            if not (text or image_path):
-                # Check detected records first
-                if not is_class_c(None, message):
-                    # If the user is being punished
-                    if is_detected_user(message):
-                        return "true"
+        # Regular message
+        if not (text or image_path):
+            # Check detected records first
+            if not is_class_c(None, message):
+                # If the user is being punished
+                if is_detected_user(message):
+                    return "true"
 
-                    # If the message has been detected
-                    content = get_content(client, message)
-                    if content:
-                        detection = glovar.contents.get(content, "")
-                        if detection and is_in_config(gid, detection):
-                            return detection
+                # If the message has been detected
+                content = get_content(client, message)
+                if content:
+                    detection = glovar.contents.get(content, "")
+                    if detection and is_in_config(gid, detection):
+                        return detection
 
-                # Privacy messages
+            # Privacy messages
 
-                # Contact
-                if is_in_config(gid, "con"):
-                    if message.contact:
-                        return "con"
+            # Contact
+            if is_in_config(gid, "con"):
+                if message.contact:
+                    return "con"
 
-                # Location
-                if is_in_config(gid, "loc"):
-                    if message.location or message.venue:
-                        return "loc"
+            # Location
+            if is_in_config(gid, "loc"):
+                if message.location or message.venue:
+                    return "loc"
 
-                # Video note
-                if is_in_config(gid, "vdn"):
-                    if message.video_note:
-                        return "vdn"
+            # Video note
+            if is_in_config(gid, "vdn"):
+                if message.video_note:
+                    return "vdn"
 
-                # Voice
-                if is_in_config(gid, "voi"):
-                    if message.voice:
-                        return "voi"
+            # Voice
+            if is_in_config(gid, "voi"):
+                if message.voice:
+                    return "voi"
 
-                # Basic types messages
+            # Basic types messages
 
-                # Bot command
-                if is_in_config(gid, "bmd"):
-                    if is_bmd(message):
-                        return "bmd"
+            # Bot command
+            if is_in_config(gid, "bmd"):
+                if is_bmd(message):
+                    return "bmd"
 
-                if not is_class_c(None, message):
-                    # Animated Sticker
-                    if is_in_config(gid, "ast"):
-                        if message.sticker and message.sticker.is_animated:
-                            return "ast"
+            if not is_class_c(None, message):
+                # Animated Sticker
+                if is_in_config(gid, "ast"):
+                    if message.sticker and message.sticker.is_animated:
+                        return "ast"
 
-                    # Audio
-                    if is_in_config(gid, "aud"):
-                        if message.audio:
-                            return "aud"
+                # Audio
+                if is_in_config(gid, "aud"):
+                    if message.audio:
+                        return "aud"
 
-                    # Document
-                    if is_in_config(gid, "doc"):
-                        if message.document:
-                            return "doc"
+                # Document
+                if is_in_config(gid, "doc"):
+                    if message.document:
+                        return "doc"
 
-                    # Game
-                    if is_in_config(gid, "gam"):
-                        if message.game:
-                            return "gam"
+                # Game
+                if is_in_config(gid, "gam"):
+                    if message.game:
+                        return "gam"
 
-                    # GIF
-                    if is_in_config(gid, "gif"):
-                        if (message.animation
-                                or (message.document
-                                    and message.document.mime_type
-                                    and "gif" in message.document.mime_type)):
-                            return "gif"
-
-                    # Via Bot
-                    if is_in_config(gid, "via"):
-                        if message.via_bot:
-                            return "via"
-
-                    # Video
-                    if is_in_config(gid, "vid"):
-                        if message.video:
-                            return "vid"
-
-                    # Service
-                    if is_in_config(gid, "ser"):
-                        if message.service:
-                            return "ser"
-
-                    # Sticker
-                    if is_in_config(gid, "sti"):
-                        return "sti"
-
-                # Spam messages
-
-                if not (is_class_c(None, message) or is_class_e(None, message)):
-                    text = get_text(message)
-
-                    # AFF link
-                    if is_in_config(gid, "aff"):
-                        if is_regex_text("aff", text):
-                            return "aff"
-
-                    # Executive file
-                    if is_in_config(gid, "exe"):
-                        if is_exe(message):
-                            return "exe"
-
-                    # Instant messenger link
-                    if is_in_config(gid, "iml"):
-                        if is_regex_text("iml", text):
-                            return "iml"
-
-                    # Short link
-                    if is_in_config(gid, "sho"):
-                        if is_regex_text("sho", text):
-                            return "sho"
-
-                    # Telegram link
-                    if is_in_config(gid, "tgl"):
-                        if is_tgl(client, message):
-                            return "tgl"
-
-                    # Telegram proxy
-                    if is_in_config(gid, "tgp"):
-                        if is_regex_text("tgp", text):
-                            return "tgp"
-
-                    # QR code
-                    if is_in_config(gid, "qrc"):
-                        file_id, big = get_file_id(message)
-                        if big:
-                            image_path = get_downloaded_path(client, file_id)
-                            if is_declared_message(None, message):
-                                return ""
-                            elif image_path:
-                                need_delete.append(image_path)
-                                qrcode = get_qrcode(image_path)
-                                if qrcode:
-                                    return "qrc"
-
-                # Schedule to delete stickers and animations
-                if is_in_config(gid, "ttd"):
-                    if (message.sticker
-                            or message.animation
+                # GIF
+                if is_in_config(gid, "gif"):
+                    if (message.animation
                             or (message.document
                                 and message.document.mime_type
                                 and "gif" in message.document.mime_type)):
-                        mid = message.message_id
-                        glovar.message_ids[gid]["stickers"][mid] = get_now()
-                        save("message_ids")
-                        return ""
+                        return "gif"
 
-            # Preview message
-            else:
-                if text:
-                    # AFF link
-                    if is_in_config(gid, "aff"):
-                        if is_regex_text("aff", text):
-                            return "aff"
+                # Via Bot
+                if is_in_config(gid, "via"):
+                    if message.via_bot:
+                        return "via"
 
-                    # Instant messenger link
-                    if is_in_config(gid, "iml"):
-                        if is_regex_text("iml", text):
-                            return "iml"
+                # Video
+                if is_in_config(gid, "vid"):
+                    if message.video:
+                        return "vid"
 
-                    # Short link
-                    if is_in_config(gid, "sho"):
-                        if is_regex_text("sho", text):
-                            return "sho"
+                # Service
+                if is_in_config(gid, "ser"):
+                    if message.service:
+                        return "ser"
 
-                    # Telegram link
-                    if is_in_config(gid, "tgl"):
-                        if is_regex_text("tgl", text):
-                            return "tgl"
+                # Sticker
+                if is_in_config(gid, "sti"):
+                    return "sti"
 
-                    # Telegram proxy
-                    if is_in_config(gid, "tgp"):
-                        if is_regex_text("tgp", text):
-                            return "tgp"
+            # Spam messages
+
+            if not (is_class_c(None, message) or is_class_e(None, message)):
+                text = get_text(message)
+
+                # AFF link
+                if is_in_config(gid, "aff"):
+                    if is_regex_text("aff", text):
+                        return "aff"
+
+                # Executive file
+                if is_in_config(gid, "exe"):
+                    if is_exe(message):
+                        return "exe"
+
+                # Instant messenger link
+                if is_in_config(gid, "iml"):
+                    if is_regex_text("iml", text):
+                        return "iml"
+
+                # Short link
+                if is_in_config(gid, "sho"):
+                    if is_regex_text("sho", text):
+                        return "sho"
+
+                # Telegram link
+                if is_in_config(gid, "tgl"):
+                    if is_tgl(client, message):
+                        return "tgl"
+
+                # Telegram proxy
+                if is_in_config(gid, "tgp"):
+                    if is_regex_text("tgp", text):
+                        return "tgp"
 
                 # QR code
-                if image_path:
-                    qrcode = get_qrcode(image_path)
-                    if qrcode:
-                        return "qrc"
-        except Exception as e:
-            logger.warning(f"Is not allowed error: {e}", exc_info=True)
-        finally:
-            glovar.locks["message"].release()
-            for file in need_delete:
-                delete_file(file)
+                if is_in_config(gid, "qrc"):
+                    file_id, big = get_file_id(message)
+                    if big:
+                        image_path = get_downloaded_path(client, file_id)
+                        if is_declared_message(None, message):
+                            return ""
+                        elif image_path:
+                            need_delete.append(image_path)
+                            qrcode = get_qrcode(image_path)
+                            if qrcode:
+                                return "qrc"
+
+            # Schedule to delete stickers and animations
+            if is_in_config(gid, "ttd"):
+                if (message.sticker
+                        or message.animation
+                        or (message.document
+                            and message.document.mime_type
+                            and "gif" in message.document.mime_type)):
+                    mid = message.message_id
+                    glovar.message_ids[gid]["stickers"][mid] = get_now()
+                    save("message_ids")
+                    return ""
+
+        # Preview message
+        else:
+            if text:
+                # AFF link
+                if is_in_config(gid, "aff"):
+                    if is_regex_text("aff", text):
+                        return "aff"
+
+                # Instant messenger link
+                if is_in_config(gid, "iml"):
+                    if is_regex_text("iml", text):
+                        return "iml"
+
+                # Short link
+                if is_in_config(gid, "sho"):
+                    if is_regex_text("sho", text):
+                        return "sho"
+
+                # Telegram link
+                if is_in_config(gid, "tgl"):
+                    if is_regex_text("tgl", text):
+                        return "tgl"
+
+                # Telegram proxy
+                if is_in_config(gid, "tgp"):
+                    if is_regex_text("tgp", text):
+                        return "tgp"
+
+            # QR code
+            if image_path:
+                qrcode = get_qrcode(image_path)
+                if qrcode:
+                    return "qrc"
+    except Exception as e:
+        logger.warning(f"Is not allowed error: {e}", exc_info=True)
+    finally:
+        for file in need_delete:
+            delete_file(file)
 
     return result
 

@@ -46,43 +46,46 @@ logger = logging.getLogger(__name__)
                    & ~class_d & ~declared_message)
 def check(client: Client, message: Message) -> bool:
     # Check the messages sent from groups
-    try:
-        if not message.from_user:
+    if glovar.locks["message"].acquire():
+        try:
+            if not message.from_user:
+                return True
+
+            # Work with NOSPAM
+            gid = message.chat.id
+            if glovar.nospam_id in glovar.admin_ids[gid]:
+                if is_ban_text(get_text(message)):
+                    return False
+
+                if is_watch_user(message, "ban"):
+                    return False
+
+                if is_high_score_user(message):
+                    return False
+
+            # Detected url
+            detection = is_detected_url(message)
+            if detection:
+                return terminate_user(client, message, detection)
+
+            # Check declare status
+            if is_declared_message(None, message):
+                return True
+
+            # Not allowed message
+            detection = is_not_allowed(client, message)
+            if detection:
+                if detection in glovar.types["spam"]:
+                    content = get_content(client, message)
+                    glovar.contents[content] = detection
+
+                return terminate_user(client, message, detection)
+
             return True
-
-        # Work with NOSPAM
-        gid = message.chat.id
-        if glovar.nospam_id in glovar.admin_ids[gid]:
-            if is_ban_text(get_text(message)):
-                return False
-
-            if is_watch_user(message, "ban"):
-                return False
-
-            if is_high_score_user(message):
-                return False
-
-        # Detected url
-        detection = is_detected_url(message)
-        if detection:
-            return terminate_user(client, message, detection)
-
-        # Check declare status
-        if is_declared_message(None, message):
-            return True
-
-        # Not allowed message
-        detection = is_not_allowed(client, message)
-        if detection:
-            if detection in glovar.types["spam"]:
-                content = get_content(client, message)
-                glovar.contents[content] = detection
-
-            return terminate_user(client, message, detection)
-
-        return True
-    except Exception as e:
-        logger.warning(f"Check error: {e}", exc_info=True)
+        except Exception as e:
+            logger.warning(f"Check error: {e}", exc_info=True)
+        finally:
+            glovar.locks["message"].release()
 
     return False
 
