@@ -208,7 +208,6 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "all": ["con", "loc", "vdn", "voi", "ast", "aud", "bmd", "doc", "gam", "gif", "via", "vid", "ser", "sti", "aff",
             "exe", "iml", "sho", "tgl", "tgp", "qrc"],
     "function": ["sde", "tcl", "ttd"],
-    "privacy": {"con", "loc", "vdn", "voi"},
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
