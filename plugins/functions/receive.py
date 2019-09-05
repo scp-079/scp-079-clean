@@ -206,7 +206,7 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
         except Exception as e:
             logger.warning(f"Receive preview error: {e}", exc_info=True)
         finally:
-            glovar.locks["message"].acquire()
+            glovar.locks["message"].release()
 
     return False
 
