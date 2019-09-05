@@ -259,7 +259,7 @@ def is_detected_url(message: Message) -> str:
                 return detected_type
 
             if check_exe:
-                for file_type in ["apk", "bat", "cmd", "exe", "pif", "scr", "vbs"]:
+                for file_type in ["apk", "bat", "cmd", "exe", "msi", "pif", "scr", "vbs"]:
                     if re.search(f"[.]{file_type}$", link, re.I):
                         return "exe"
     except Exception as e:
@@ -302,13 +302,13 @@ def is_exe(message: Message) -> bool:
         if message.document:
             if message.document.file_name:
                 file_name = message.document.file_name
-                for file_type in ["apk", "bat", "cmd", "com", "exe", "pif", "scr", "vbs"]:
+                for file_type in ["apk", "bat", "cmd", "com", "exe", "msi", "pif", "scr", "vbs"]:
                     if re.search(f"[.]{file_type}$", file_name, re.I):
                         return True
 
             if message.document.mime_type:
                 mime_type = message.document.mime_type
-                if "executable" in mime_type:
+                if "application" in mime_type:
                     return True
     except Exception as e:
         logger.warning(f"Is exe error: {e}", exc_info=True)
