@@ -302,7 +302,7 @@ def is_exe(message: Message) -> bool:
 
             if message.document.mime_type:
                 mime_type = message.document.mime_type
-                if "application" in mime_type:
+                if "executable" in mime_type:
                     return True
 
         extensions.remove("com")
