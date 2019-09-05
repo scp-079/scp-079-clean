@@ -51,6 +51,10 @@ def check(client: Client, message: Message) -> bool:
             if not message.from_user:
                 return True
 
+            # Check declare status
+            if is_declared_message(None, message):
+                return True
+
             # Work with NOSPAM
             gid = message.chat.id
             if glovar.nospam_id in glovar.admin_ids[gid]:
@@ -67,10 +71,6 @@ def check(client: Client, message: Message) -> bool:
             detection = is_detected_url(message)
             if detection:
                 return terminate_user(client, message, detection)
-
-            # Check declare status
-            if is_declared_message(None, message):
-                return True
 
             # Not allowed message
             detection = is_not_allowed(client, message)
@@ -368,11 +368,14 @@ def process_data(client: Client, message: Message) -> bool:
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
 def test(client: Client, message: Message) -> bool:
     # Show test results in TEST group
-    try:
-        clean_test(client, message)
+    if glovar.locks["test"].acquire():
+        try:
+            clean_test(client, message)
 
-        return True
-    except Exception as e:
-        logger.warning(f"Test error: {e}", exc_info=True)
+            return True
+        except Exception as e:
+            logger.warning(f"Test error: {e}", exc_info=True)
+        finally:
+            glovar.locks["test"].release()
 
     return False
