@@ -251,17 +251,10 @@ def is_detected_url(message: Message) -> str:
 
         gid = message.chat.id
         links = get_links(message)
-        check_exe = is_in_config(gid, "exe") or gid == glovar.test_group_id
-
         for link in links:
             detected_type = glovar.contents.get(link, "")
             if detected_type and is_in_config(gid, detected_type):
                 return detected_type
-
-            if check_exe:
-                for file_type in ["apk", "bat", "cmd", "exe", "msi", "pif", "scr", "vbs"]:
-                    if re.search(f"[.]{file_type}$", link, re.I):
-                        return "exe"
     except Exception as e:
         logger.warning(f"Is detected url error: {e}", exc_info=True)
 
@@ -299,16 +292,24 @@ def is_detected_user_id(gid: int, uid: int) -> bool:
 def is_exe(message: Message) -> bool:
     # Check if the message contain a exe
     try:
+        extensions = ["apk", "bat", "cmd", "com", "exe", "msi", "pif", "scr", "vbs"]
         if message.document:
             if message.document.file_name:
                 file_name = message.document.file_name
-                for file_type in ["apk", "bat", "cmd", "com", "exe", "msi", "pif", "scr", "vbs"]:
+                for file_type in extensions:
                     if re.search(f"[.]{file_type}$", file_name, re.I):
                         return True
 
             if message.document.mime_type:
                 mime_type = message.document.mime_type
                 if "application" in mime_type:
+                    return True
+
+        extensions.remove("com")
+        links = get_links(message)
+        for link in links:
+            for file_type in extensions:
+                if re.search(f"[.]{file_type}$", link, re.I):
                     return True
     except Exception as e:
         logger.warning(f"Is exe error: {e}", exc_info=True)
