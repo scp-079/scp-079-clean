@@ -212,7 +212,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.0.2"
+version: str = "0.0.3"
 
 # Read data from config.ini
 
