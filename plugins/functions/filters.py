@@ -388,7 +388,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
         # Regular message
         if not (text or image_path):
-            # Check detected records first
+            # Check detected records
             if not is_class_c(None, message):
                 # If the user is being punished
                 if is_detected_user(message):
