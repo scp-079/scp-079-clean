@@ -26,7 +26,7 @@ from .. import glovar
 from ..functions.channel import ask_for_help, forward_evidence, get_debug_text, send_debug, share_data
 from ..functions.etc import bold, code, delay, get_command_context, get_command_type, get_now, thread, user_mention
 from ..functions.file import save
-from ..functions.filters import is_class_c, test_group
+from ..functions.filters import from_user, is_class_c, test_group
 from ..functions.group import delete_message
 from ..functions.ids import init_group_id
 from ..functions.telegram import delete_messages, get_group_info, send_message, send_report_message
@@ -35,7 +35,7 @@ from ..functions.telegram import delete_messages, get_group_info, send_message, 
 logger = logging.getLogger(__name__)
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group
+@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
                    & Filters.command(["config"], glovar.prefix))
 def config(client: Client, message: Message) -> bool:
     # Request CONFIG session
@@ -87,7 +87,7 @@ def config(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group
+@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
                    & Filters.command(["config_clean"], glovar.prefix))
 def config_directly(client: Client, message: Message) -> bool:
     # Config the bot directly
@@ -168,7 +168,7 @@ def config_directly(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group
+@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
                    & Filters.command(["dafm"], glovar.prefix))
 def dafm(client: Client, message: Message) -> bool:
     # Delete all from me
@@ -201,7 +201,7 @@ def dafm(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group
+@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
                    & Filters.command(["purge"], glovar.prefix))
 def purge(client: Client, message: Message) -> bool:
     # Purge messages
@@ -239,7 +239,7 @@ def purge(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & test_group
+@Client.on_message(Filters.incoming & Filters.group & test_group & from_user
                    & Filters.command(["version"], glovar.prefix))
 def version(client: Client, message: Message) -> bool:
     # Check the program's version
