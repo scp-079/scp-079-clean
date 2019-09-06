@@ -195,3 +195,15 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
         logger.warning(f"Terminate user error: {e}", exc_info=True)
 
     return False
+
+
+def unban_user(client: Client, gid: int, uid: int) -> bool:
+    # Unban a user
+    try:
+        thread(unban_chat_member, (client, gid, uid))
+
+        return True
+    except Exception as e:
+        logger.warning(f"Unban user error: {e}", exc_info=True)
+
+    return False

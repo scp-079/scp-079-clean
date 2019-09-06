@@ -29,7 +29,7 @@ from .file import save
 from .filters import is_in_config
 from .group import leave_group
 from .telegram import delete_messages, get_admins, get_group_info, get_members, send_message
-from .user import kick_user
+from .user import kick_user, unban_user
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -55,6 +55,34 @@ def backup_files(client: Client) -> bool:
         return True
     except Exception as e:
         logger.warning(f"Backup error: {e}", exc_info=True)
+
+    return False
+
+
+def clean_banned(client: Client) -> bool:
+    # Clean deleted accounts in groups
+    try:
+        for gid in list(glovar.configs):
+            if is_in_config(gid, "tcl"):
+                members = get_members(client, gid, "kicked")
+                if members:
+                    deleted_members = filter(lambda m: m.user.is_deleted, members)
+                    count = 0
+                    for member in deleted_members:
+                        uid = member.user.id
+                        thread(unban_user, (client, gid, uid))
+                        count += 1
+
+                    if count:
+                        text = get_debug_text(client, gid)
+                        text += (f"执行操作：{code('清理黑名单')}\n"
+                                 f"规则：{code('群组自定义')}\n"
+                                 f"失效用户：{code(f'{count} 名')}\n")
+                        thread(send_message, (client, glovar.debug_channel_id, text))
+
+        return True
+    except Exception as e:
+        logger.warning(f"Clean banned error: {e}", exc_info=True)
 
     return False
 
