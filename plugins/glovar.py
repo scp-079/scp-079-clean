@@ -177,7 +177,7 @@ purged_ids: Set[int] = set()
 receivers: Dict[str, List[str]] = {
     "bad": ["ANALYZE", "APPEAL", "CAPTCHA", "CLEAN", "LANG", "LONG", "NOFLOOD", "NOPORN",
             "NOSPAM", "MANAGE", "RECHECK", "USER", "WATCH"],
-    "declare": ["ANALYZE", "CLEAN", "LANG", "LONG", "NOFLOOD", "NOPORN", "NOSPAM", "RECHECK", "USER"],
+    "declare": ["ANALYZE", "CLEAN", "LANG", "LONG", "NOFLOOD", "NOPORN", "NOSPAM", "RECHECK", "USER", "WATCH"],
     "score": ["ANALYZE", "CAPTCHA", "CLEAN", "LANG", "LONG",
               "NOFLOOD", "NOPORN", "NOSPAM", "MANAGE", "RECHECK"],
     "watch": ["ANALYZE", "CAPTCHA", "CLEAN", "LANG", "LONG",
