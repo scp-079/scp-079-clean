@@ -124,14 +124,14 @@ def format_data(sender: str, receivers: List[str], action: str, action_type: str
     return text
 
 
-def forward_evidence(client: Client, message: Message, level: str, rule: str, the_type: str,
+def forward_evidence(client: Client, message: Message, level: str, rule: str, the_type: str, score: float = 0.0,
                      more: str = None) -> Optional[Union[bool, Message]]:
     # Forward the message to the logging channel as evidence
     result = None
     try:
         # Forwarding is unnecessary
-        # if the_type in {"bmd", "ser"}:
-        #     return message
+        if the_type in {"bmd", "ser"}:
+            return message
 
         uid = message.from_user.id
         text = (f"项目编号：{code(glovar.sender)}\n"
@@ -139,7 +139,11 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
                 f"操作等级：{code(level)}\n"
                 f"规则：{code(rule)}\n")
 
-        text += f"消息类别：{code(glovar.names[the_type])}\n"
+        if the_type:
+            text += f"消息类别：{code(glovar.names[the_type])}\n"
+
+        if "评分" in rule:
+            text += f"用户得分：{code(score)}\n"
 
         if "名称" in rule:
             name = get_full_name(message.from_user)

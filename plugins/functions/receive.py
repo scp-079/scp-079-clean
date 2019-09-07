@@ -199,7 +199,7 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
                         if not the_message:
                             return True
 
-                        detection = is_not_allowed(client, message, text, image_path)
+                        detection = is_not_allowed(client, the_message, text, image_path)
                         if detection:
                             if not is_class_e(None, the_message):
                                 url = get_stripped_link(preview["url"])
