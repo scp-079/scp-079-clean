@@ -113,7 +113,7 @@ def kick_user(client: Client, gid: int, uid: Union[int, str]) -> bool:
 def terminate_user(client: Client, message: Message, the_type: str) -> bool:
     # Delete user's message, or ban the user
     try:
-        if not message.from_user or is_class_d(None, message):
+        if is_class_d(None, message):
             return True
 
         gid = message.chat.id
