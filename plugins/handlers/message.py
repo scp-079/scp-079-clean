@@ -31,11 +31,11 @@ from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_config_reply
 from ..functions.receive import receive_declared_message, receive_preview, receive_leave_approve
-from ..functions.receive import receive_regex, receive_remove_bad, receive_remove_except, receive_remove_watch
-from ..functions.receive import receive_text_data, receive_user_score, receive_watch_user
+from ..functions.receive import receive_regex, receive_refresh, receive_remove_bad, receive_remove_except
+from ..functions.receive import receive_remove_watch, receive_text_data, receive_user_score, receive_watch_user
 from ..functions.telegram import get_admins, send_message
 from ..functions.tests import clean_test
-from ..functions.timers import send_count, update_admins
+from ..functions.timers import send_count
 from ..functions.user import terminate_user
 
 # Enable logging
@@ -73,7 +73,7 @@ def check(client: Client, message: Message) -> bool:
             detection = is_not_allowed(client, message)
             if detection:
                 if detection in glovar.types["spam"]:
-                    content = get_content(client, message)
+                    content = get_content(message)
                     glovar.contents[content] = detection
 
                 return terminate_user(client, message, detection)
@@ -268,9 +268,8 @@ def process_data(client: Client, message: Message) -> bool:
                             receive_remove_watch(data)
 
                     elif action_type == "update":
-                        if action_type == "admin":
-                            if data == "demand":
-                                update_admins(client)
+                        if action_type == "refresh":
+                            receive_refresh(client, data)
 
                 elif sender == "NOFLOOD":
 

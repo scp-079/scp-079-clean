@@ -80,7 +80,7 @@ def is_class_e(_, message: Message) -> bool:
             if cid in glovar.except_ids["channels"]:
                 return True
 
-        content = get_content(None, message)
+        content = get_content(message)
         if content:
             if (content in glovar.except_ids["long"]
                     or content in glovar.except_ids["temp"]):
@@ -395,7 +395,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                     return "true"
 
                 # If the message has been detected
-                content = get_content(client, message)
+                content = get_content(message)
                 if content:
                     detection = glovar.contents.get(content, "")
                     if detection and is_in_config(gid, detection):

@@ -121,8 +121,12 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
         mid = message.message_id
         # If message is some kind of spam
         if the_type in glovar.types["spam"]:
-            if (is_regex_text("wb", get_full_name(message.from_user))
-                    or is_regex_text("wb", get_forward_name(message))):
+            full_name = get_full_name(message.from_user)
+            forward_name = get_forward_name(message.from_user)
+            if ((is_regex_text("wb", full_name)
+                    or is_regex_text("wb", forward_name))
+                and (full_name not in glovar.except_ids["long"]
+                     and forward_name not in glovar.except_ids["long"])):
                 result = forward_evidence(client, message, "自动封禁", "名称检查", the_type)
                 if result:
                     add_bad_user(client, uid)

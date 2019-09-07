@@ -107,6 +107,7 @@ default_user_status: Dict[str, Dict[Union[int, str], Union[float, int]]] = {
 left_group_ids: Set[int] = set()
 
 locks: Dict[str, Lock] = {
+    "admin": Lock(),
     "message": Lock(),
     "regex": Lock(),
     "test": Lock()
@@ -214,7 +215,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.0.3"
+version: str = "0.0.4"
 
 # Read data from config.ini
 

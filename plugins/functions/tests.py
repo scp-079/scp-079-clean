@@ -45,7 +45,7 @@ def clean_test(client: Client, message: Message) -> bool:
         text = ""
 
         # Detected record
-        content = get_content(client, message)
+        content = get_content(message)
         detection = glovar.contents.get(content, "")
         if detection:
             text += f"过滤记录：{code(glovar.names[detection])}\n"
