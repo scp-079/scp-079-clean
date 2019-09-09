@@ -23,6 +23,7 @@ from pyrogram import Message
 from pyzbar.pyzbar import decode
 
 from .. import glovar
+from .etc import t2s
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -99,6 +100,7 @@ def get_qrcode(path: str) -> str:
 
             if result:
                 result = result[:-1]
+                result = t2s(result)
     except Exception as e:
         logger.warning(f"Get qrcode error: {e}", exc_info=True)
 
