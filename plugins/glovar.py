@@ -198,8 +198,11 @@ regex: Dict[str, bool] = {
     "aff": True,
     "ban": False,
     "con": False,
+    "del": False,
     "iml": True,
     "sho": True,
+    "spc": False,
+    "spe": False,
     "tgl": True,
     "tgp": True,
     "wb": True

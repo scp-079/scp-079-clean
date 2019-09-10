@@ -259,6 +259,23 @@ def is_declared_message_id(gid: int, mid: int) -> bool:
     return False
 
 
+def is_delete_text(text: str) -> bool:
+    # Check if the text is delete text
+    try:
+        if is_regex_text("del", text):
+            return True
+
+        if is_regex_text("spc", text):
+            return True
+
+        if is_regex_text("spe", text):
+            return True
+    except Exception as e:
+        logger.warning(f"Is delete text error: {e}", exc_info=True)
+
+    return False
+
+
 def is_detected_url(message: Message) -> str:
     # Check if the message include detected url, return detected types as set
     try:
