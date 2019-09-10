@@ -192,7 +192,10 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
-                    send_debug(client, message.chat, "自动删除", uid, mid, result)
+                    if the_type in {"bmd", "ser"}:
+                        send_debug(client, message.chat, "自动删除", uid, mid, result, the_type)
+                    else:
+                        send_debug(client, message.chat, "自动删除", uid, mid, result)
 
         return True
     except Exception as e:

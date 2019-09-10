@@ -128,6 +128,10 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
     # Forward the message to the logging channel as evidence
     result = None
     try:
+        # Forwarding is unnecessary
+        if the_type in {"bmd", "ser"}:
+            return message
+
         uid = message.from_user.id
         text = (f"项目编号：{code(glovar.sender)}\n"
                 f"用户 ID：{code(uid)}\n"
@@ -230,13 +234,17 @@ def get_debug_text(client: Client, context: Union[int, Chat]) -> str:
     return text
 
 
-def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: Message) -> bool:
+def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: Message,
+               the_type: str = None) -> bool:
     # Send the debug message
     try:
         text = get_debug_text(client, chat)
         text += (f"用户 ID：{code(uid)}\n"
                  f"执行操作：{code(action)}\n"
                  f"触发消息：{general_link(mid, message_link(em))}\n")
+        if the_type:
+            text += f"消息类别：{code(glovar.names[the_type])}\n"
+
         thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
