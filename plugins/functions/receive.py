@@ -211,15 +211,14 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
                     if (not is_declared_message_id(gid, mid)
                             and not is_detected_user_id(gid, uid)):
                         the_message = get_message(client, gid, mid)
-                        if not the_message:
+                        if not the_message or is_class_e(None, the_message):
                             return True
 
                         detection = is_not_allowed(client, the_message, text, image_path)
                         if detection:
-                            if not is_class_e(None, the_message):
-                                url = get_stripped_link(preview["url"])
-                                glovar.contents[url] = detection
-                                terminate_user(client, the_message, detection)
+                            url = get_stripped_link(preview["url"])
+                            glovar.contents[url] = detection
+                            terminate_user(client, the_message, detection)
 
             return True
         except Exception as e:
