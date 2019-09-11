@@ -277,7 +277,7 @@ def is_delete_text(text: str) -> bool:
 
 
 def is_detected_url(message: Message) -> str:
-    # Check if the message include detected url, return detected types as set
+    # Check if the message include detected url, return detected type
     try:
         if is_class_c(None, message):
             return ""
