@@ -169,6 +169,7 @@ other_commands: Set[str] = {
     "refresh",
     "report",
     "status",
+    "t2s",
     "undo",
     "version",
     "warn"
