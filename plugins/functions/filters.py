@@ -415,9 +415,8 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                     return "true"
 
                 # If the message has been detected
-                content = get_content(message)
-                if content:
-                    detection = glovar.contents.get(content, "")
+                if message_content:
+                    detection = glovar.contents.get(message_content, "")
                     if detection and is_in_config(gid, detection):
                         return detection
 
