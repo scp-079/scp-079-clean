@@ -541,7 +541,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                         elif image_path:
                             need_delete.append(image_path)
                             qrcode = get_qrcode(image_path)
-                            if qrcode:
+                            if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode)):
                                 return "qrc"
 
             # Schedule to delete stickers and animations
@@ -587,7 +587,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             # QR code
             if image_path:
                 qrcode = get_qrcode(image_path)
-                if qrcode:
+                if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode)):
                     return "qrc"
     except Exception as e:
         logger.warning(f"Is not allowed error: {e}", exc_info=True)
