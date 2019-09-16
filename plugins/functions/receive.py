@@ -157,7 +157,7 @@ def receive_declared_message(data: dict) -> bool:
     return False
 
 
-def receive_file_data(client: Client, message: Message, decrypt: bool = False) -> Any:
+def receive_file_data(client: Client, message: Message, decrypt: bool = True) -> Any:
     # Receive file's data from exchange channel
     data = None
     try:
@@ -198,7 +198,7 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
                 if uid in glovar.admin_ids[gid]:
                     return True
 
-                preview = receive_file_data(client, message, True)
+                preview = receive_file_data(client, message)
                 if preview:
                     text = preview["text"]
                     image = preview["image"]
@@ -283,7 +283,7 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
             if word_type not in glovar.regex:
                 return True
 
-            words_data = receive_file_data(client, message, True)
+            words_data = receive_file_data(client, message)
             if words_data:
                 pop_set = set(eval(f"glovar.{file_name}")) - set(words_data)
                 new_set = set(words_data) - set(eval(f"glovar.{file_name}"))
