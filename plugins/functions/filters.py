@@ -26,6 +26,7 @@ from .. import glovar
 from .channel import get_content
 from .etc import get_channel_link, get_command_type, get_entity_text, get_now, get_links, get_stripped_link, get_text
 from .file import delete_file, get_downloaded_path, save
+from .group import get_description, get_group_sticker, get_pinned
 from .ids import init_group_id
 from .image import get_file_id, get_qrcode
 from .telegram import get_chat_member, resolve_username
@@ -390,6 +391,23 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
         # Regular message
         if not (text or image_path):
+            # Bypass
+            message_text = get_text(message)
+            description = get_description(client, gid)
+            if description and message_text == description:
+                return ""
+
+            pinned_message = get_pinned(client, gid)
+            pinned_text = get_text(pinned_message)
+            if pinned_text and message_text == pinned_text:
+                return ""
+
+            group_sticker = get_group_sticker(client, gid)
+            if message.sticker:
+                sticker_name = message.sticker.set_name
+                if sticker_name == group_sticker:
+                    return ""
+
             # Check detected records
             if not is_class_c(None, message):
                 # If the user is being punished
@@ -483,11 +501,9 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             # Spam messages
 
             if not (is_class_c(None, message) or is_class_e(None, message)):
-                text = get_text(message)
-
                 # AFF link
                 if is_in_config(gid, "aff"):
-                    if is_regex_text("aff", text):
+                    if is_regex_text("aff", message_text):
                         return "aff"
 
                 # Executive file
@@ -497,12 +513,12 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # Instant messenger link
                 if is_in_config(gid, "iml"):
-                    if is_regex_text("iml", text):
+                    if is_regex_text("iml", message_text):
                         return "iml"
 
                 # Short link
                 if is_in_config(gid, "sho"):
-                    if is_regex_text("sho", text):
+                    if is_regex_text("sho", message_text):
                         return "sho"
 
                 # Telegram link
@@ -512,7 +528,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # Telegram proxy
                 if is_in_config(gid, "tgp"):
-                    if is_regex_text("tgp", text):
+                    if is_regex_text("tgp", message_text):
                         return "tgp"
 
                 # QR code
@@ -619,17 +635,27 @@ def is_regex_text(word_type: str, text: str, again: bool = False) -> bool:
 def is_tgl(client: Client, message: Message) -> bool:
     # Check if the message includes the Telegram link
     try:
+        # Bypass prepare
+        gid = message.chat.id
+        description = get_description(client, gid)
+        pinned_message = get_pinned(client, gid)
+        pinned_text = get_text(pinned_message)
+
         # Check links
         bypass = get_stripped_link(get_channel_link(message))
         links = get_links(message)
         tg_links = list(filter(lambda l: is_regex_text("tgl", l), links))
-        bypass_list = [link for link in tg_links if f"{bypass}/" in f"{link}/"]
+        bypass_list = [link for link in tg_links if (f"{bypass}/" in f"{link}/"
+                                                     or link in description
+                                                     or link in pinned_text)]
         if len(bypass_list) != len(tg_links):
             return True
 
         # Check text
         text = get_text(message)
-        text = text.replace(bypass, "")
+        for bypass in bypass_list:
+            text = text.replace(bypass, "")
+
         if is_regex_text("tgl", text):
             return True
 
@@ -640,6 +666,12 @@ def is_tgl(client: Client, message: Message) -> bool:
                 if en.type == "mention":
                     username = get_entity_text(message, en)[1:]
                     if message.chat.username and username == message.chat.username:
+                        continue
+
+                    if username in description:
+                        continue
+
+                    if username in pinned_text:
                         continue
 
                     peer_type, peer_id = resolve_username(client, username)
