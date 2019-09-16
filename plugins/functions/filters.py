@@ -392,14 +392,14 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
         # Regular message
         if not (text or image_path):
             # Bypass
-            message_text = get_text(message)
+            message_content = get_content(message)
             description = get_description(client, gid)
-            if description and message_text == description:
+            if (description and message_content) and message_content in description:
                 return ""
 
             pinned_message = get_pinned(client, gid)
-            pinned_text = get_text(pinned_message)
-            if pinned_text and message_text == pinned_text:
+            pinned_content = get_text(pinned_message)
+            if (pinned_content and message_content) and message_content in pinned_content:
                 return ""
 
             group_sticker = get_group_sticker(client, gid)
@@ -501,6 +501,8 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             # Spam messages
 
             if not (is_class_c(None, message) or is_class_e(None, message)):
+                message_text = get_text(message)
+
                 # AFF link
                 if is_in_config(gid, "aff"):
                     if is_regex_text("aff", message_text):
