@@ -387,7 +387,7 @@ def update_score(client: Client, uid: int) -> bool:
     # Update a user's score, share it
     try:
         count = len(glovar.user_ids[uid]["detected"])
-        score = count * 0.3
+        score = count * 0.6
         glovar.user_ids[uid]["score"][glovar.sender.lower()] = score
         save("user_ids")
         share_data(
