@@ -165,9 +165,17 @@ bot_ids: Set[int] = {avatar_id, captcha_id, clean_id, lang_id, long_id,
 # Languages
 lang: Dict[str, str] = {
     # Basic
+    "auto_fix": (zh_cn and "自动处理") or "Auto Fix",
+    "exchange_invalid": (zh_cn and "数据交换频道失效") or "Exchange Channel Invalid",
     "colon": (zh_cn and "：") or ": ",
+    "issue": (zh_cn and "发现状况") or "Issue",
+    "level": (zh_cn and "操作等级") or "Level",
     "project": (zh_cn and "项目编号") or "Project",
+    "protocol_1": (zh_cn and "启动 1 号协议") or "Initiate Protocol 1",
+    "message_type": (zh_cn and "消息类别") or "Message Type",
     "more": (zh_cn and "附加信息") or "Extra Info",
+    "rule": (zh_cn and "规则") or "Rule",
+    "user_id": (zh_cn and "用户 ID") or "User ID",
     # Message Types
     "con": (zh_cn and "联系人") or "Contact",
     "loc": (zh_cn and "定位地址") or "Location"

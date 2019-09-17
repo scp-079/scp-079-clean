@@ -93,8 +93,8 @@ def exchange_to_hide(client: Client) -> bool:
             data=True
         )
         text = (f"{glovar.lang['project']}{glovar.lang['colon']}{code(glovar.sender)}\n"
-                f"发现状况{glovar.lang['colon']}{code('数据交换频道失效')}\n"
-                f"自动处理{glovar.lang['colon']}{code('启用 1 号协议')}\n")
+                f"{glovar.lang['issue']}{glovar.lang['colon']}{code(glovar.lang['exchange_invalid'])}\n"
+                f"{glovar.lang['auto_fix']}{glovar.lang['colon']}{code(glovar.lang['protocol_1'])}\n")
         thread(send_message, (client, glovar.critical_channel_id, text))
 
         return True
@@ -134,12 +134,12 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
 
         uid = message.from_user.id
         text = (f"{glovar.lang['project']}{glovar.lang['colon']}{code(glovar.sender)}\n"
-                f"用户 ID{glovar.lang['colon']}{code(uid)}\n"
-                f"操作等级{glovar.lang['colon']}{code(level)}\n"
-                f"规则{glovar.lang['colon']}{code(rule)}\n")
+                f"{glovar.lang['user_id']}{glovar.lang['colon']}{code(uid)}\n"
+                f"{glovar.lang['level']}{glovar.lang['colon']}{code(level)}\n"
+                f"{glovar.lang['rule']}{glovar.lang['colon']}{code(rule)}\n")
 
         if the_type:
-            text += f"消息类别{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
+            text += f"{glovar.lang['message_type']}{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
 
         if "评分" in rule:
             text += f"用户得分{glovar.lang['colon']}{code(f'{score:.1f}')}\n"
@@ -249,11 +249,11 @@ def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: 
     # Send the debug message
     try:
         text = get_debug_text(client, chat)
-        text += (f"用户 ID{glovar.lang['colon']}{code(uid)}\n"
+        text += (f"{glovar.lang['user_id']}{glovar.lang['colon']}{code(uid)}\n"
                  f"执行操作{glovar.lang['colon']}{code(action)}\n"
                  f"触发消息{glovar.lang['colon']}{general_link(mid, message_link(em))}\n")
         if the_type:
-            text += f"消息类别{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
+            text += f"{glovar.lang['message_type']}{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
 
         thread(send_message, (client, glovar.debug_channel_id, text))
 
