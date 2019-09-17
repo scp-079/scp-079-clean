@@ -166,6 +166,7 @@ bot_ids: Set[int] = {avatar_id, captcha_id, clean_id, lang_id, long_id,
 lang: Dict[str, str] = {
     # Basic
     "colon": (zh_cn and "：") or ": ",
+    "project": (zh_cn and "项目编号") or "Project",
     "more": (zh_cn and "附加信息") or "Extra Info",
     # Message Types
     "con": (zh_cn and "联系人") or "Contact",

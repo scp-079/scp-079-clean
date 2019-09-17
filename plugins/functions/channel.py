@@ -92,7 +92,7 @@ def exchange_to_hide(client: Client) -> bool:
             action_type="hide",
             data=True
         )
-        text = (f"项目编号{glovar.lang['colon']}{code(glovar.sender)}\n"
+        text = (f"{glovar.lang['project']}{glovar.lang['colon']}{code(glovar.sender)}\n"
                 f"发现状况{glovar.lang['colon']}{code('数据交换频道失效')}\n"
                 f"自动处理{glovar.lang['colon']}{code('启用 1 号协议')}\n")
         thread(send_message, (client, glovar.critical_channel_id, text))
@@ -133,7 +133,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             return message
 
         uid = message.from_user.id
-        text = (f"项目编号{glovar.lang['colon']}{code(glovar.sender)}\n"
+        text = (f"{glovar.lang['project']}{glovar.lang['colon']}{code(glovar.sender)}\n"
                 f"用户 ID{glovar.lang['colon']}{code(uid)}\n"
                 f"操作等级{glovar.lang['colon']}{code(level)}\n"
                 f"规则{glovar.lang['colon']}{code(rule)}\n")
@@ -234,9 +234,10 @@ def get_debug_text(client: Client, context: Union[int, Chat]) -> str:
             group_id = context.id
 
         group_name, group_link = get_group_info(client, context)
-        text = (f"项目编号：{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"群组名称：{general_link(group_name, group_link)}\n"
-                f"群组 ID：{code(group_id)}\n")
+        text = (f"{glovar.lang['project']}{glovar.lang['colon']}"
+                f"{general_link(glovar.project_name, glovar.project_link)}\n"
+                f"群组名称{glovar.lang['colon']}{general_link(group_name, group_link)}\n"
+                f"群组 ID{glovar.lang['colon']}{code(group_id)}\n")
     except Exception as e:
         logger.warning(f"Get debug text error: {e}", exc_info=True)
 
@@ -248,11 +249,11 @@ def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: 
     # Send the debug message
     try:
         text = get_debug_text(client, chat)
-        text += (f"用户 ID：{code(uid)}\n"
-                 f"执行操作：{code(action)}\n"
-                 f"触发消息：{general_link(mid, message_link(em))}\n")
+        text += (f"用户 ID{glovar.lang['colon']}{code(uid)}\n"
+                 f"执行操作{glovar.lang['colon']}{code(action)}\n"
+                 f"触发消息{glovar.lang['colon']}{general_link(mid, message_link(em))}\n")
         if the_type:
-            text += f"消息类别：{code(glovar.names[the_type])}\n"
+            text += f"消息类别{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
 
         thread(send_message, (client, glovar.debug_channel_id, text))
 
