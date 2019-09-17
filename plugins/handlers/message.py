@@ -78,13 +78,15 @@ def check(client: Client, message: Message) -> bool:
             content = get_content(message)
             detection = is_not_allowed(client, message)
             if detection:
-                if detection in glovar.types["spam"]:
-                    glovar.contents[content] = detection
+                if content:
+                    if detection in glovar.types["spam"]:
+                        glovar.contents[content] = detection
 
                 return terminate_user(client, message, detection)
             elif message.sticker:
-                glovar.except_ids["temp"].add(content)
-                save("except_ids")
+                if content:
+                    glovar.except_ids["temp"].add(content)
+                    save("except_ids")
 
             return True
         except Exception as e:

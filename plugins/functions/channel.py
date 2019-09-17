@@ -92,9 +92,9 @@ def exchange_to_hide(client: Client) -> bool:
             action_type="hide",
             data=True
         )
-        text = (f"项目编号：{code(glovar.sender)}\n"
-                f"发现状况：{code('数据交换频道失效')}\n"
-                f"自动处理：{code('启用 1 号协议')}\n")
+        text = (f"项目编号{glovar.lang['colon']}{code(glovar.sender)}\n"
+                f"发现状况{glovar.lang['colon']}{code('数据交换频道失效')}\n"
+                f"自动处理{glovar.lang['colon']}{code('启用 1 号协议')}\n")
         thread(send_message, (client, glovar.critical_channel_id, text))
 
         return True
@@ -133,36 +133,36 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             return message
 
         uid = message.from_user.id
-        text = (f"项目编号：{code(glovar.sender)}\n"
-                f"用户 ID：{code(uid)}\n"
-                f"操作等级：{code(level)}\n"
-                f"规则：{code(rule)}\n")
+        text = (f"项目编号{glovar.lang['colon']}{code(glovar.sender)}\n"
+                f"用户 ID{glovar.lang['colon']}{code(uid)}\n"
+                f"操作等级{glovar.lang['colon']}{code(level)}\n"
+                f"规则{glovar.lang['colon']}{code(rule)}\n")
 
         if the_type:
-            text += f"消息类别：{code(glovar.names[the_type])}\n"
+            text += f"消息类别{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
 
         if "评分" in rule:
-            text += f"用户得分：{code(f'{score:.1f}')}\n"
+            text += f"用户得分{glovar.lang['colon']}{code(f'{score:.1f}')}\n"
 
         if "名称" in rule:
             name = get_full_name(message.from_user)
             if name:
-                text += f"用户昵称：{code(name)}\n"
+                text += f"用户昵称{glovar.lang['colon']}{code(name)}\n"
 
             forward_name = get_forward_name(message)
             if forward_name and forward_name != name:
-                text += f"来源名称：{code(forward_name)}\n"
+                text += f"来源名称{glovar.lang['colon']}{code(forward_name)}\n"
 
         if the_type == "sde":
-            text += f"附加信息：{code('用户要求删除其全部消息')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('用户要求删除其全部消息')}\n"
         elif the_type == "pur":
-            text += f"附加信息：{code('群管要求删除指定消息')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('群管要求删除指定消息')}\n"
         elif message.contact or message.location or message.venue or message.video_note or message.voice:
-            text += f"附加信息：{code('可能涉及隐私而未转发')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('可能涉及隐私而未转发')}\n"
         elif message.game or message.service:
-            text += f"附加信息：{code('此类消息无法转发至频道')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('此类消息无法转发至频道')}\n"
         elif more:
-            text += f"附加信息：{code(more)}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(more)}\n"
 
         # DO NOT try to forward these types of message
         if (message.contact or message.location

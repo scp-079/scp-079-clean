@@ -48,6 +48,7 @@ punish_time = [DATA EXPUNGED]
 reset_day = [DATA EXPUNGED]
 time_ban = [DATA EXPUNGED]
 time_sticker = [DATA EXPUNGED]
+zh_cn = [DATA EXPUNGED]
 
 [encrypt]
 key = [DATA EXPUNGED]

@@ -36,6 +36,142 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Read data from config.ini
+
+# [basic]
+bot_token: str = ""
+prefix: List[str] = []
+prefix_str: str = "/!"
+
+# [bots]
+avatar_id: int = 0
+captcha_id: int = 0
+clean_id: int = 0
+lang_id: int = 0
+long_id: int = 0
+noflood_id: int = 0
+noporn_id: int = 0
+nospam_id: int = 0
+recheck_id: int = 0
+tip_id: int = 0
+user_id: int = 0
+warn_id: int = 0
+
+# [channels]
+critical_channel_id: int = 0
+debug_channel_id: int = 0
+exchange_channel_id: int = 0
+hide_channel_id: int = 0
+logging_channel_id: int = 0
+test_group_id: int = 0
+
+# [custom]
+default_group_link: str = ""
+image_size: int = 0
+project_link: str = ""
+project_name: str = ""
+punish_time: int = 0
+reset_day: str = ""
+time_ban: int = 0
+time_sticker: int = 0
+zh_cn: Union[str, bool] = ""
+
+# [encrypt]
+key: Union[str, bytes] = ""
+password: str = ""
+
+try:
+    config = RawConfigParser()
+    config.read("config.ini")
+    # [basic]
+    bot_token = config["basic"].get("bot_token", bot_token)
+    prefix = list(config["basic"].get("prefix", prefix_str))
+    # [bots]
+    avatar_id = int(config["bots"].get("avatar_id", avatar_id))
+    captcha_id = int(config["bots"].get("captcha_id", captcha_id))
+    clean_id = int(config["bots"].get("clean_id", clean_id))
+    lang_id = int(config["bots"].get("lang_id", lang_id))
+    long_id = int(config["bots"].get("long_id", long_id))
+    noflood_id = int(config["bots"].get("noflood_id", noflood_id))
+    noporn_id = int(config["bots"].get("noporn_id", noporn_id))
+    nospam_id = int(config["bots"].get("nospam_id", nospam_id))
+    recheck_id = int(config["bots"].get("recheck_id", recheck_id))
+    tip_id = int(config["bots"].get("tip_id", tip_id))
+    user_id = int(config["bots"].get("user_id", user_id))
+    warn_id = int(config["bots"].get("warn_id", warn_id))
+    # [channels]
+    critical_channel_id = int(config["channels"].get("critical_channel_id", critical_channel_id))
+    debug_channel_id = int(config["channels"].get("debug_channel_id", debug_channel_id))
+    exchange_channel_id = int(config["channels"].get("exchange_channel_id", exchange_channel_id))
+    hide_channel_id = int(config["channels"].get("hide_channel_id", hide_channel_id))
+    logging_channel_id = int(config["channels"].get("logging_channel_id", logging_channel_id))
+    test_group_id = int(config["channels"].get("test_group_id", test_group_id))
+    # [custom]
+    default_group_link = config["custom"].get("default_group_link", default_group_link)
+    image_size = int(config["custom"].get("image_size", image_size))
+    project_link = config["custom"].get("project_link", project_link)
+    project_name = config["custom"].get("project_name", project_name)
+    punish_time = int(config["custom"].get("punish_time", punish_time))
+    reset_day = config["custom"].get("reset_day", reset_day)
+    time_ban = int(config["custom"].get("time_ban", time_ban))
+    time_sticker = int(config["custom"].get("time_sticker", time_sticker))
+    zh_cn = config["custom"].get("zh_cn", zh_cn)
+    zh_cn = eval(zh_cn)
+    # [encrypt]
+    key = config["encrypt"].get("key", key)
+    key = key.encode("utf-8")
+    password = config["encrypt"].get("password", password)
+except Exception as e:
+    logger.warning(f"Read data from config.ini error: {e}", exc_info=True)
+
+# Check
+if (bot_token in {"", "[DATA EXPUNGED]"}
+        or prefix == []
+        or avatar_id == 0
+        or captcha_id == 0
+        or clean_id == 0
+        or lang_id == 0
+        or long_id == 0
+        or noflood_id == 0
+        or noporn_id == 0
+        or nospam_id == 0
+        or recheck_id == 0
+        or tip_id == 0
+        or user_id == 0
+        or warn_id == 0
+        or critical_channel_id == 0
+        or debug_channel_id == 0
+        or exchange_channel_id == 0
+        or hide_channel_id == 0
+        or logging_channel_id == 0
+        or test_group_id == 0
+        or default_group_link in {"", "[DATA EXPUNGED]"}
+        or image_size == 0
+        or project_link in {"", "[DATA EXPUNGED]"}
+        or project_name in {"", "[DATA EXPUNGED]"}
+        or punish_time == 0
+        or reset_day in {"", "[DATA EXPUNGED]"}
+        or time_ban == 0
+        or time_sticker == 0
+        or zh_cn not in {False, True}
+        or key in {b"", b"[DATA EXPUNGED]"}
+        or password in {"", "[DATA EXPUNGED]"}):
+    logger.critical("No proper settings")
+    raise SystemExit("No proper settings")
+
+bot_ids: Set[int] = {avatar_id, captcha_id, clean_id, lang_id, long_id,
+                     noflood_id, noporn_id, nospam_id, recheck_id, tip_id, user_id, warn_id}
+
+# Languages
+lang: Dict[str, str] = {
+    # Basic
+    "colon": (zh_cn and "：") or ": ",
+    "more": (zh_cn and "附加信息") or "Extra Info",
+    # Message Types
+    "con": (zh_cn and "联系人") or "Contact",
+    "loc": (zh_cn and "定位地址") or "Location"
+}
+
 # Init
 
 all_commands: List[str] = [
@@ -121,8 +257,8 @@ locks: Dict[str, Lock] = {
 }
 
 names: Dict[str, str] = {
-    "con": "联系人",
-    "loc": "定位地址",
+    "con": lang["con"],
+    "loc": lang["loc"],
     "vdn": "圆视频",
     "voi": "语音",
     "ast": "动态贴纸",
@@ -224,128 +360,6 @@ types: Dict[str, Union[List[str], Set[str]]] = {
 }
 
 version: str = "0.0.5"
-
-# Read data from config.ini
-
-# [basic]
-bot_token: str = ""
-prefix: List[str] = []
-prefix_str: str = "/!"
-
-# [bots]
-avatar_id: int = 0
-captcha_id: int = 0
-clean_id: int = 0
-lang_id: int = 0
-long_id: int = 0
-noflood_id: int = 0
-noporn_id: int = 0
-nospam_id: int = 0
-recheck_id: int = 0
-tip_id: int = 0
-user_id: int = 0
-warn_id: int = 0
-
-# [channels]
-critical_channel_id: int = 0
-debug_channel_id: int = 0
-exchange_channel_id: int = 0
-hide_channel_id: int = 0
-logging_channel_id: int = 0
-test_group_id: int = 0
-
-# [custom]
-default_group_link: str = ""
-image_size: int = 0
-project_link: str = ""
-project_name: str = ""
-punish_time: int = 0
-reset_day: str = ""
-time_ban: int = 0
-time_sticker: int = 0
-
-# [encrypt]
-key: Union[str, bytes] = ""
-password: str = ""
-
-try:
-    config = RawConfigParser()
-    config.read("config.ini")
-    # [basic]
-    bot_token = config["basic"].get("bot_token", bot_token)
-    prefix = list(config["basic"].get("prefix", prefix_str))
-    # [bots]
-    avatar_id = int(config["bots"].get("avatar_id", avatar_id))
-    captcha_id = int(config["bots"].get("captcha_id", captcha_id))
-    clean_id = int(config["bots"].get("clean_id", clean_id))
-    lang_id = int(config["bots"].get("lang_id", lang_id))
-    long_id = int(config["bots"].get("long_id", long_id))
-    noflood_id = int(config["bots"].get("noflood_id", noflood_id))
-    noporn_id = int(config["bots"].get("noporn_id", noporn_id))
-    nospam_id = int(config["bots"].get("nospam_id", nospam_id))
-    recheck_id = int(config["bots"].get("recheck_id", recheck_id))
-    tip_id = int(config["bots"].get("tip_id", tip_id))
-    user_id = int(config["bots"].get("user_id", user_id))
-    warn_id = int(config["bots"].get("warn_id", warn_id))
-    # [channels]
-    critical_channel_id = int(config["channels"].get("critical_channel_id", critical_channel_id))
-    debug_channel_id = int(config["channels"].get("debug_channel_id", debug_channel_id))
-    exchange_channel_id = int(config["channels"].get("exchange_channel_id", exchange_channel_id))
-    hide_channel_id = int(config["channels"].get("hide_channel_id", hide_channel_id))
-    logging_channel_id = int(config["channels"].get("logging_channel_id", logging_channel_id))
-    test_group_id = int(config["channels"].get("test_group_id", test_group_id))
-    # [custom]
-    default_group_link = config["custom"].get("default_group_link", default_group_link)
-    image_size = int(config["custom"].get("image_size", image_size))
-    project_link = config["custom"].get("project_link", project_link)
-    project_name = config["custom"].get("project_name", project_name)
-    punish_time = int(config["custom"].get("punish_time", punish_time))
-    reset_day = config["custom"].get("reset_day", reset_day)
-    time_ban = int(config["custom"].get("time_ban", time_ban))
-    time_sticker = int(config["custom"].get("time_sticker", time_sticker))
-    # [encrypt]
-    key = config["encrypt"].get("key", key)
-    key = key.encode("utf-8")
-    password = config["encrypt"].get("password", password)
-except Exception as e:
-    logger.warning(f"Read data from config.ini error: {e}", exc_info=True)
-
-# Check
-if (bot_token in {"", "[DATA EXPUNGED]"}
-        or prefix == []
-        or avatar_id == 0
-        or captcha_id == 0
-        or clean_id == 0
-        or lang_id == 0
-        or long_id == 0
-        or noflood_id == 0
-        or noporn_id == 0
-        or nospam_id == 0
-        or recheck_id == 0
-        or tip_id == 0
-        or user_id == 0
-        or warn_id == 0
-        or critical_channel_id == 0
-        or debug_channel_id == 0
-        or exchange_channel_id == 0
-        or hide_channel_id == 0
-        or logging_channel_id == 0
-        or test_group_id == 0
-        or default_group_link in {"", "[DATA EXPUNGED]"}
-        or image_size == 0
-        or project_link in {"", "[DATA EXPUNGED]"}
-        or project_name in {"", "[DATA EXPUNGED]"}
-        or punish_time == 0
-        or reset_day in {"", "[DATA EXPUNGED]"}
-        or time_ban == 0
-        or time_sticker == 0
-        or key in {b"", b"[DATA EXPUNGED]"}
-        or password in {"", "[DATA EXPUNGED]"}):
-    logger.critical("No proper settings")
-    raise SystemExit("No proper settings")
-
-bot_ids: Set[int] = {avatar_id, captcha_id, clean_id, lang_id, long_id,
-                     noflood_id, noporn_id, nospam_id, recheck_id, tip_id, user_id, warn_id}
 
 # Load data from pickle
 
