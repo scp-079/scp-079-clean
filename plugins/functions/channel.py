@@ -141,24 +141,24 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
         if the_type:
             text += f"{glovar.lang['message_type']}{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
 
-        if "评分" in rule:
-            text += f"用户得分{glovar.lang['colon']}{code(f'{score:.1f}')}\n"
+        if glovar.lang["score"] in rule:
+            text += f"{glovar.lang['user_score']}{glovar.lang['colon']}{code(f'{score:.1f}')}\n"
 
-        if "名称" in rule:
+        if glovar.lang["name"] in rule:
             name = get_full_name(message.from_user)
             if name:
-                text += f"用户昵称{glovar.lang['colon']}{code(name)}\n"
+                text += f"{glovar.lang['user_name']}{glovar.lang['colon']}{code(name)}\n"
 
             forward_name = get_forward_name(message)
             if forward_name and forward_name != name:
                 text += f"来源名称{glovar.lang['colon']}{code(forward_name)}\n"
 
         if the_type == "sde":
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('用户要求删除其全部消息')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['sde_more'])}\n"
         elif the_type == "pur":
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('群管要求删除指定消息')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['pur_more'])}\n"
         elif message.contact or message.location or message.venue or message.video_note or message.voice:
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('可能涉及隐私而未转发')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['privacy'])}\n"
         elif message.game or message.service:
             text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('此类消息无法转发至频道')}\n"
         elif more:

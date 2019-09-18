@@ -174,11 +174,24 @@ lang: Dict[str, str] = {
     "protocol_1": (zh_cn and "启动 1 号协议") or "Initiate Protocol 1",
     "message_type": (zh_cn and "消息类别") or "Message Type",
     "more": (zh_cn and "附加信息") or "Extra Info",
+    "name": (zh_cn and "名称") or "Name",
     "rule": (zh_cn and "规则") or "Rule",
+    "score": (zh_cn and "评分") or "Score",
     "user_id": (zh_cn and "用户 ID") or "User ID",
+    "user_name": (zh_cn and "用户昵称") or "User Name",
+    "user_score": (zh_cn and "用户得分") or "User Score",
+    # More
+    "privacy": (zh_cn and "可能涉及隐私而未转发") or "Not Forwarded Due to Privacy Reason",
     # Message Types
+    "gam": (zh_cn and "游戏") or "Game",
+    "ser": (zh_cn and "服务消息") or "Service",
+    # Special
     "con": (zh_cn and "联系人") or "Contact",
-    "loc": (zh_cn and "定位地址") or "Location"
+    "loc": (zh_cn and "定位地址") or "Location",
+    "pur": (zh_cn and "命令清空消息") or "Purge",
+    "pur_more": (zh_cn and "群管要求删除指定消息") or "Group Admin's Decision",
+    "sde": (zh_cn and "自助删除消息") or "Self Delete",
+    "sde_more": (zh_cn and "用户要求删除其全部消息") or ""
 }
 
 # Init
@@ -368,7 +381,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.0.5"
+version: str = "0.0.6"
 
 # Load data from pickle
 
