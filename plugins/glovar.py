@@ -300,10 +300,10 @@ names: Dict[str, str] = {
     "tgl": "TG 链接",
     "tgp": "TG 代理",
     "qrc": "二维码",
-    "sde": "自助删除消息",
+    "sde": lang["sde"],
     "tcl": "每日自动清理群成员",
     "ttd": "定时删除贴纸动图",
-    "pur": "命令清空消息"
+    "pur": lang["pur"]
 }
 
 other_commands: Set[str] = {
