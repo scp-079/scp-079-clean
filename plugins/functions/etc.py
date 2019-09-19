@@ -339,38 +339,38 @@ def get_report_record(message: Message) -> Dict[str, str]:
     try:
         record_list = message.text.split("\n")
         for r in record_list:
-            if re.search("^项目编号：", r):
+            if re.search(f"^{glovar.lang['project']}{glovar.lang['colon']}", r):
                 record_type = "project"
-            elif re.search("^原始项目：", r):
+            elif re.search(f"^{glovar.lang['project_origin']}{glovar.lang['colon']}", r):
                 record_type = "origin"
-            elif re.search("^状态：", r):
+            elif re.search(f"^{glovar.lang['status']}{glovar.lang['colon']}", r):
                 record_type = "status"
-            elif re.search("^用户 ID：", r):
+            elif re.search(f"^{glovar.lang['user_id']}{glovar.lang['colon']}", r):
                 record_type = "uid"
-            elif re.search("^操作等级：", r):
+            elif re.search(f"^{glovar.lang['level']}{glovar.lang['colon']}", r):
                 record_type = "level"
-            elif re.search("^规则：", r):
+            elif re.search(f"^{glovar.lang['rule']}{glovar.lang['colon']}", r):
                 record_type = "rule"
-            elif re.search("^消息类别", r):
+            elif re.search(f"^{glovar.lang['message_type']}{glovar.lang['colon']}", r):
                 record_type = "type"
-            elif re.search("^消息语言", r):
+            elif re.search(f"^{glovar.lang['message_lang']}{glovar.lang['colon']}", r):
                 record_type = "lang"
-            elif re.search("^消息频率", r):
+            elif re.search(f"^{glovar.lang['message_freq']}{glovar.lang['colon']}", r):
                 record_type = "freq"
-            elif re.search("^用户得分", r):
+            elif re.search(f"^{glovar.lang['user_score']}{glovar.lang['colon']}", r):
                 record_type = "score"
-            elif re.search("^用户简介", r):
+            elif re.search(f"^{glovar.lang['user_bio']}{glovar.lang['colon']}", r):
                 record_type = "bio"
-            elif re.search("^用户昵称", r):
+            elif re.search(f"^{glovar.lang['user_name']}{glovar.lang['colon']}", r):
                 record_type = "name"
-            elif re.search("^来源名称", r):
+            elif re.search(f"^{glovar.lang['from_name']}{glovar.lang['colon']}", r):
                 record_type = "from"
-            elif re.search("^附加信息", r):
+            elif re.search(f"^{glovar.lang['more']}{glovar.lang['colon']}", r):
                 record_type = "more"
             else:
                 record_type = "unknown"
 
-            record[record_type] = r.split("：")[-1]
+            record[record_type] = r.split(f"{glovar.lang['colon']}")[-1]
     except Exception as e:
         logger.warning(f"Get report record error: {e}", exc_info=True)
 

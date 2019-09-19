@@ -172,12 +172,17 @@ lang: Dict[str, str] = {
     "group_name": (zh_cn and "群组名称") or "Group Name",
     "level": (zh_cn and "操作等级") or "Level",
     "project": (zh_cn and "项目编号") or "Project",
+    "project_origin": (zh_cn and "原始项目") or "Original Project",
+    "message_freq": (zh_cn and "消息频率") or "Message Frequency",
+    "message_lang": (zh_cn and "消息语言") or "Message Language",
     "message_type": (zh_cn and "消息类别") or "Message Type",
     "more": (zh_cn and "附加信息") or "Extra Info",
     "name": (zh_cn and "名称") or "Name",
     "rule": (zh_cn and "规则") or "Rule",
     "score": (zh_cn and "评分") or "Score",
+    "status": (zh_cn and "状态") or "Status",
     "triggered_by": (zh_cn and "触发消息") or "Triggered By",
+    "user_bio": (zh_cn and "用户简介") or "User Bio",
     "user_id": (zh_cn and "用户 ID") or "User ID",
     "user_name": (zh_cn and "用户昵称") or "User Name",
     "user_score": (zh_cn and "用户得分") or "User Score",
@@ -198,7 +203,8 @@ lang: Dict[str, str] = {
     "pur": (zh_cn and "命令清空消息") or "Purge",
     "pur_more": (zh_cn and "群管要求删除指定消息") or "Group Admin's Decision",
     "sde": (zh_cn and "自助删除消息") or "Self Delete",
-    "sde_more": (zh_cn and "用户要求删除其全部消息") or ""
+    "sde_more": (zh_cn and "用户要求删除其全部消息") or "",
+    # Unit
 }
 
 # Init
