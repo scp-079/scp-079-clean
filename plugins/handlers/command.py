@@ -155,6 +155,11 @@ def config_directly(client: Client, message: Message) -> bool:
             if success and new_config != glovar.configs[gid]:
                 glovar.configs[gid] = new_config
                 save("configs")
+                debug_text = get_debug_text(client, message.chat)
+                debug_text += (f"群管理：{code(message.from_user.id)}\n"
+                               f"操作：{code('更改设置')}\n"
+                               f"附加信息：{code(f'{command_type} {command_context}')}\n")
+                thread(send_message, (client, glovar.debug_channel_id, text))
 
             text += (f"操作：{code('更改设置')}\n"
                      f"状态：{code(reason)}\n")

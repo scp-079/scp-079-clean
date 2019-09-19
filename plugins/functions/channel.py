@@ -151,7 +151,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
 
             forward_name = get_forward_name(message)
             if forward_name and forward_name != name:
-                text += f"来源名称{glovar.lang['colon']}{code(forward_name)}\n"
+                text += f"{glovar.lang['from_name']}{glovar.lang['colon']}{code(forward_name)}\n"
 
         if the_type == "sde":
             text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['sde_more'])}\n"
@@ -160,7 +160,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
         elif message.contact or message.location or message.venue or message.video_note or message.voice:
             text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['privacy'])}\n"
         elif message.game or message.service:
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code('此类消息无法转发至频道')}\n"
+            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['service'])}\n"
         elif more:
             text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(more)}\n"
 
@@ -236,8 +236,8 @@ def get_debug_text(client: Client, context: Union[int, Chat]) -> str:
         group_name, group_link = get_group_info(client, context)
         text = (f"{glovar.lang['project']}{glovar.lang['colon']}"
                 f"{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"群组名称{glovar.lang['colon']}{general_link(group_name, group_link)}\n"
-                f"群组 ID{glovar.lang['colon']}{code(group_id)}\n")
+                f"{glovar.lang['group_name']}{glovar.lang['colon']}{general_link(group_name, group_link)}\n"
+                f"{glovar.lang['group_id']}{glovar.lang['colon']}{code(group_id)}\n")
     except Exception as e:
         logger.warning(f"Get debug text error: {e}", exc_info=True)
 
@@ -250,8 +250,8 @@ def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: 
     try:
         text = get_debug_text(client, chat)
         text += (f"{glovar.lang['user_id']}{glovar.lang['colon']}{code(uid)}\n"
-                 f"执行操作{glovar.lang['colon']}{code(action)}\n"
-                 f"触发消息{glovar.lang['colon']}{general_link(mid, message_link(em))}\n")
+                 f"{glovar.lang['action']}{glovar.lang['colon']}{code(action)}\n"
+                 f"{glovar.lang['triggered_by']}{glovar.lang['colon']}{general_link(mid, message_link(em))}\n")
         if the_type:
             text += f"{glovar.lang['message_type']}{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
 
