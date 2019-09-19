@@ -125,7 +125,7 @@ def format_data(sender: str, receivers: List[str], action: str, action_type: str
 
 def forward_evidence(client: Client, message: Message, level: str, rule: str, the_type: str, score: float = 0.0,
                      more: str = None) -> Optional[Union[bool, Message]]:
-    # Forward the message to the logging channel as evidence
+    # Forward the message to the channel as evidence
     result = None
     try:
         # Forwarding is unnecessary
@@ -287,7 +287,7 @@ def share_bad_user(client: Client, uid: int) -> bool:
 
 def share_data(client: Client, receivers: List[str], action: str, action_type: str, data: Union[bool, dict, int, str],
                file: str = None, encrypt: bool = True) -> bool:
-    # Use this function to share data in the exchange channel
+    # Use this function to share data in the channel
     try:
         if glovar.sender in receivers:
             receivers.remove(glovar.sender)
