@@ -241,7 +241,7 @@ def receive_leave_approve(client: Client, data: dict) -> bool:
         if glovar.admin_ids.get(the_id, {}):
             text = get_debug_text(client, the_id)
             text += (f"{glovar.lang['admin_project']}{glovar.lang['colon']}{user_mention(admin_id)}\n"
-                     f"{glovar.lang['action']}{glovar.lang['colon']}{code(glovar.lang['leave'])}\n")
+                     f"{glovar.lang['status']}{glovar.lang['colon']}{code(glovar.lang['leave_approve'])}\n")
             if reason:
                 text += f"{glovar.lang['reason']}{glovar.lang['colon']}{code(reason)}\n"
 

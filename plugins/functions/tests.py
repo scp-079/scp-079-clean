@@ -37,7 +37,7 @@ def clean_test(client: Client, message: Message) -> bool:
     # Test image porn score in the test group
     try:
         message_text = get_text(message)
-        if re.search("^管理员：[0-9]", message_text):
+        if re.search(f"^{glovar.lang['admin']}{glovar.lang['colon']}[0-9]", message_text):
             return True
         else:
             aid = message.from_user.id
@@ -48,40 +48,40 @@ def clean_test(client: Client, message: Message) -> bool:
         content = get_content(message)
         detection = glovar.contents.get(content, "")
         if detection:
-            text += f"过滤记录：{code(glovar.names[detection])}\n"
+            text += f"{glovar.lang['record_content']}{glovar.lang['colon']}{code(glovar.names[detection])}\n"
 
         # Detected url
         detection = is_detected_url(message)
         if detection:
-            text += f"过滤链接：{code(glovar.names[detection])}\n"
+            text += f"{glovar.lang['record_link']}{glovar.lang['colon']}{code(glovar.names[detection])}\n"
 
         # Bot command
         if is_bmd(message):
-            text += f"机器人命令：{code('True')}\n"
+            text += f"{glovar.lang['bmd']}{glovar.lang['colon']}{code('True')}\n"
 
         # AFF link
         if is_regex_text("aff", message_text):
-            text += f"推广链接：{code('True')}\n"
+            text += f"{glovar.lang['aff']}{glovar.lang['colon']}{code('True')}\n"
 
         # Executive file
         if is_exe(message):
-            text += f"可执行文件：{code('True')}\n"
+            text += f"{glovar.lang['exe']}{glovar.lang['colon']}{code('True')}\n"
 
         # Instant messenger link
         if is_regex_text("iml", message_text):
-            text += f"IM 链接：{code('True')}\n"
+            text += f"{glovar.lang['iml']}{glovar.lang['colon']}{code('True')}\n"
 
         # Short link
         if is_regex_text("sho", message_text):
-            text += f"短链接：{code('True')}\n"
+            text += f"{glovar.lang['sho']}{glovar.lang['colon']}{code('True')}\n"
 
         # Telegram link
         if is_tgl(client, message):
-            text += f"TG 链接：{code('True')}\n"
+            text += f"{glovar.lang['tgl']}{glovar.lang['colon']}{code('True')}\n"
 
         # Telegram proxy
         if is_regex_text("tgp", message_text):
-            text += f"TG 代理：{code('True')}\n"
+            text += f"{glovar.lang['tgp']}{glovar.lang['colon']}{code('True')}\n"
 
         # QR code
         file_id, big = get_file_id(message)
@@ -90,13 +90,13 @@ def clean_test(client: Client, message: Message) -> bool:
             if image_path:
                 qrcode = get_qrcode(image_path)
                 if qrcode:
-                    text += f"二维码：{code('True')}\n"
+                    text += f"{glovar.lang['qrc']}{glovar.lang['colon']}{code('True')}\n"
 
                 delete_file(image_path)
 
         if text:
-            text += f"白名单：{code(is_class_e(None, message))}\n"
-            text = f"管理员：{user_mention(aid)}\n\n" + text
+            text += f"{glovar.lang['white_listed']}{glovar.lang['colon']}{code(is_class_e(None, message))}\n"
+            text = f"{glovar.lang['admin']}{glovar.lang['colon']}{user_mention(aid)}\n\n" + text
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
         return True
