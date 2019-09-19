@@ -26,7 +26,7 @@ from pyrogram import Client, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from .. import glovar
 from .channel import get_content, get_debug_text
-from .etc import code, crypt_str, general_link, get_int, get_report_record, get_stripped_link, get_text
+from .etc import code, crypt_str, general_link, get_int, get_report_record, get_stripped_link, get_text, lang
 from .etc import thread, user_mention
 from .file import crypt_file, delete_file, get_new_path, get_downloaded_path, save
 from .filters import is_class_e, is_declared_message_id, is_detected_user_id, is_not_allowed
@@ -55,7 +55,7 @@ def receive_add_except(client: Client, data: dict) -> bool:
                 return True
 
             record = get_report_record(message)
-            if glovar.lang["name"] in record["rule"]:
+            if lang("name") in record["rule"]:
                 if record["name"]:
                     glovar.except_ids["long"].add(record["name"])
 
@@ -120,14 +120,14 @@ def receive_config_reply(client: Client, data: dict) -> bool:
         gid = data["group_id"]
         uid = data["user_id"]
         link = data["config_link"]
-        text = (f"{glovar.lang['admin']}{glovar.lang['colon']}{code(uid)}\n"
-                f"{glovar.lang['action']}{glovar.lang['colon']}{code(glovar.lang['config_change'])}\n"
-                f"{glovar.lang['description']}{glovar.lang['colon']}{code(glovar.lang['config_button'])}\n")
+        text = (f"{lang('admin')}{lang('colon')}{code(uid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('config_change'))}\n"
+                f"{lang('description')}{lang('colon')}{code(lang('config_button'))}\n")
         markup = InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
-                        text=glovar.lang["config_go"],
+                        text=lang("config_go"),
                         url=link
                     )
                 ]
@@ -236,14 +236,14 @@ def receive_leave_approve(client: Client, data: dict) -> bool:
         the_id = data["group_id"]
         reason = data["reason"]
         if reason in {"permissions", "user"}:
-            reason = glovar.lang[f"reason_{reason}"]
+            reason = lang(f"reason_{reason}")
 
         if glovar.admin_ids.get(the_id, {}):
             text = get_debug_text(client, the_id)
-            text += (f"{glovar.lang['admin_project']}{glovar.lang['colon']}{user_mention(admin_id)}\n"
-                     f"{glovar.lang['status']}{glovar.lang['colon']}{code(glovar.lang['leave_approve'])}\n")
+            text += (f"{lang('admin_project')}{lang('colon')}{user_mention(admin_id)}\n"
+                     f"{lang('status')}{lang('colon')}{code(lang('leave_approve'))}\n")
             if reason:
-                text += f"{glovar.lang['reason']}{glovar.lang['colon']}{code(reason)}\n"
+                text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
 
             leave_group(client, the_id)
             thread(send_message, (client, glovar.debug_channel_id, text))
@@ -260,10 +260,10 @@ def receive_refresh(client: Client, data: int) -> bool:
     try:
         aid = data
         update_admins(client)
-        text = (f"{glovar.lang['project']}{glovar.lang['colon']}"
+        text = (f"{lang('project')}{lang('colon')}"
                 f"{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"{glovar.lang['admin_project']}{glovar.lang['colon']}{user_mention(aid)}\n"
-                f"{glovar.lang['action']}{glovar.lang['colon']}{code(glovar.lang['refresh'])}\n")
+                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('refresh'))}\n")
         thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
@@ -344,7 +344,7 @@ def receive_remove_except(client: Client, data: dict) -> bool:
                 return True
 
             record = get_report_record(message)
-            if glovar.lang["name"] in record["rule"]:
+            if lang("name") in record["rule"]:
                 if record["name"]:
                     glovar.except_ids["long"].discard(record["name"])
 

@@ -172,6 +172,8 @@ lang: Dict[str, str] = {
     "config_change": (zh_cn and "更改设置") or "Change Config",
     "config_button": (zh_cn and "请点击下方按钮进行设置") or "Press the Button to Config",
     "config_go": (zh_cn and "前往设置") or "Go to Config",
+    "custom": (zh_cn and "自定义") or "Custom",
+    "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "description": (zh_cn and "说明") or "Description",
     "from_name": (zh_cn and "来源名称") or "Forward Name",
     "group_id": (zh_cn and "群组 ID") or "Group ID",
@@ -229,17 +231,24 @@ lang: Dict[str, str] = {
     "tgl": (zh_cn and "TG 链接") or "Telegram Link",
     "tgp": (zh_cn and "TG 代理") or "Telegram Proxy",
     "qrc": (zh_cn and "二维码") or "QR Code",
-    "pur": (zh_cn and "命令清空消息") or "Purge",
-    "pur_more": (zh_cn and "群管要求删除指定消息") or "Group Admin's Decision",
     "sde": (zh_cn and "自助删除消息") or "Self Delete",
     "sde_more": (zh_cn and "用户要求删除其全部消息") or "",
     "tcl": (zh_cn and "每日自动清理群成员") or "Clean Members Everyday",
     "ttd": (zh_cn and "定时删除贴纸动图") or "Schedule to Delete Stickers",
+    "pur": (zh_cn and "命令清空消息") or "Purge",
+    "pur_more": (zh_cn and "群管要求删除指定消息") or "Group Admin's Decision",
+    "clean_blacklist": (zh_cn and "清理黑名单") or "Clean Blacklist",
+    "clean_members": (zh_cn and "清理用户") or "Clean Members",
+    "invalid_user": (zh_cn and "失效用户") or "Deleted Account",
+    "schedule_delete": (zh_cn and "定时删除") or "Schedule to Delete",
+    "sticker": (zh_cn and "匹配消息") or "Sticker",
     # Test
     "record_content": (zh_cn and "过滤记录") or "Recorded content",
     "record_link": (zh_cn and "过滤链接") or "Recorded link",
     "white_listed": (zh_cn and "白名单") or "White Listed",
     # Unit
+    "members": (zh_cn and "名") or "member(s)",
+    "messages": (zh_cn and "条") or "message(s)"
 }
 
 # Init
@@ -327,8 +336,8 @@ locks: Dict[str, Lock] = {
 }
 
 names: Dict[str, str] = {
-    "con": lang["con"],
-    "loc": lang["loc"],
+    "con": lang.get("con", "con"),
+    "loc": lang.get("loc", "loc"),
     "vdn": "圆视频",
     "voi": "语音",
     "ast": "动态贴纸",
@@ -348,10 +357,10 @@ names: Dict[str, str] = {
     "tgl": "TG 链接",
     "tgp": "TG 代理",
     "qrc": "二维码",
-    "sde": lang["sde"],
+    "sde": lang.get("sde", "sde"),
     "tcl": "每日自动清理群成员",
     "ttd": "定时删除贴纸动图",
-    "pur": lang["pur"]
+    "pur": lang.get("pur", "pur")
 }
 
 other_commands: Set[str] = {

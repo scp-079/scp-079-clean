@@ -24,7 +24,7 @@ from pyrogram import Client
 
 from .. import glovar
 from .channel import get_debug_text, share_data, share_regex_count
-from .etc import code, general_link, get_now, thread
+from .etc import code, general_link, get_now, lang, thread
 from .file import save
 from .filters import is_in_config
 from .group import leave_group
@@ -74,10 +74,12 @@ def clean_banned(client: Client) -> bool:
                         count += 1
 
                     if count:
+                        count_text = f"{count} {lang('members')}"
                         text = get_debug_text(client, gid)
-                        text += (f"执行操作：{code('清理黑名单')}\n"
-                                 f"规则：{code('群组自定义')}\n"
-                                 f"失效用户：{code(f'{count} 名')}\n")
+                        text += (f"{lang('action')}{lang('colon')}"
+                                 f"{code(lang('clean_blacklist'))}\n"
+                                 f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                                 f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
                         thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
@@ -103,10 +105,11 @@ def clean_members(client: Client) -> bool:
                             count += 1
 
                     if count:
+                        count_text = f"{count} {lang('members')}"
                         text = get_debug_text(client, gid)
-                        text += (f"执行操作：{code('清理用户')}\n"
-                                 f"规则：{code('群组自定义')}\n"
-                                 f"失效用户：{code(f'{count} 名')}\n")
+                        text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
+                                 f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                                 f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
                         thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
@@ -129,10 +132,11 @@ def interval_hour_01(client: Client) -> bool:
                     for mid in mid_list:
                         glovar.message_ids[gid]["stickers"].pop(mid, 0)
 
+                    count_text = f"{len(mid_list)} {lang('messages')}"
                     text = get_debug_text(client, gid)
-                    text += (f"执行操作：{code('定时删除')}\n"
-                             f"规则：{code('群组自定义')}\n"
-                             f"匹配消息：{code(f'{len(mid_list)} 条')}\n")
+                    text += (f"{lang('action')}{lang('colon')}{code(lang('schedule_delete'))}\n"
+                             f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                             f"{lang('sticker')}{lang('colon')}{code(count_text)}\n")
                     thread(send_message, (client, glovar.debug_channel_id, text))
 
         save("message_ids")
@@ -248,15 +252,13 @@ def update_admins(client: Client) -> bool:
                                     "reason": reason
                                 }
                             )
-                            if reason == "permissions":
-                                reason = "权限缺失"
-                            elif reason == "user":
-                                reason = "缺失 USER"
-
-                            debug_text = (f"项目编号：{general_link(glovar.project_name, glovar.project_link)}\n"
-                                          f"群组名称：{general_link(group_name, group_link)}\n"
-                                          f"群组 ID：{code(gid)}\n"
-                                          f"状态：{code(reason)}\n")
+                            reason = lang(f"reason_{reason}")
+                            debug_text = (f"{lang('project')}{lang('colon')}"
+                                          f"{general_link(glovar.project_name, glovar.project_link)}\n"
+                                          f"{lang('group_name')}{lang('colon')}"
+                                          f"{general_link(group_name, group_link)}\n"
+                                          f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
+                                          f"{lang('status')}{lang('colon')}{code(reason)}\n")
                             thread(send_message, (client, glovar.debug_channel_id, debug_text))
                         else:
                             save("admin_ids")
@@ -271,11 +273,13 @@ def update_admins(client: Client) -> bool:
                             action_type="info",
                             data=gid
                         )
-                        debug_text = (f"项目编号：{general_link(glovar.project_name, glovar.project_link)}\n"
-                                      f"群组名称：{general_link(group_name, group_link)}\n"
-                                      f"群组 ID：{code(gid)}\n"
-                                      f"状态：{code('自动退出并清空数据')}\n"
-                                      f"原因：{code('非管理员或已不在群组中')}\n")
+                        debug_text = (f"{lang('project')}{lang('colon')}"
+                                      f"{general_link(glovar.project_name, glovar.project_link)}\n"
+                                      f"{lang('group_name')}{lang('colon')}"
+                                      f"{general_link(group_name, group_link)}\n"
+                                      f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
+                                      f"{lang('status')}{lang('colon')}{code('自动退出并清空数据')}\n"
+                                      f"{lang('reason')}{lang('colon')}{code('非管理员或已不在群组中')}\n")
                         thread(send_message, (client, glovar.debug_channel_id, debug_text))
                 except Exception as e:
                     logger.warning(f"Update admin in {gid} error: {e}", exc_info=True)

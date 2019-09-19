@@ -24,8 +24,8 @@ from pyrogram import Chat, Client, Message
 from pyrogram.errors import FloodWait
 
 from .. import glovar
-from .etc import code, code_block, general_link, get_forward_name, get_full_name, get_md5sum, get_text, message_link
-from .etc import thread, wait_flood
+from .etc import code, code_block, general_link, get_forward_name, get_full_name, get_md5sum, get_text, lang
+from .etc import message_link, thread, wait_flood
 from .file import crypt_file, data_to_file, delete_file, get_new_path, save
 from .image import get_file_id
 from .telegram import get_group_info, send_document, send_message
@@ -92,9 +92,9 @@ def exchange_to_hide(client: Client) -> bool:
             action_type="hide",
             data=True
         )
-        text = (f"{glovar.lang['project']}{glovar.lang['colon']}{code(glovar.sender)}\n"
-                f"{glovar.lang['issue']}{glovar.lang['colon']}{code(glovar.lang['exchange_invalid'])}\n"
-                f"{glovar.lang['auto_fix']}{glovar.lang['colon']}{code(glovar.lang['protocol_1'])}\n")
+        text = (f"{lang('project')}{lang('colon')}{code(glovar.sender)}\n"
+                f"{lang('issue')}{lang('colon')}{code(lang('exchange_invalid'))}\n"
+                f"{lang('auto_fix')}{lang('colon')}{code(lang('protocol_1'))}\n")
         thread(send_message, (client, glovar.critical_channel_id, text))
 
         return True
@@ -133,36 +133,36 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             return message
 
         uid = message.from_user.id
-        text = (f"{glovar.lang['project']}{glovar.lang['colon']}{code(glovar.sender)}\n"
-                f"{glovar.lang['user_id']}{glovar.lang['colon']}{code(uid)}\n"
-                f"{glovar.lang['level']}{glovar.lang['colon']}{code(level)}\n"
-                f"{glovar.lang['rule']}{glovar.lang['colon']}{code(rule)}\n")
+        text = (f"{lang('project')}{lang('colon')}{code(glovar.sender)}\n"
+                f"{lang('user_id')}{lang('colon')}{code(uid)}\n"
+                f"{lang('level')}{lang('colon')}{code(level)}\n"
+                f"{lang('rule')}{lang('colon')}{code(rule)}\n")
 
         if the_type:
-            text += f"{glovar.lang['message_type']}{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
+            text += f"{lang('message_type')}{lang('colon')}{code(glovar.names[the_type])}\n"
 
-        if glovar.lang["score"] in rule:
-            text += f"{glovar.lang['user_score']}{glovar.lang['colon']}{code(f'{score:.1f}')}\n"
+        if lang("score") in rule:
+            text += f"{lang('user_score')}{lang('colon')}{code(f'{score:.1f}')}\n"
 
-        if glovar.lang["name"] in rule:
+        if lang("name") in rule:
             name = get_full_name(message.from_user)
             if name:
-                text += f"{glovar.lang['user_name']}{glovar.lang['colon']}{code(name)}\n"
+                text += f"{lang('user_name')}{lang('colon')}{code(name)}\n"
 
             forward_name = get_forward_name(message)
             if forward_name and forward_name != name:
-                text += f"{glovar.lang['from_name']}{glovar.lang['colon']}{code(forward_name)}\n"
+                text += f"{lang('from_name')}{lang('colon')}{code(forward_name)}\n"
 
         if the_type == "sde":
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['sde_more'])}\n"
+            text += f"{lang('more')}{lang('colon')}{code(lang('sde_more'))}\n"
         elif the_type == "pur":
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['pur_more'])}\n"
+            text += f"{lang('more')}{lang('colon')}{code(lang('pur_more'))}\n"
         elif message.contact or message.location or message.venue or message.video_note or message.voice:
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['privacy'])}\n"
+            text += f"{lang('more')}{lang('colon')}{code(lang('privacy'))}\n"
         elif message.game or message.service:
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(glovar.lang['service'])}\n"
+            text += f"{lang('more')}{lang('colon')}{code(lang('service'))}\n"
         elif more:
-            text += f"{glovar.lang['more']}{glovar.lang['colon']}{code(more)}\n"
+            text += f"{lang('more')}{lang('colon')}{code(more)}\n"
 
         # DO NOT try to forward these types of message
         if (message.contact or message.location
@@ -234,10 +234,10 @@ def get_debug_text(client: Client, context: Union[int, Chat]) -> str:
             group_id = context.id
 
         group_name, group_link = get_group_info(client, context)
-        text = (f"{glovar.lang['project']}{glovar.lang['colon']}"
+        text = (f"{lang('project')}{lang('colon')}"
                 f"{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"{glovar.lang['group_name']}{glovar.lang['colon']}{general_link(group_name, group_link)}\n"
-                f"{glovar.lang['group_id']}{glovar.lang['colon']}{code(group_id)}\n")
+                f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
+                f"{lang('group_id')}{lang('colon')}{code(group_id)}\n")
     except Exception as e:
         logger.warning(f"Get debug text error: {e}", exc_info=True)
 
@@ -249,11 +249,11 @@ def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: 
     # Send the debug message
     try:
         text = get_debug_text(client, chat)
-        text += (f"{glovar.lang['user_id']}{glovar.lang['colon']}{code(uid)}\n"
-                 f"{glovar.lang['action']}{glovar.lang['colon']}{code(action)}\n"
-                 f"{glovar.lang['triggered_by']}{glovar.lang['colon']}{general_link(mid, message_link(em))}\n")
+        text += (f"{lang('user_id')}{lang('colon')}{code(uid)}\n"
+                 f"{lang('action')}{lang('colon')}{code(action)}\n"
+                 f"{lang('triggered_by')}{lang('colon')}{general_link(mid, message_link(em))}\n")
         if the_type:
-            text += f"{glovar.lang['message_type']}{glovar.lang['colon']}{code(glovar.names[the_type])}\n"
+            text += f"{lang('message_type')}{lang('colon')}{code(glovar.names[the_type])}\n"
 
         thread(send_message, (client, glovar.debug_channel_id, text))
 

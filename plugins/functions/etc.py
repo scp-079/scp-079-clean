@@ -339,38 +339,38 @@ def get_report_record(message: Message) -> Dict[str, str]:
     try:
         record_list = message.text.split("\n")
         for r in record_list:
-            if re.search(f"^{glovar.lang['project']}{glovar.lang['colon']}", r):
+            if re.search(f"^{lang('project')}{lang('colon')}", r):
                 record_type = "project"
-            elif re.search(f"^{glovar.lang['project_origin']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('project_origin')}{lang('colon')}", r):
                 record_type = "origin"
-            elif re.search(f"^{glovar.lang['status']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('status')}{lang('colon')}", r):
                 record_type = "status"
-            elif re.search(f"^{glovar.lang['user_id']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('user_id')}{lang('colon')}", r):
                 record_type = "uid"
-            elif re.search(f"^{glovar.lang['level']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('level')}{lang('colon')}", r):
                 record_type = "level"
-            elif re.search(f"^{glovar.lang['rule']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('rule')}{lang('colon')}", r):
                 record_type = "rule"
-            elif re.search(f"^{glovar.lang['message_type']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('message_type')}{lang('colon')}", r):
                 record_type = "type"
-            elif re.search(f"^{glovar.lang['message_lang']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('message_lang')}{lang('colon')}", r):
                 record_type = "lang"
-            elif re.search(f"^{glovar.lang['message_freq']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('message_freq')}{lang('colon')}", r):
                 record_type = "freq"
-            elif re.search(f"^{glovar.lang['user_score']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('user_score')}{lang('colon')}", r):
                 record_type = "score"
-            elif re.search(f"^{glovar.lang['user_bio']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('user_bio')}{lang('colon')}", r):
                 record_type = "bio"
-            elif re.search(f"^{glovar.lang['user_name']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('user_name')}{lang('colon')}", r):
                 record_type = "name"
-            elif re.search(f"^{glovar.lang['from_name']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('from_name')}{lang('colon')}", r):
                 record_type = "from"
-            elif re.search(f"^{glovar.lang['more']}{glovar.lang['colon']}", r):
+            elif re.search(f"^{lang('more')}{lang('colon')}", r):
                 record_type = "more"
             else:
                 record_type = "unknown"
 
-            record[record_type] = r.split(f"{glovar.lang['colon']}")[-1]
+            record[record_type] = r.split(f"{lang('colon')}")[-1]
     except Exception as e:
         logger.warning(f"Get report record error: {e}", exc_info=True)
 
@@ -428,6 +428,17 @@ def get_text(message: Message) -> str:
         logger.warning(f"Get text error: {e}", exc_info=True)
 
     return text
+
+
+def lang(text: str) -> str:
+    # Get the text
+    result = ""
+    try:
+        result = glovar.lang.get(text, text)
+    except Exception as e:
+        logger.warning(f"Lang error: {e}", exc_info=True)
+
+    return result
 
 
 def message_link(message: Message) -> str:

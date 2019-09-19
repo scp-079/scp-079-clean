@@ -23,7 +23,7 @@ from pyrogram import Client, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import code, get_text, thread, user_mention
+from .etc import code, get_text, lang, thread, user_mention
 from .file import delete_file, get_downloaded_path
 from .filters import is_bmd, is_class_e, is_detected_url, is_exe, is_regex_text, is_tgl
 from .image import get_file_id, get_qrcode
@@ -37,7 +37,7 @@ def clean_test(client: Client, message: Message) -> bool:
     # Test image porn score in the test group
     try:
         message_text = get_text(message)
-        if re.search(f"^{glovar.lang['admin']}{glovar.lang['colon']}[0-9]", message_text):
+        if re.search(f"^{lang('admin')}{lang('colon')}[0-9]", message_text):
             return True
         else:
             aid = message.from_user.id
@@ -48,40 +48,40 @@ def clean_test(client: Client, message: Message) -> bool:
         content = get_content(message)
         detection = glovar.contents.get(content, "")
         if detection:
-            text += f"{glovar.lang['record_content']}{glovar.lang['colon']}{code(glovar.names[detection])}\n"
+            text += f"{lang('record_content')}{lang('colon')}{code(glovar.names[detection])}\n"
 
         # Detected url
         detection = is_detected_url(message)
         if detection:
-            text += f"{glovar.lang['record_link']}{glovar.lang['colon']}{code(glovar.names[detection])}\n"
+            text += f"{lang('record_link')}{lang('colon')}{code(glovar.names[detection])}\n"
 
         # Bot command
         if is_bmd(message):
-            text += f"{glovar.lang['bmd']}{glovar.lang['colon']}{code('True')}\n"
+            text += f"{lang('bmd')}{lang('colon')}{code('True')}\n"
 
         # AFF link
         if is_regex_text("aff", message_text):
-            text += f"{glovar.lang['aff']}{glovar.lang['colon']}{code('True')}\n"
+            text += f"{lang('aff')}{lang('colon')}{code('True')}\n"
 
         # Executive file
         if is_exe(message):
-            text += f"{glovar.lang['exe']}{glovar.lang['colon']}{code('True')}\n"
+            text += f"{lang('exe')}{lang('colon')}{code('True')}\n"
 
         # Instant messenger link
         if is_regex_text("iml", message_text):
-            text += f"{glovar.lang['iml']}{glovar.lang['colon']}{code('True')}\n"
+            text += f"{lang('iml')}{lang('colon')}{code('True')}\n"
 
         # Short link
         if is_regex_text("sho", message_text):
-            text += f"{glovar.lang['sho']}{glovar.lang['colon']}{code('True')}\n"
+            text += f"{lang('sho')}{lang('colon')}{code('True')}\n"
 
         # Telegram link
         if is_tgl(client, message):
-            text += f"{glovar.lang['tgl']}{glovar.lang['colon']}{code('True')}\n"
+            text += f"{lang('tgl')}{lang('colon')}{code('True')}\n"
 
         # Telegram proxy
         if is_regex_text("tgp", message_text):
-            text += f"{glovar.lang['tgp']}{glovar.lang['colon']}{code('True')}\n"
+            text += f"{lang('tgp')}{lang('colon')}{code('True')}\n"
 
         # QR code
         file_id, big = get_file_id(message)
@@ -90,13 +90,13 @@ def clean_test(client: Client, message: Message) -> bool:
             if image_path:
                 qrcode = get_qrcode(image_path)
                 if qrcode:
-                    text += f"{glovar.lang['qrc']}{glovar.lang['colon']}{code('True')}\n"
+                    text += f"{lang('qrc')}{lang('colon')}{code('True')}\n"
 
                 delete_file(image_path)
 
         if text:
-            text += f"{glovar.lang['white_listed']}{glovar.lang['colon']}{code(is_class_e(None, message))}\n"
-            text = f"{glovar.lang['admin']}{glovar.lang['colon']}{user_mention(aid)}\n\n" + text
+            text += f"{lang('white_listed')}{lang('colon')}{code(is_class_e(None, message))}\n"
+            text = f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n" + text
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
         return True
