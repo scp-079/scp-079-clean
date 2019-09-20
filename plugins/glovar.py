@@ -243,6 +243,16 @@ lang: Dict[str, str] = {
     "invalid_user": (zh_cn and "失效用户") or "Deleted Account",
     "schedule_delete": (zh_cn and "定时删除") or "Schedule to Delete",
     "sticker": (zh_cn and "匹配消息") or "Sticker",
+    # Terminate
+    "auto_ban": (zh_cn and "自动封禁") or "Auto Ban",
+    "auto_delete": (zh_cn and "自动删除") or "Auto Delete",
+    "name_ban": (zh_cn and "名称封禁") or "Ban by Name",
+    "name_examine": (zh_cn and "名称检查") or "Name Examination",
+    "score_ban": (zh_cn and "评分封禁") or "Ban by Score",
+    "score_user": (zh_cn and "用户评分") or "High Score",
+    "watch_ban": (zh_cn and "追踪封禁") or "Watch Ban",
+    "watch_delete": (zh_cn and "追踪删除") or "Watch Delete",
+    "watch_user": (zh_cn and "敏感追踪") or "Watched User",
     # Test
     "record_content": (zh_cn and "过滤记录") or "Recorded content",
     "record_link": (zh_cn and "过滤链接") or "Recorded link",

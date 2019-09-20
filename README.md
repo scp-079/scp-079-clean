@@ -15,7 +15,7 @@ See [this article](https://scp-079.org/clean/).
 ## Requirements
 
 - Python 3.6 or higher
-- Ubuntu: `sudo apt update && sudo apt install libzbar0 opencc -y`
+- Debian 10: `sudo apt update && sudo apt install libzbar0 opencc -y`
 - pip: `pip install -r requirements.txt` or `pip install -U APScheduler OpenCC Pillow pyAesCrypt pyrogram[fast] pyzbar`
 
 ## Files
