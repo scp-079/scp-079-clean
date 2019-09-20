@@ -63,24 +63,32 @@ def clean_banned(client: Client) -> bool:
     # Clean deleted accounts in groups
     try:
         for gid in list(glovar.configs):
-            if is_in_config(gid, "tcl"):
-                members = get_members(client, gid, "kicked")
-                if members:
-                    deleted_members = filter(lambda m: m.user.is_deleted, members)
-                    count = 0
-                    for member in deleted_members:
-                        uid = member.user.id
-                        thread(unban_user, (client, gid, uid))
-                        count += 1
+            try:
+                if not is_in_config(gid, "tcl"):
+                    continue
 
-                    if count:
-                        count_text = f"{count} {lang('members')}"
-                        text = get_debug_text(client, gid)
-                        text += (f"{lang('action')}{lang('colon')}"
-                                 f"{code(lang('clean_blacklist'))}\n"
-                                 f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
-                                 f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
-                        thread(send_message, (client, glovar.debug_channel_id, text))
+                members = get_members(client, gid, "kicked")
+                if not members:
+                    continue
+
+                deleted_members = filter(lambda m: m.user.is_deleted, members)
+                count = 0
+                for member in deleted_members:
+                    uid = member.user.id
+                    thread(unban_user, (client, gid, uid))
+                    count += 1
+
+                if not count:
+                    continue
+
+                count_text = f"{count} {lang('members')}"
+                text = get_debug_text(client, gid)
+                text += (f"{lang('action')}{lang('colon')}{code(lang('clean_blacklist'))}\n"
+                         f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                         f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
+                thread(send_message, (client, glovar.debug_channel_id, text))
+            except Exception as e:
+                logger.warning(f"Clean banned in {gid} error: {e}", exc_info=True)
 
         return True
     except Exception as e:
@@ -93,24 +101,33 @@ def clean_members(client: Client) -> bool:
     # Clean deleted accounts in groups
     try:
         for gid in list(glovar.configs):
-            if is_in_config(gid, "tcl"):
-                members = get_members(client, gid, "all")
-                if members:
-                    deleted_members = filter(lambda m: m.user.is_deleted, members)
-                    count = 0
-                    for member in deleted_members:
-                        uid = member.user.id
-                        if member.status not in {"creator", "administrator"}:
-                            thread(kick_user, (client, gid, uid))
-                            count += 1
+            try:
+                if not is_in_config(gid, "tcl"):
+                    continue
 
-                    if count:
-                        count_text = f"{count} {lang('members')}"
-                        text = get_debug_text(client, gid)
-                        text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
-                                 f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
-                                 f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
-                        thread(send_message, (client, glovar.debug_channel_id, text))
+                members = get_members(client, gid, "all")
+                if not members:
+                    continue
+
+                deleted_members = filter(lambda m: m.user.is_deleted, members)
+                count = 0
+                for member in deleted_members:
+                    uid = member.user.id
+                    if member.status not in {"creator", "administrator"}:
+                        thread(kick_user, (client, gid, uid))
+                        count += 1
+
+                if not count:
+                    continue
+
+                count_text = f"{count} {lang('members')}"
+                text = get_debug_text(client, gid)
+                text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
+                         f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                         f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
+                thread(send_message, (client, glovar.debug_channel_id, text))
+            except Exception as e:
+                logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
 
         return True
     except Exception as e:
