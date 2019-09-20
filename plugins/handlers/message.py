@@ -22,7 +22,7 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import get_content, get_debug_text
-from ..functions.etc import code, general_link, get_text, thread, user_mention
+from ..functions.etc import code, general_link, get_text, lang, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_declared_message, is_delete_text, is_detected_url, is_high_score_user
@@ -142,9 +142,11 @@ def exchange_emergency(client: Client, message: Message) -> bool:
                         elif data is False and sender == "MANAGE":
                             glovar.should_hide = data
 
-                        text = (f"项目编号：{general_link(glovar.project_name, glovar.project_link)}\n"
-                                f"执行操作：{code('频道转移')}\n"
-                                f"应急频道：{code((lambda x: '启用' if x else '禁用')(glovar.should_hide))}\n")
+                        project_text = general_link(glovar.project_name, glovar.project_link)
+                        hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
+                        text = (f"{lang('project')}{lang('colon')}{project_text}\n"
+                                f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
+                                f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
                         thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
@@ -176,22 +178,22 @@ def init_group(client: Client, message: Message) -> bool:
                     glovar.admin_ids[gid] = {admin.user.id for admin in admin_members
                                              if not admin.user.is_bot and not admin.user.is_deleted}
                     save("admin_ids")
-                    text += f"状态：{code('已加入群组')}\n"
+                    text += f"{lang('status')}{lang('colon')}{code(lang('status_joined'))}\n"
                 else:
                     thread(leave_group, (client, gid))
-                    text += (f"状态：{code('已退出群组')}\n"
-                             f"原因：{code('获取管理员列表失败')}\n")
+                    text += (f"{lang('status')}{lang('colon')}{code(lang('status_left'))}\n"
+                             f"{lang('reason')}{lang('colon')}{code(lang('reason_admin'))}\n")
         else:
             if gid in glovar.left_group_ids:
                 return leave_group(client, gid)
 
             leave_group(client, gid)
-            text += (f"状态：{code('已退出群组')}\n"
-                     f"原因：{code('未授权使用')}\n")
+            text += (f"{lang('status')}{lang('colon')}{code(lang('status_left'))}\n"
+                     f"{lang('reason')}{lang('colon')}{code(lang('reason_unauthorized'))}\n")
             if message.from_user.username:
-                text += f"邀请人：{user_mention(invited_by)}\n"
+                text += f"{lang('inviter')}{lang('colon')}{user_mention(invited_by)}\n"
             else:
-                text += f"邀请人：{code(invited_by)}\n"
+                text += f"{lang('inviter')}{lang('colon')}{code(invited_by)}\n"
 
         thread(send_message, (client, glovar.debug_channel_id, text))
 
