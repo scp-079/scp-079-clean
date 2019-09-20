@@ -24,7 +24,8 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import ask_for_help, forward_evidence, get_debug_text, send_debug, share_data
-from ..functions.etc import bold, code, delay, get_command_context, get_command_type, get_now, thread, user_mention
+from ..functions.etc import bold, code, delay, get_command_context, get_command_type, get_now, lang
+from ..functions.etc import thread, user_mention
 from ..functions.file import save
 from ..functions.filters import from_user, is_class_c, test_group
 from ..functions.group import delete_message
@@ -73,8 +74,8 @@ def config(client: Client, message: Message) -> bool:
                     )
                     # Send a report message to debug channel
                     text = get_debug_text(client, message.chat)
-                    text += (f"群管理：{code(message.from_user.id)}\n"
-                             f"操作：{code('创建设置会话')}\n")
+                    text += (f"{lang('admin_group')}{lang('colon')}{code(message.from_user.id)}\n"
+                             f"{lang('action')}{lang('colon')}{code(lang('config_create'))}\n")
                     thread(send_message, (client, glovar.debug_channel_id, text))
 
             delay(3, delete_message, [client, gid, mid])
@@ -99,22 +100,23 @@ def config_directly(client: Client, message: Message) -> bool:
         if is_class_c(None, message):
             aid = message.from_user.id
             success = True
-            reason = "已更新"
+            reason = lang("config_updated")
             new_config = deepcopy(glovar.configs[gid])
-            text = f"管理员：{code(aid)}\n"
+            text = f"{lang('admin_group')}{lang('colon')}{code(aid)}\n"
             # Check command format
             command_type, command_context = get_command_context(message)
             if command_type:
                 if command_type == "show":
-                    text += (f"操作：{code('查看设置')}\n"
-                             f"设置：{code((lambda x: '默认' if x else '自定义')(new_config.get('default')))}\n")
+                    default_text = (lambda x: lang('default') if x else lang('custom'))(new_config.get('default'))
+                    text += (f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
+                             f"{lang('config')}{lang('colon')}{code(default_text)}\n")
                     for name in glovar.types["all"]:
-                        text += (f"{glovar.names[name]}："
-                                 f"{code((lambda x: '过滤' if x else '忽略')(new_config.get(name)))}\n")
+                        name_text = (lambda x: lang('filter') if x else lang('ignore'))(new_config.get(name))
+                        text += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
 
                     for name in glovar.types["function"]:
-                        text += (f"{glovar.names[name]}："
-                                 f"{code((lambda x: '启用' if x else '禁用')(new_config.get(name)))}\n")
+                        name_text = (lambda x: lang('enabled') if x else lang('disabled'))(new_config.get(name))
+                        text += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
 
                     thread(send_report_message, (30, client, gid, text))
                     thread(delete_message, (client, gid, mid))
@@ -135,34 +137,34 @@ def config_directly(client: Client, message: Message) -> bool:
                                     new_config[command_type] = True
                                 else:
                                     success = False
-                                    reason = "命令参数有误"
+                                    reason = lang("command_para")
                             else:
                                 success = False
-                                reason = "命令类别有误"
+                                reason = lang("command_type")
                         else:
                             success = False
-                            reason = "命令参数缺失"
+                            reason = lang("command_lack")
 
                         if success:
                             new_config["default"] = False
                 else:
                     success = False
-                    reason = "设置当前被锁定"
+                    reason = lang("config_locked")
             else:
                 success = False
-                reason = "格式有误"
+                reason = lang("command_usage")
 
             if success and new_config != glovar.configs[gid]:
                 glovar.configs[gid] = new_config
                 save("configs")
                 debug_text = get_debug_text(client, message.chat)
-                debug_text += (f"群管理：{code(message.from_user.id)}\n"
-                               f"操作：{code('更改设置')}\n"
-                               f"附加信息：{code(f'{command_type} {command_context}')}\n")
+                debug_text += (f"{lang('admin_group')}{lang('colon')}{code(message.from_user.id)}\n"
+                               f"{lang('action')}{lang('colon')}{code(lang('config_change'))}\n"
+                               f"{lang('more')}{lang('colon')}{code(f'{command_type} {command_context}')}\n")
                 thread(send_message, (client, glovar.debug_channel_id, text))
 
-            text += (f"操作：{code('更改设置')}\n"
-                     f"状态：{code(reason)}\n")
+            text += (f"{lang('action')}{lang('colon')}{code(lang('config_change'))}\n"
+                     f"{lang('status')}{lang('colon')}{code(reason)}\n")
             thread(send_report_message, ((lambda x: 10 if x else 5)(success), client, gid, text))
 
         thread(delete_message, (client, gid, mid))
@@ -188,14 +190,14 @@ def dafm(client: Client, message: Message) -> bool:
                 if confirm_text and re.search("^yes$|^y$", confirm_text, re.I):
                     if uid not in glovar.deleted_ids[gid]:
                         # Forward the request command message as evidence
-                        result = forward_evidence(client, message, "自动删除", "群组自定义", "sde")
+                        result = forward_evidence(client, message, lang('auto_delete'), lang('custom_group'), "sde")
                         if result:
                             glovar.deleted_ids[gid].add(uid)
                             ask_for_help(client, "delete", gid, uid)
-                            send_debug(client, message.chat, "自助删除", uid, mid, result)
-                            text = (f"用户：{user_mention(uid)}\n"
-                                    f"操作：{code('自助删除')}\n"
-                                    f"状态：{code('成功执行')}\n")
+                            send_debug(client, message.chat, lang('sde_action'), uid, mid, result)
+                            text = (f"{lang('user')}{lang('colon')}{user_mention(uid)}\n"
+                                    f"{lang('action')}{lang('colon')}{code(lang('sde_action'))}\n"
+                                    f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
                             thread(send_report_message, (15, client, gid, text))
 
         thread(delete_message, (client, gid, mid))
@@ -222,17 +224,17 @@ def purge(client: Client, message: Message) -> bool:
                 aid = message.from_user.id
                 r_mid = r_message.message_id
                 if mid - r_mid <= 1000:
-                    result = forward_evidence(client, message, "自动删除", "群组自定义", "pur")
+                    result = forward_evidence(client, message, lang('auto_delete'), lang('custom_group'), "pur")
                     if result:
                         glovar.purged_ids.add(gid)
                         thread(delete_messages, (client, gid, range(r_mid, mid)))
-                        send_debug(client, message.chat, "指定删除", aid, mid, result)
-                        text = (f"管理员：{code(aid)}\n"
-                                f"执行操作：{code('清除消息')}\n"
-                                f"状态：{code('已执行')}\n")
+                        send_debug(client, message.chat, lang('pur_debug'), aid, mid, result)
+                        text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
+                                f"{lang('action')}{lang('colon')}{code(lang('pur_action'))}\n"
+                                f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
                         reason = get_command_type(message)
                         if reason:
-                            text += f"原因：{code(reason)}\n"
+                            text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
 
                         thread(send_report_message, (30, client, gid, text))
 
@@ -253,8 +255,8 @@ def version(client: Client, message: Message) -> bool:
         cid = message.chat.id
         aid = message.from_user.id
         mid = message.message_id
-        text = (f"管理员：{user_mention(aid)}\n\n"
-                f"版本：{bold(glovar.version)}\n")
+        text = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n"
+                f"{lang('version')}{lang('colon')}{bold(glovar.version)}\n")
         thread(send_message, (client, cid, text, mid))
 
         return True
