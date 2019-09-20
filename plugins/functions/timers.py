@@ -270,10 +270,9 @@ def update_admins(client: Client) -> bool:
                                 }
                             )
                             reason = lang(f"reason_{reason}")
-                            debug_text = (f"{lang('project')}{lang('colon')}"
-                                          f"{general_link(glovar.project_name, glovar.project_link)}\n"
-                                          f"{lang('group_name')}{lang('colon')}"
-                                          f"{general_link(group_name, group_link)}\n"
+                            project_link = general_link(glovar.project_name, glovar.project_link)
+                            debug_text = (f"{lang('project')}{lang('colon')}{project_link}\n"
+                                          f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
                                           f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
                                           f"{lang('status')}{lang('colon')}{code(reason)}\n")
                             thread(send_message, (client, glovar.debug_channel_id, debug_text))
@@ -290,10 +289,9 @@ def update_admins(client: Client) -> bool:
                             action_type="info",
                             data=gid
                         )
-                        debug_text = (f"{lang('project')}{lang('colon')}"
-                                      f"{general_link(glovar.project_name, glovar.project_link)}\n"
-                                      f"{lang('group_name')}{lang('colon')}"
-                                      f"{general_link(group_name, group_link)}\n"
+                        project_link = general_link(glovar.project_name, glovar.project_link)
+                        debug_text = (f"{lang('project')}{lang('colon')}{project_link}\n"
+                                      f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
                                       f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
                                       f"{lang('status')}{lang('colon')}{code('自动退出并清空数据')}\n"
                                       f"{lang('reason')}{lang('colon')}{code('非管理员或已不在群组中')}\n")

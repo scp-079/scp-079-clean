@@ -234,8 +234,7 @@ def get_debug_text(client: Client, context: Union[int, Chat]) -> str:
             group_id = context.id
 
         group_name, group_link = get_group_info(client, context)
-        text = (f"{lang('project')}{lang('colon')}"
-                f"{general_link(glovar.project_name, glovar.project_link)}\n"
+        text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
                 f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
                 f"{lang('group_id')}{lang('colon')}{code(group_id)}\n")
     except Exception as e:

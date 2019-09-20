@@ -260,8 +260,7 @@ def receive_refresh(client: Client, data: int) -> bool:
     try:
         aid = data
         update_admins(client)
-        text = (f"{lang('project')}{lang('colon')}"
-                f"{general_link(glovar.project_name, glovar.project_link)}\n"
+        text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
                 f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('refresh'))}\n")
         thread(send_message, (client, glovar.debug_channel_id, text))
