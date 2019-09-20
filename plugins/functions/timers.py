@@ -293,8 +293,8 @@ def update_admins(client: Client) -> bool:
                         debug_text = (f"{lang('project')}{lang('colon')}{project_link}\n"
                                       f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
                                       f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
-                                      f"{lang('status')}{lang('colon')}{code('自动退出并清空数据')}\n"
-                                      f"{lang('reason')}{lang('colon')}{code('非管理员或已不在群组中')}\n")
+                                      f"{lang('status')}{lang('colon')}{code(lang('leave_auto'))}\n"
+                                      f"{lang('reason')}{lang('colon')}{code(lang('reason_leave'))}\n")
                         thread(send_message, (client, glovar.debug_channel_id, debug_text))
                 except Exception as e:
                     logger.warning(f"Update admin in {gid} error: {e}", exc_info=True)

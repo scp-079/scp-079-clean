@@ -189,6 +189,7 @@ lang: Dict[str, str] = {
     "more": (zh_cn and "附加信息") or "Extra Info",
     "name": (zh_cn and "名称") or "Name",
     "reason": (zh_cn and "原因") or "Reason",
+    "reason_leave": (zh_cn and "非管理员或已不在群组中") or "Not Admin in Group",
     "reason_permissions": (zh_cn and "权限缺失") or "Missing Permissions",
     "reason_user": (zh_cn and "缺失 USER") or "Missing USER",
     "refresh": (zh_cn and "刷新群管列表") or "Refresh Admin Lists",
