@@ -46,7 +46,7 @@ def clean(client: Client, message: Message) -> bool:
         # Check permission
         if is_class_c(None, message):
             aid = message.from_user.id
-            result = forward_evidence(client, message, lang('auto_delete'), lang('custom_group'), "clean")
+            result = forward_evidence(client, message, lang('auto_delete'), lang('custom_group'), "cln")
             if result:
                 glovar.cleaned_ids.add(gid)
                 mids = glovar.message_ids[gid]["sticker"]

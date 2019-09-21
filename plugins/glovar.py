@@ -259,8 +259,8 @@ lang: Dict[str, str] = {
     "tcl": (zh_cn and "每日自动清理群成员") or "Clean Members Everyday",
     "ttd": (zh_cn and "定时删除贴纸动图") or "Schedule to Delete Stickers",
     "pur": (zh_cn and "命令清空消息") or "Purge",
+    "cln": (zh_cn and "命令清理消息") or "Clean Messages on Demand",
     # Special
-    "clean": (zh_cn and "命令清理消息") or "Clean Messages on Demand",
     "clean_action": (zh_cn and "清理消息") or "Clean Messages",
     "clean_blacklist": (zh_cn and "清理黑名单") or "Clean Blacklist",
     "clean_debug": (zh_cn and "清理消息") or "Clean Messages",
@@ -408,7 +408,8 @@ names: Dict[str, str] = {
     "sde": lang.get("sde", "sde"),
     "tcl": lang.get("tcl", "tcl"),
     "ttd": lang.get("ttd", "ttd"),
-    "pur": lang.get("pur", "pur")
+    "pur": lang.get("pur", "pur"),
+    "cln": lang.get("cln", "cln")
 }
 
 other_commands: Set[str] = {
