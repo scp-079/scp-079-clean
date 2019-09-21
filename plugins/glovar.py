@@ -428,6 +428,7 @@ other_commands: Set[str] = {
     "content",
     "dafm",
     "forgive",
+    "kick",
     "l",
     "long",
     "mention",
