@@ -49,7 +49,7 @@ def clean(client: Client, message: Message) -> bool:
             result = forward_evidence(client, message, lang('auto_delete'), lang('custom_group'), "cln")
             if result:
                 glovar.cleaned_ids.add(gid)
-                mids = glovar.message_ids[gid]["sticker"]
+                mids = glovar.message_ids[gid]["stickers"]
                 thread(delete_messages, (client, gid, mids))
                 send_debug(client, message.chat, lang('clean_debug'), aid, mid, result)
                 text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
