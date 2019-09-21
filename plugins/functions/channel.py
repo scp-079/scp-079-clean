@@ -153,10 +153,8 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             if forward_name and forward_name != name:
                 text += f"{lang('from_name')}{lang('colon')}{code(forward_name)}\n"
 
-        if the_type == "sde":
-            text += f"{lang('more')}{lang('colon')}{code(lang('sde_more'))}\n"
-        elif the_type == "pur":
-            text += f"{lang('more')}{lang('colon')}{code(lang('pur_more'))}\n"
+        if the_type in {"clean", "pur", "sde"}:
+            text += f"{lang('more')}{lang('colon')}{code(lang(f'{the_type}_more'))}\n"
         elif message.contact or message.location or message.venue or message.video_note or message.voice:
             text += f"{lang('more')}{lang('colon')}{code(lang('privacy'))}\n"
         elif message.game or message.service:

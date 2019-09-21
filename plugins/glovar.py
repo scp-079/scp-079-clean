@@ -260,8 +260,12 @@ lang: Dict[str, str] = {
     "ttd": (zh_cn and "定时删除贴纸动图") or "Schedule to Delete Stickers",
     "pur": (zh_cn and "命令清空消息") or "Purge",
     # Special
+    "clean": (zh_cn and "命令清理消息") or "Clean Messages on Demand",
+    "clean_action": (zh_cn and "清理消息") or "Clean Messages",
     "clean_blacklist": (zh_cn and "清理黑名单") or "Clean Blacklist",
+    "clean_debug": (zh_cn and "清理消息") or "Clean Messages",
     "clean_members": (zh_cn and "清理用户") or "Clean Members",
+    "clean_more": (zh_cn and "群管要求删除贴纸动图") or "Group Admin's Decision",
     "filter": (zh_cn and "过滤") or "Filter",
     "ignore": (zh_cn and "忽略") or "Ignore",
     "invalid_user": (zh_cn and "失效用户") or "Deleted Account",
@@ -294,6 +298,7 @@ lang: Dict[str, str] = {
 # Init
 
 all_commands: List[str] = [
+    "clean",
     "config",
     "config_clean",
     "dafm",
@@ -306,6 +311,9 @@ chats: Dict[int, Chat] = {}
 # chats = {
 #     -10012345678: Chat
 # }
+
+cleaned_ids: Set[int] = set()
+# cleaned_ids = {-10012345678}
 
 contents: Dict[str, str] = {}
 # contents = {

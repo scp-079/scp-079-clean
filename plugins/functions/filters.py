@@ -546,16 +546,15 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                                 return "qrc"
 
             # Schedule to delete stickers and animations
-            if is_in_config(gid, "ttd"):
-                if (message.sticker
-                        or message.animation
-                        or (message.document
-                            and message.document.mime_type
-                            and "gif" in message.document.mime_type)):
-                    mid = message.message_id
-                    glovar.message_ids[gid]["stickers"][mid] = get_now()
-                    save("message_ids")
-                    return ""
+            if (message.sticker
+                    or message.animation
+                    or (message.document
+                        and message.document.mime_type
+                        and "gif" in message.document.mime_type)):
+                mid = message.message_id
+                glovar.message_ids[gid]["stickers"][mid] = get_now()
+                save("message_ids")
+                return ""
 
         # Preview message
         else:

@@ -141,20 +141,21 @@ def interval_hour_01(client: Client) -> bool:
     try:
         # Delete stickers and animations in groups
         for gid in list(glovar.message_ids):
-            if is_in_config(gid, "ttd"):
-                mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
-                mid_list = list(filter(lambda m: get_now() - mid_dict[m] >= glovar.time_sticker, mid_dict))
-                if mid_list:
+            mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
+            mid_list = list(filter(lambda m: get_now() - mid_dict[m] >= glovar.time_sticker, mid_dict))
+            if mid_list:
+                if is_in_config(gid, "ttd"):
                     thread(delete_messages, (client, gid, mid_list))
-                    for mid in mid_list:
-                        glovar.message_ids[gid]["stickers"].pop(mid, 0)
 
-                    count_text = f"{len(mid_list)} {lang('messages')}"
-                    text = get_debug_text(client, gid)
-                    text += (f"{lang('action')}{lang('colon')}{code(lang('schedule_delete'))}\n"
-                             f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
-                             f"{lang('sticker')}{lang('colon')}{code(count_text)}\n")
-                    thread(send_message, (client, glovar.debug_channel_id, text))
+                for mid in mid_list:
+                    glovar.message_ids[gid]["stickers"].pop(mid, 0)
+
+                count_text = f"{len(mid_list)} {lang('messages')}"
+                text = get_debug_text(client, gid)
+                text += (f"{lang('action')}{lang('colon')}{code(lang('schedule_delete'))}\n"
+                         f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                         f"{lang('sticker')}{lang('colon')}{code(count_text)}\n")
+                thread(send_message, (client, glovar.debug_channel_id, text))
 
         save("message_ids")
     except Exception as e:
@@ -166,11 +167,14 @@ def interval_hour_01(client: Client) -> bool:
 def interval_min_10() -> bool:
     # Execute every 10 minutes
     try:
+        # Clear used /clean group list
+        glovar.cleaned_ids = set()
+
         # Clear used /dafm user lists
         for gid in list(glovar.deleted_ids):
             glovar.deleted_ids[gid] = set()
 
-        # Clear used /purge group lists
+        # Clear used /purge group list
         glovar.purged_ids = set()
 
         # Clear recorded users

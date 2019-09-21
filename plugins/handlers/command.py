@@ -37,6 +37,40 @@ logger = logging.getLogger(__name__)
 
 
 @Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
+                   & Filters.command(["clean"], glovar.prefix))
+def clean(client: Client, message: Message) -> bool:
+    # Clean messages
+    try:
+        gid = message.chat.id
+        mid = message.message_id
+        # Check permission
+        if is_class_c(None, message):
+            aid = message.from_user.id
+            result = forward_evidence(client, message, lang('auto_delete'), lang('custom_group'), "clean")
+            if result:
+                glovar.cleaned_ids.add(gid)
+                mids = glovar.message_ids[gid]["sticker"]
+                thread(delete_messages, (client, gid, mids))
+                send_debug(client, message.chat, lang('clean_debug'), aid, mid, result)
+                text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
+                        f"{lang('action')}{lang('colon')}{code(lang('clean_action'))}\n"
+                        f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
+                reason = get_command_type(message)
+                if reason:
+                    text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+
+                thread(send_report_message, (20, client, gid, text))
+
+        thread(delete_message, (client, gid, mid))
+
+        return True
+    except Exception as e:
+        logger.warning(f"Clean error: {e}", exc_info=True)
+
+    return False
+
+
+@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
                    & Filters.command(["config"], glovar.prefix))
 def config(client: Client, message: Message) -> bool:
     # Request CONFIG session
@@ -236,7 +270,7 @@ def purge(client: Client, message: Message) -> bool:
                         if reason:
                             text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
 
-                        thread(send_report_message, (30, client, gid, text))
+                        thread(send_report_message, (20, client, gid, text))
 
         thread(delete_message, (client, gid, mid))
 
