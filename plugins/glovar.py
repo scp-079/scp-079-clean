@@ -435,6 +435,7 @@ other_commands: Set[str] = {
     "purge",
     "report",
     "t2s",
+    "unban",
     "undo",
     "version",
     "warn"
