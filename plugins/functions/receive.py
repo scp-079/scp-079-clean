@@ -62,6 +62,9 @@ def receive_add_except(client: Client, data: dict) -> bool:
                 if record["from"]:
                     glovar.except_ids["long"].add(record["from"])
 
+            if record["game"]:
+                glovar.except_ids["long"].add(record["game"])
+
             if message.reply_to_message:
                 message = message.reply_to_message
             else:
@@ -349,6 +352,9 @@ def receive_remove_except(client: Client, data: dict) -> bool:
 
                 if record["from"]:
                     glovar.except_ids["long"].discard(record["from"])
+
+            if record["game"]:
+                glovar.except_ids["long"].discard(record["game"])
 
             if message.reply_to_message:
                 message = message.reply_to_message

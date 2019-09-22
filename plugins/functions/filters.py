@@ -81,6 +81,11 @@ def is_class_e(_, message: Message) -> bool:
             if cid in glovar.except_ids["channels"]:
                 return True
 
+        if message.game:
+            short_name = message.game.short_name
+            if short_name in glovar.except_ids["long"]:
+                return True
+
         content = get_content(message)
         if content:
             if (content in glovar.except_ids["long"]

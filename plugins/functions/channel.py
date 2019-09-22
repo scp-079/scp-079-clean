@@ -141,6 +141,9 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
         if the_type:
             text += f"{lang('message_type')}{lang('colon')}{code(glovar.names[the_type])}\n"
 
+        if message.game:
+            text += f"{lang('message_game')}{lang('colon')}{code(message.game.short_name)}\n"
+
         if lang("score") in rule:
             text += f"{lang('user_score')}{lang('colon')}{code(f'{score:.1f}')}\n"
 
@@ -158,7 +161,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
         elif message.contact or message.location or message.venue or message.video_note or message.voice:
             text += f"{lang('more')}{lang('colon')}{code(lang('privacy'))}\n"
         elif message.game or message.service:
-            text += f"{lang('more')}{lang('colon')}{code(lang('service'))}\n"
+            text += f"{lang('more')}{lang('colon')}{code(lang('cannot_forward'))}\n"
         elif more:
             text += f"{lang('more')}{lang('colon')}{code(more)}\n"
 

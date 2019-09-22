@@ -327,6 +327,7 @@ def get_report_record(message: Message) -> Dict[str, str]:
         "level": "",
         "rule": "",
         "type": "",
+        "game": "",
         "lang": "",
         "freq": "",
         "score": "",
@@ -353,6 +354,8 @@ def get_report_record(message: Message) -> Dict[str, str]:
                 record_type = "rule"
             elif re.search(f"^{lang('message_type')}{lang('colon')}", r):
                 record_type = "type"
+            elif re.search(f"^{lang('message_game')}{lang('colon')}", r):
+                record_type = "game"
             elif re.search(f"^{lang('message_lang')}{lang('colon')}", r):
                 record_type = "lang"
             elif re.search(f"^{lang('message_freq')}{lang('colon')}", r):

@@ -198,6 +198,7 @@ lang: Dict[str, str] = {
     "project": (zh_cn and "项目编号") or "Project",
     "project_origin": (zh_cn and "原始项目") or "Original Project",
     "message_freq": (zh_cn and "消息频率") or "Message Frequency",
+    "message_game": (zh_cn and "游戏标识") or "Game Short Name",
     "message_lang": (zh_cn and "消息语言") or "Message Language",
     "message_type": (zh_cn and "消息类别") or "Message Type",
     "more": (zh_cn and "附加信息") or "Extra Info",
@@ -231,7 +232,7 @@ lang: Dict[str, str] = {
     "transfer_channel": (zh_cn and "频道转移") or "Transfer Channel",
     # More
     "privacy": (zh_cn and "可能涉及隐私而未转发") or "Not Forwarded Due to Privacy Reason",
-    "service": (zh_cn and "此类消息无法转发至频道") or "The Message Cannot be Forwarded to Channel",
+    "cannot_forward": (zh_cn and "此类消息无法转发至频道") or "The Message Cannot be Forwarded to Channel",
     # Message Types
     "gam": (zh_cn and "游戏") or "Game",
     "ser": (zh_cn and "服务消息") or "Service",
@@ -487,7 +488,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.0.6"
+version: str = "0.0.7"
 
 # Load data from pickle
 
