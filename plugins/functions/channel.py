@@ -203,7 +203,7 @@ def get_content(message: Message) -> str:
     result = ""
     try:
         if message:
-            file_id, _ = get_file_id(message)
+            file_id, _, _ = get_file_id(message)
             text = get_text(message)
             if file_id:
                 result += file_id

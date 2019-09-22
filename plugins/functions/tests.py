@@ -84,9 +84,9 @@ def clean_test(client: Client, message: Message) -> bool:
             text += f"{lang('tgp')}{lang('colon')}{code('True')}\n"
 
         # QR code
-        file_id, big = get_file_id(message)
+        file_id, file_ref, big = get_file_id(message)
         if big:
-            image_path = get_downloaded_path(client, file_id)
+            image_path = get_downloaded_path(client, file_id, file_ref)
             if image_path:
                 qrcode = get_qrcode(image_path)
                 if qrcode:

@@ -539,9 +539,9 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # QR code
                 if is_in_config(gid, "qrc"):
-                    file_id, big = get_file_id(message)
+                    file_id, file_ref, big = get_file_id(message)
                     if big:
-                        image_path = get_downloaded_path(client, file_id)
+                        image_path = get_downloaded_path(client, file_id, file_ref)
                         if is_declared_message(None, message):
                             return ""
                         elif image_path:
