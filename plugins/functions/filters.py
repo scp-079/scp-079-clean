@@ -574,11 +574,6 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                     if is_regex_text("iml", text):
                         return "iml"
 
-                # Short link
-                if is_in_config(gid, "sho"):
-                    if is_regex_text("sho", text):
-                        return "sho"
-
                 # Telegram link
                 if is_in_config(gid, "tgl"):
                     if is_regex_text("tgl", text):
