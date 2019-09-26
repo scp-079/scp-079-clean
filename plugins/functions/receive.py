@@ -220,8 +220,8 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
 
                         detection = is_not_allowed(client, the_message, text, image_path)
                         if detection:
-                            if detection != "true":
-                                url = get_stripped_link(preview["url"])
+                            url = get_stripped_link(preview["url"])
+                            if url and detection != "true":
                                 glovar.contents[url] = detection
 
                             terminate_user(client, the_message, detection)
