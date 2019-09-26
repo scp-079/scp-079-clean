@@ -39,18 +39,15 @@ def backup_files(client: Client) -> bool:
     # Backup data files to BACKUP
     try:
         for file in glovar.file_list:
-            try:
-                share_data(
-                    client=client,
-                    receivers=["BACKUP"],
-                    action="backup",
-                    action_type="pickle",
-                    data=file,
-                    file=f"data/{file}"
-                )
-                sleep(5)
-            except Exception as e:
-                logger.warning(f"Send backup file {file} error: {e}", exc_info=True)
+            share_data(
+                client=client,
+                receivers=["BACKUP"],
+                action="backup",
+                action_type="pickle",
+                data=file,
+                file=f"data/{file}"
+            )
+            sleep(5)
 
         return True
     except Exception as e:
