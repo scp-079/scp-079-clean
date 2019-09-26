@@ -77,8 +77,8 @@ def check(client: Client, message: Message) -> bool:
             # Not allowed message
             content = get_content(message)
             detection = is_not_allowed(client, message)
-            if content and detection and detection in glovar.types["spam"]:
-                if detection != "true":
+            if detection:
+                if content and detection != "true" and detection in glovar.types["spam"]:
                     glovar.contents[content] = detection
 
                 return terminate_user(client, message, detection)
