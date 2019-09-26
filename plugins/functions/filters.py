@@ -454,6 +454,11 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                 if is_bmd(message):
                     return "bmd"
 
+            # Service
+            if is_in_config(gid, "ser"):
+                if message.service:
+                    return "ser"
+
             if not is_class_c(None, message):
                 # Animated Sticker
                 if is_in_config(gid, "ast"):
@@ -492,11 +497,6 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                 if is_in_config(gid, "vid"):
                     if message.video:
                         return "vid"
-
-                # Service
-                if is_in_config(gid, "ser"):
-                    if message.service:
-                        return "ser"
 
                 # Sticker
                 if is_in_config(gid, "sti"):
