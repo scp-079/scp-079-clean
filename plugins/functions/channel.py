@@ -132,12 +132,14 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
         if the_type in {"bmd", "ser"}:
             return message
 
+        # Basic information
         uid = message.from_user.id
         text = (f"{lang('project')}{lang('colon')}{code(glovar.sender)}\n"
                 f"{lang('user_id')}{lang('colon')}{code(uid)}\n"
                 f"{lang('level')}{lang('colon')}{code(level)}\n"
                 f"{lang('rule')}{lang('colon')}{code(rule)}\n")
 
+        # Additional information
         if the_type:
             text += f"{lang('message_type')}{lang('colon')}{code(glovar.names[the_type])}\n"
 
@@ -156,6 +158,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             if forward_name and forward_name != name:
                 text += f"{lang('from_name')}{lang('colon')}{code(forward_name)}\n"
 
+        # Extra information
         if the_type in {"clean", "pur", "sde"}:
             text += f"{lang('more')}{lang('colon')}{code(lang(f'{the_type}_more'))}\n"
         elif message.contact or message.location or message.venue or message.video_note or message.voice:
@@ -175,6 +178,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
             result = send_message(client, glovar.logging_channel_id, text)
             return result
 
+        # Try to forward the evidence
         flood_wait = True
         while flood_wait:
             flood_wait = False
@@ -190,6 +194,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
                 logger.info(f"Forward evidence message error: {e}", exc_info=True)
                 return False
 
+        # Attach report message
         result = result.message_id
         result = send_message(client, glovar.logging_channel_id, text, result)
     except Exception as e:
