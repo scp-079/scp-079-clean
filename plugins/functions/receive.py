@@ -102,6 +102,44 @@ def receive_add_bad(sender: str, data: dict) -> bool:
     return False
 
 
+def receive_clear_data(data_type: str, data: dict) -> bool:
+    # Receive clear data command
+    try:
+        the_type = data["type"]
+        if data_type == "bad":
+            if the_type == "channels":
+                glovar.bad_ids["channels"] = set()
+            elif the_type == "users":
+                glovar.bad_ids["users"] = set()
+
+            save("bad_ids")
+        elif data_type == "except":
+            if the_type == "channels":
+                glovar.except_ids["channels"] = set()
+            elif the_type == "long":
+                glovar.except_ids["long"] = set()
+            elif the_type == "temp":
+                glovar.except_ids["temp"] = set()
+
+            save("except_ids")
+        elif data_type == "user":
+            if the_type == "all":
+                glovar.user_ids = {}
+
+            save("user_ids")
+        elif data_type == "watch":
+            if the_type == "ban":
+                glovar.watch_ids["ban"] = {}
+            elif the_type == "delete":
+                glovar.watch_ids["delete"] = {}
+
+            save("watch_ids")
+    except Exception as e:
+        logger.warning(f"Receive clear data: {e}", exc_info=True)
+
+    return False
+
+
 def receive_config_commit(data: dict) -> bool:
     # Receive config commit
     try:

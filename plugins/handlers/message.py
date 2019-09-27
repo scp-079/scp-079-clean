@@ -29,8 +29,8 @@ from ..functions.filters import is_ban_text, is_declared_message, is_delete_text
 from ..functions.filters import is_in_config, is_not_allowed, is_watch_user, new_group, test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
-from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_config_reply
-from ..functions.receive import receive_declared_message, receive_preview, receive_leave_approve
+from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
+from ..functions.receive import receive_config_reply, receive_declared_message, receive_preview, receive_leave_approve
 from ..functions.receive import receive_regex, receive_refresh, receive_remove_bad, receive_remove_except
 from ..functions.receive import receive_remove_score, receive_remove_watch, receive_text_data
 from ..functions.receive import receive_user_score, receive_watch_user
@@ -270,6 +270,9 @@ def process_data(client: Client, message: Message) -> bool:
                             receive_add_bad(sender, data)
                         elif action_type == "except":
                             receive_add_except(client, data)
+
+                    elif action == "clear":
+                        receive_clear_data(action_type, data)
 
                     elif action == "leave":
                         if action_type == "approve":

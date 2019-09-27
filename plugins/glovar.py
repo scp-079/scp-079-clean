@@ -492,7 +492,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.0.9"
+version: str = "0.1.0"
 
 # Load data from pickle
 
@@ -570,10 +570,10 @@ watch_ids: Dict[str, Dict[int, int]] = {
 }
 # watch_ids = {
 #     "ban": {
-#         12345678: 0
+#         12345678: 1512345678
 #     },
 #     "delete": {
-#         12345678: 0
+#         12345678: 1512345678
 #     }
 # }
 
