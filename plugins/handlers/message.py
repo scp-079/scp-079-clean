@@ -47,51 +47,51 @@ logger = logging.getLogger(__name__)
                    & ~class_d & ~declared_message)
 def check(client: Client, message: Message) -> bool:
     # Check the messages sent from groups
-    if glovar.locks["message"].acquire():
-        try:
-            # Check declare status
-            if is_declared_message(None, message):
-                return True
-
-            # Work with NOSPAM
-            gid = message.chat.id
-            if glovar.nospam_id in glovar.admin_ids[gid]:
-                message_text = get_text(message)
-                if is_ban_text(message_text):
-                    return False
-
-                if is_delete_text(message_text):
-                    return False
-
-                if is_watch_user(message, "ban"):
-                    return False
-
-                if is_high_score_user(message):
-                    return False
-
-            # Detected url
-            detection = is_detected_url(message)
-            if detection:
-                return terminate_user(client, message, detection)
-
-            # Not allowed message
-            content = get_content(message)
-            detection = is_not_allowed(client, message)
-            if detection:
-                if content and detection != "true" and detection in glovar.types["spam"]:
-                    glovar.contents[content] = detection
-
-                return terminate_user(client, message, detection)
-            elif message.sticker:
-                if content:
-                    glovar.except_ids["temp"].add(content)
-                    save("except_ids")
-
+    glovar.locks["message"].acquire()
+    try:
+        # Check declare status
+        if is_declared_message(None, message):
             return True
-        except Exception as e:
-            logger.warning(f"Check error: {e}", exc_info=True)
-        finally:
-            glovar.locks["message"].release()
+
+        # Work with NOSPAM
+        gid = message.chat.id
+        if glovar.nospam_id in glovar.admin_ids[gid]:
+            message_text = get_text(message)
+            if is_ban_text(message_text):
+                return False
+
+            if is_delete_text(message_text):
+                return False
+
+            if is_watch_user(message, "ban"):
+                return False
+
+            if is_high_score_user(message):
+                return False
+
+        # Detected url
+        detection = is_detected_url(message)
+        if detection:
+            return terminate_user(client, message, detection)
+
+        # Not allowed message
+        content = get_content(message)
+        detection = is_not_allowed(client, message)
+        if detection:
+            if content and detection != "true" and detection in glovar.types["spam"]:
+                glovar.contents[content] = detection
+
+            return terminate_user(client, message, detection)
+        elif message.sticker:
+            if content:
+                glovar.except_ids["temp"].add(content)
+                save("except_ids")
+
+        return True
+    except Exception as e:
+        logger.warning(f"Check error: {e}", exc_info=True)
+    finally:
+        glovar.locks["message"].release()
 
     return False
 
@@ -100,22 +100,22 @@ def check(client: Client, message: Message) -> bool:
                    & ~class_d & ~declared_message)
 def check_join(client: Client, message: Message) -> bool:
     # Check new joined user
-    if glovar.locks["message"].acquire():
-        try:
-            gid = message.chat.id
-            mid = message.message_id
-            if is_in_config(gid, "ser"):
-                if glovar.message_ids[gid]["service"]:
-                    thread(delete_message, (client, gid, glovar.message_ids[gid]["service"]))
+    glovar.locks["message"].acquire()
+    try:
+        gid = message.chat.id
+        mid = message.message_id
+        if is_in_config(gid, "ser"):
+            if glovar.message_ids[gid]["service"]:
+                thread(delete_message, (client, gid, glovar.message_ids[gid]["service"]))
 
-                glovar.message_ids[gid]["service"] = mid
-                save("message_ids")
+            glovar.message_ids[gid]["service"] = mid
+            save("message_ids")
 
-            return True
-        except Exception as e:
-            logger.warning(f"Check join error: {e}", exc_info=True)
-        finally:
-            glovar.locks["message"].release()
+        return True
+    except Exception as e:
+        logger.warning(f"Check join error: {e}", exc_info=True)
+    finally:
+        glovar.locks["message"].release()
 
     return False
 
@@ -390,14 +390,14 @@ def process_data(client: Client, message: Message) -> bool:
                    & ~Filters.command(glovar.all_commands, glovar.prefix))
 def test(client: Client, message: Message) -> bool:
     # Show test results in TEST group
-    if glovar.locks["test"].acquire():
-        try:
-            clean_test(client, message)
+    glovar.locks["test"].acquire()
+    try:
+        clean_test(client, message)
 
-            return True
-        except Exception as e:
-            logger.warning(f"Test error: {e}", exc_info=True)
-        finally:
-            glovar.locks["test"].release()
+        return True
+    except Exception as e:
+        logger.warning(f"Test error: {e}", exc_info=True)
+    finally:
+        glovar.locks["test"].release()
 
     return False

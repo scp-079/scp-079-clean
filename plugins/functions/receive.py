@@ -230,45 +230,45 @@ def receive_file_data(client: Client, message: Message, decrypt: bool = True) ->
 
 def receive_preview(client: Client, message: Message, data: dict) -> bool:
     # Receive message's preview
-    if glovar.locks["message"].acquire():
-        try:
-            gid = data["group_id"]
-            uid = data["user_id"]
-            mid = data["message_id"]
-            if glovar.admin_ids.get(gid):
-                # Do not check admin's message
-                if uid in glovar.admin_ids[gid]:
-                    return True
+    glovar.locks["message"].acquire()
+    try:
+        gid = data["group_id"]
+        uid = data["user_id"]
+        mid = data["message_id"]
+        if glovar.admin_ids.get(gid):
+            # Do not check admin's message
+            if uid in glovar.admin_ids[gid]:
+                return True
 
-                preview = receive_file_data(client, message)
-                if preview:
-                    text = preview["text"]
-                    image = preview["image"]
-                    if image:
-                        image_path = get_new_path()
-                        image.save(image_path, "PNG")
-                    else:
-                        image_path = None
+            preview = receive_file_data(client, message)
+            if preview:
+                text = preview["text"]
+                image = preview["image"]
+                if image:
+                    image_path = get_new_path()
+                    image.save(image_path, "PNG")
+                else:
+                    image_path = None
 
-                    if (not is_declared_message_id(gid, mid)
-                            and not is_detected_user_id(gid, uid)):
-                        the_message = get_message(client, gid, mid)
-                        if not the_message or is_class_e(None, the_message):
-                            return True
+                if (not is_declared_message_id(gid, mid)
+                        and not is_detected_user_id(gid, uid)):
+                    the_message = get_message(client, gid, mid)
+                    if not the_message or is_class_e(None, the_message):
+                        return True
 
-                        detection = is_not_allowed(client, the_message, text, image_path)
-                        if detection:
-                            url = get_stripped_link(preview["url"])
-                            if url and detection != "true":
-                                glovar.contents[url] = detection
+                    detection = is_not_allowed(client, the_message, text, image_path)
+                    if detection:
+                        url = get_stripped_link(preview["url"])
+                        if url and detection != "true":
+                            glovar.contents[url] = detection
 
-                            terminate_user(client, the_message, detection)
+                        terminate_user(client, the_message, detection)
 
-            return True
-        except Exception as e:
-            logger.warning(f"Receive preview error: {e}", exc_info=True)
-        finally:
-            glovar.locks["message"].release()
+        return True
+    except Exception as e:
+        logger.warning(f"Receive preview error: {e}", exc_info=True)
+    finally:
+        glovar.locks["message"].release()
 
     return False
 
@@ -318,30 +318,30 @@ def receive_refresh(client: Client, data: int) -> bool:
 
 def receive_regex(client: Client, message: Message, data: str) -> bool:
     # Receive regex
-    if glovar.locks["regex"].acquire():
-        try:
-            file_name = data
-            word_type = file_name.split("_")[0]
-            if word_type not in glovar.regex:
-                return True
-
-            words_data = receive_file_data(client, message)
-            if words_data:
-                pop_set = set(eval(f"glovar.{file_name}")) - set(words_data)
-                new_set = set(words_data) - set(eval(f"glovar.{file_name}"))
-                for word in pop_set:
-                    eval(f"glovar.{file_name}").pop(word, 0)
-
-                for word in new_set:
-                    eval(f"glovar.{file_name}")[word] = 0
-
-                save(file_name)
-
+    glovar.locks["regex"].acquire()
+    try:
+        file_name = data
+        word_type = file_name.split("_")[0]
+        if word_type not in glovar.regex:
             return True
-        except Exception as e:
-            logger.warning(f"Receive regex error: {e}", exc_info=True)
-        finally:
-            glovar.locks["regex"].release()
+
+        words_data = receive_file_data(client, message)
+        if words_data:
+            pop_set = set(eval(f"glovar.{file_name}")) - set(words_data)
+            new_set = set(words_data) - set(eval(f"glovar.{file_name}"))
+            for word in pop_set:
+                eval(f"glovar.{file_name}").pop(word, 0)
+
+            for word in new_set:
+                eval(f"glovar.{file_name}")[word] = 0
+
+            save(file_name)
+
+        return True
+    except Exception as e:
+        logger.warning(f"Receive regex error: {e}", exc_info=True)
+    finally:
+        glovar.locks["regex"].release()
 
     return False
 
