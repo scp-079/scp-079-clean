@@ -66,6 +66,7 @@ logging_channel_id: int = 0
 test_group_id: int = 0
 
 # [custom]
+backup: Union[str, bool] = ""
 default_group_link: str = ""
 image_size: int = 0
 project_link: str = ""
@@ -107,6 +108,8 @@ try:
     logging_channel_id = int(config["channels"].get("logging_channel_id", logging_channel_id))
     test_group_id = int(config["channels"].get("test_group_id", test_group_id))
     # [custom]
+    backup = config["custom"].get("backup", backup)
+    backup = eval(backup)
     default_group_link = config["custom"].get("default_group_link", default_group_link)
     image_size = int(config["custom"].get("image_size", image_size))
     project_link = config["custom"].get("project_link", project_link)
@@ -145,6 +148,7 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or hide_channel_id == 0
         or logging_channel_id == 0
         or test_group_id == 0
+        or backup not in {False, True}
         or default_group_link in {"", "[DATA EXPUNGED]"}
         or image_size == 0
         or project_link in {"", "[DATA EXPUNGED]"}
@@ -159,8 +163,8 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
 
-bot_ids: Set[int] = {avatar_id, captcha_id, clean_id, lang_id, long_id,
-                     noflood_id, noporn_id, nospam_id, recheck_id, tip_id, user_id, warn_id}
+bot_ids: Set[int] = {avatar_id, captcha_id, clean_id, lang_id, long_id, noflood_id,
+                     noporn_id, nospam_id, recheck_id, tip_id, user_id, warn_id}
 
 # Languages
 lang: Dict[str, str] = {
@@ -488,7 +492,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.0.8"
+version: str = "0.0.9"
 
 # Load data from pickle
 
