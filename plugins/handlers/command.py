@@ -142,8 +142,10 @@ def config_directly(client: Client, message: Message) -> bool:
             if command_type:
                 if command_type == "show":
                     default_text = (lambda x: lang('default') if x else lang('custom'))(new_config.get('default'))
+                    delete_text = (lambda x: lang('enabled') if x else lang('disabled'))(new_config.get('delete'))
                     text += (f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
-                             f"{lang('config')}{lang('colon')}{code(default_text)}\n")
+                             f"{lang('config')}{lang('colon')}{code(default_text)}\n"
+                             f"{lang('delete')}{lang('colon')}{code(delete_text)}\n")
                     for name in glovar.types["all"]:
                         name_text = (lambda x: lang('filter') if x else lang('ignore'))(new_config.get(name))
                         text += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
@@ -164,7 +166,7 @@ def config_directly(client: Client, message: Message) -> bool:
                             new_config = deepcopy(glovar.default_config)
                     else:
                         if command_context:
-                            if command_type in glovar.types["all"] + glovar.types["function"]:
+                            if command_type in ["delete"] + glovar.types["all"] + glovar.types["function"]:
                                 if command_context == "off":
                                     new_config[command_type] = False
                                 elif command_context == "on":

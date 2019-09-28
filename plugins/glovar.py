@@ -67,12 +67,12 @@ test_group_id: int = 0
 
 # [custom]
 backup: Union[str, bool] = ""
+date_reset: str = ""
 default_group_link: str = ""
 image_size: int = 0
 project_link: str = ""
 project_name: str = ""
 time_punish: int = 0
-reset_day: str = ""
 time_ban: int = 0
 time_sticker: int = 0
 zh_cn: Union[str, bool] = ""
@@ -110,11 +110,11 @@ try:
     # [custom]
     backup = config["custom"].get("backup", backup)
     backup = eval(backup)
+    date_reset = config["custom"].get("date_reset", date_reset)
     default_group_link = config["custom"].get("default_group_link", default_group_link)
     image_size = int(config["custom"].get("image_size", image_size))
     project_link = config["custom"].get("project_link", project_link)
     project_name = config["custom"].get("project_name", project_name)
-    reset_day = config["custom"].get("reset_day", reset_day)
     time_ban = int(config["custom"].get("time_ban", time_ban))
     time_punish = int(config["custom"].get("time_punish", time_punish))
     time_sticker = int(config["custom"].get("time_sticker", time_sticker))
@@ -149,11 +149,11 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or logging_channel_id == 0
         or test_group_id == 0
         or backup not in {False, True}
+        or date_reset in {"", "[DATA EXPUNGED]"}
         or default_group_link in {"", "[DATA EXPUNGED]"}
         or image_size == 0
         or project_link in {"", "[DATA EXPUNGED]"}
         or project_name in {"", "[DATA EXPUNGED]"}
-        or reset_day in {"", "[DATA EXPUNGED]"}
         or time_ban == 0
         or time_punish == 0
         or time_sticker == 0
@@ -189,6 +189,7 @@ lang: Dict[str, str] = {
     "custom": (zh_cn and "自定义") or "Custom",
     "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "default": (zh_cn and "默认") or "Default",
+    "delete": (zh_cn and "协助删除") or "Help Delete",
     "description": (zh_cn and "说明") or "Description",
     "disabled": (zh_cn and "禁用") or "Disabled",
     "enabled": (zh_cn and "启用") or "Enabled",
@@ -338,6 +339,7 @@ deleted_ids: Dict[int, Set[int]] = {}
 default_config: Dict[str, Union[bool, int]] = {
     "default": True,
     "lock": 0,
+    "delete": True,
     "con": True,
     "loc": True,
     "vdn": True,
@@ -486,13 +488,13 @@ sender: str = "CLEAN"
 should_hide: bool = False
 
 types: Dict[str, Union[List[str], Set[str]]] = {
-    "all": ["con", "loc", "vdn", "voi", "ast", "aud", "bmd", "doc", "gam", "gif", "via", "vid", "ser", "sti", "aff",
-            "exe", "iml", "sho", "tgl", "tgp", "qrc"],
+    "all": ["con", "loc", "vdn", "voi", "ast", "aud", "bmd", "doc", "gam", "gif",
+            "via", "vid", "ser", "sti", "aff", "exe", "iml", "sho", "tgl", "tgp", "qrc"],
     "function": ["sde", "tcl", "ttd"],
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.0"
+version: str = "0.1.1"
 
 # Load data from pickle
 
@@ -584,6 +586,7 @@ configs: Dict[int, Dict[str, Union[bool, int]]] = {}
 #     -10012345678: {
 #         "default": True,
 #         "lock": 0,
+#         "delete": True,
 #         "con": True,
 #         "loc": True,
 #         "vdn": True,
