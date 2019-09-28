@@ -265,23 +265,6 @@ def is_declared_message_id(gid: int, mid: int) -> bool:
     return False
 
 
-def is_delete_text(text: str) -> bool:
-    # Check if the text is delete text
-    try:
-        if is_regex_text("del", text):
-            return True
-
-        if is_regex_text("spc", text):
-            return True
-
-        if is_regex_text("spe", text):
-            return True
-    except Exception as e:
-        logger.warning(f"Is delete text error: {e}", exc_info=True)
-
-    return False
-
-
 def is_detected_url(message: Message) -> str:
     # Check if the message include detected url, return detected type
     try:
@@ -403,7 +386,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                 return ""
 
             pinned_message = get_pinned(client, gid)
-            pinned_content = get_text(pinned_message)
+            pinned_content = get_content(pinned_message)
             if (pinned_content and message_content) and message_content in pinned_content:
                 return ""
 
@@ -577,7 +560,15 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                 if is_regex_text("tgl", text):
                     # Telegram link
                     if is_in_config(gid, "tgl"):
-                        return "tgl"
+                        # Ignore message's text and preview's display_url if possible
+                        message_text = text.split("\n\n")[0]
+                        url = text.split("\n\n")[1]
+                        tgl_text = text.replace(message_text, "")
+                        if get_stripped_link(url) in message_text:
+                            tgl_text = tgl_text.replace(url, "")
+
+                        if is_regex_text("tgl", tgl_text):
+                            return "tgl"
 
                     # Short Link
                     if is_in_config(gid, "sho"):

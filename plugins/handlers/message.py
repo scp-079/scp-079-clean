@@ -25,8 +25,8 @@ from ..functions.channel import get_content, get_debug_text
 from ..functions.etc import code, general_link, get_text, lang, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
-from ..functions.filters import is_ban_text, is_declared_message, is_delete_text, is_detected_url, is_high_score_user
-from ..functions.filters import is_in_config, is_not_allowed, is_watch_user, new_group, test_group
+from ..functions.filters import is_ban_text, is_declared_message, is_detected_url, is_high_score_user
+from ..functions.filters import is_in_config, is_not_allowed, is_regex_text, is_watch_user, new_group, test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
@@ -60,7 +60,7 @@ def check(client: Client, message: Message) -> bool:
             if is_ban_text(message_text):
                 return False
 
-            if is_delete_text(message_text):
+            if is_regex_text("del", message_text):
                 return False
 
             if is_watch_user(message, "ban"):
@@ -127,26 +127,28 @@ def exchange_emergency(client: Client, message: Message) -> bool:
     try:
         # Read basic information
         data = receive_text_data(message)
-        if data:
-            sender = data["from"]
-            receivers = data["to"]
-            action = data["action"]
-            action_type = data["type"]
-            data = data["data"]
-            if "EMERGENCY" in receivers:
-                if action == "backup":
-                    if action_type == "hide":
-                        if data is True:
-                            glovar.should_hide = data
-                        elif data is False and sender == "MANAGE":
-                            glovar.should_hide = data
+        if not data:
+            return True
 
-                        project_text = general_link(glovar.project_name, glovar.project_link)
-                        hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
-                        text = (f"{lang('project')}{lang('colon')}{project_text}\n"
-                                f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
-                                f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
-                        thread(send_message, (client, glovar.debug_channel_id, text))
+        sender = data["from"]
+        receivers = data["to"]
+        action = data["action"]
+        action_type = data["type"]
+        data = data["data"]
+        if "EMERGENCY" in receivers:
+            if action == "backup":
+                if action_type == "hide":
+                    if data is True:
+                        glovar.should_hide = data
+                    elif data is False and sender == "MANAGE":
+                        glovar.should_hide = data
+
+                    project_text = general_link(glovar.project_name, glovar.project_link)
+                    hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
+                    text = (f"{lang('project')}{lang('colon')}{project_text}\n"
+                            f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
+                            f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
+                    thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
     except Exception as e:
@@ -209,175 +211,177 @@ def process_data(client: Client, message: Message) -> bool:
     # Process the data in exchange channel
     try:
         data = receive_text_data(message)
-        if data:
-            sender = data["from"]
-            receivers = data["to"]
-            action = data["action"]
-            action_type = data["type"]
-            data = data["data"]
-            # This will look awkward,
-            # seems like it can be simplified,
-            # but this is to ensure that the permissions are clear,
-            # so it is intentionally written like this
-            if glovar.sender in receivers:
+        if not data:
+            return True
 
-                if sender == "CAPTCHA":
+        sender = data["from"]
+        receivers = data["to"]
+        action = data["action"]
+        action_type = data["type"]
+        data = data["data"]
+        # This will look awkward,
+        # seems like it can be simplified,
+        # but this is to ensure that the permissions are clear,
+        # so it is intentionally written like this
+        if glovar.sender in receivers:
 
-                    if action == "update":
-                        if action_type == "score":
-                            receive_user_score(sender, data)
+            if sender == "CAPTCHA":
 
-                elif sender == "CONFIG":
+                if action == "update":
+                    if action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "config":
-                        if action_type == "commit":
-                            receive_config_commit(data)
-                        elif action_type == "reply":
-                            receive_config_reply(client, data)
+            elif sender == "CONFIG":
 
-                elif sender == "LANG":
+                if action == "config":
+                    if action_type == "commit":
+                        receive_config_commit(data)
+                    elif action_type == "reply":
+                        receive_config_reply(client, data)
 
-                    if action == "add":
-                        if action_type == "bad":
-                            receive_add_bad(sender, data)
-                        elif action_type == "watch":
-                            receive_watch_user(data)
+            elif sender == "LANG":
 
-                    elif action == "update":
-                        if action_type == "declare":
-                            receive_declared_message(data)
-                        elif action_type == "score":
-                            receive_user_score(sender, data)
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+                    elif action_type == "watch":
+                        receive_watch_user(data)
 
-                elif sender == "LONG":
+                elif action == "update":
+                    if action_type == "declare":
+                        receive_declared_message(data)
+                    elif action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "add":
-                        if action_type == "bad":
-                            receive_add_bad(sender, data)
-                        elif action_type == "watch":
-                            receive_watch_user(data)
+            elif sender == "LONG":
 
-                    elif action == "update":
-                        if action_type == "declare":
-                            receive_declared_message(data)
-                        elif action_type == "score":
-                            receive_user_score(sender, data)
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+                    elif action_type == "watch":
+                        receive_watch_user(data)
 
-                elif sender == "MANAGE":
+                elif action == "update":
+                    if action_type == "declare":
+                        receive_declared_message(data)
+                    elif action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "add":
-                        if action_type == "bad":
-                            receive_add_bad(sender, data)
-                        elif action_type == "except":
-                            receive_add_except(client, data)
+            elif sender == "MANAGE":
 
-                    elif action == "clear":
-                        receive_clear_data(action_type, data)
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+                    elif action_type == "except":
+                        receive_add_except(client, data)
 
-                    elif action == "leave":
-                        if action_type == "approve":
-                            receive_leave_approve(client, data)
+                elif action == "clear":
+                    receive_clear_data(action_type, data)
 
-                    elif action == "remove":
-                        if action_type == "bad":
-                            receive_remove_bad(sender, data)
-                        elif action_type == "except":
-                            receive_remove_except(client, data)
-                        elif action_type == "score":
-                            receive_remove_score(data)
-                        elif action_type == "watch":
-                            receive_remove_watch(data)
+                elif action == "leave":
+                    if action_type == "approve":
+                        receive_leave_approve(client, data)
 
-                    elif action == "update":
-                        if action_type == "refresh":
-                            receive_refresh(client, data)
+                elif action == "remove":
+                    if action_type == "bad":
+                        receive_remove_bad(sender, data)
+                    elif action_type == "except":
+                        receive_remove_except(client, data)
+                    elif action_type == "score":
+                        receive_remove_score(data)
+                    elif action_type == "watch":
+                        receive_remove_watch(data)
 
-                elif sender == "NOFLOOD":
+                elif action == "update":
+                    if action_type == "refresh":
+                        receive_refresh(client, data)
 
-                    if action == "add":
-                        if action_type == "bad":
-                            receive_add_bad(sender, data)
-                        elif action_type == "watch":
-                            receive_watch_user(data)
+            elif sender == "NOFLOOD":
 
-                    elif action == "update":
-                        if action_type == "declare":
-                            receive_declared_message(data)
-                        elif action_type == "score":
-                            receive_user_score(sender, data)
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+                    elif action_type == "watch":
+                        receive_watch_user(data)
 
-                elif sender == "NOPORN":
+                elif action == "update":
+                    if action_type == "declare":
+                        receive_declared_message(data)
+                    elif action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "add":
-                        if action_type == "bad":
-                            receive_add_bad(sender, data)
-                        elif action_type == "watch":
-                            receive_watch_user(data)
+            elif sender == "NOPORN":
 
-                    elif action == "update":
-                        if action_type == "declare":
-                            receive_declared_message(data)
-                        elif action_type == "score":
-                            receive_user_score(sender, data)
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+                    elif action_type == "watch":
+                        receive_watch_user(data)
 
-                elif sender == "NOSPAM":
+                elif action == "update":
+                    if action_type == "declare":
+                        receive_declared_message(data)
+                    elif action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "add":
-                        if action_type == "bad":
-                            receive_add_bad(sender, data)
-                        elif action_type == "watch":
-                            receive_watch_user(data)
+            elif sender == "NOSPAM":
 
-                    elif action == "update":
-                        if action_type == "declare":
-                            receive_declared_message(data)
-                        elif action_type == "score":
-                            receive_user_score(sender, data)
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+                    elif action_type == "watch":
+                        receive_watch_user(data)
 
-                elif sender == "RECHECK":
+                elif action == "update":
+                    if action_type == "declare":
+                        receive_declared_message(data)
+                    elif action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "add":
-                        if action_type == "bad":
-                            receive_add_bad(sender, data)
-                        elif action_type == "watch":
-                            receive_watch_user(data)
+            elif sender == "RECHECK":
 
-                    elif action == "update":
-                        if action_type == "declare":
-                            receive_declared_message(data)
-                        elif action_type == "score":
-                            receive_user_score(sender, data)
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+                    elif action_type == "watch":
+                        receive_watch_user(data)
 
-                elif sender == "REGEX":
+                elif action == "update":
+                    if action_type == "declare":
+                        receive_declared_message(data)
+                    elif action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "regex":
-                        if action_type == "update":
-                            receive_regex(client, message, data)
-                        elif action_type == "count":
-                            if data == "ask":
-                                send_count(client)
+            elif sender == "REGEX":
 
-                elif sender == "USER":
+                if action == "regex":
+                    if action_type == "update":
+                        receive_regex(client, message, data)
+                    elif action_type == "count":
+                        if data == "ask":
+                            send_count(client)
 
-                    if action == "remove":
-                        if action_type == "bad":
-                            receive_remove_bad(sender, data)
+            elif sender == "USER":
 
-                    elif action == "update":
-                        if action_type == "preview":
-                            receive_preview(client, message, data)
+                if action == "remove":
+                    if action_type == "bad":
+                        receive_remove_bad(sender, data)
 
-                elif sender == "WARN":
+                elif action == "update":
+                    if action_type == "preview":
+                        receive_preview(client, message, data)
 
-                    if action == "update":
-                        if action_type == "score":
-                            receive_user_score(sender, data)
+            elif sender == "WARN":
 
-                elif sender == "WATCH":
+                if action == "update":
+                    if action_type == "score":
+                        receive_user_score(sender, data)
 
-                    if action == "add":
-                        if action_type == "watch":
-                            receive_watch_user(data)
+            elif sender == "WATCH":
+
+                if action == "add":
+                    if action_type == "watch":
+                        receive_watch_user(data)
 
         return True
     except Exception as e:

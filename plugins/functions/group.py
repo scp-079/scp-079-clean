@@ -48,9 +48,8 @@ def get_description(client: Client, gid: int) -> str:
     result = ""
     try:
         group = get_group(client, gid)
-        if group:
-            if group.description:
-                result = group.description
+        if group and group.description:
+            result = group.description
     except Exception as e:
         logger.warning(f"Get description error: {e}", exc_info=True)
 
@@ -77,9 +76,8 @@ def get_group_sticker(client: Client, gid: int) -> str:
     result = ""
     try:
         group = get_group(client, gid)
-        if group:
-            if group.sticker_set_name:
-                result = group.sticker_set_name
+        if group and group.sticker_set_name:
+            result = group.sticker_set_name
     except Exception as e:
         logger.warning(f"Get group sticker error: {e}", exc_info=True)
 
@@ -105,9 +103,8 @@ def get_pinned(client: Client, gid: int) -> Optional[Message]:
     result = None
     try:
         group = get_group(client, gid)
-        if group:
-            if group.pinned_message:
-                result = group.pinned_message
+        if group and group.pinned_message:
+            result = group.pinned_message
     except Exception as e:
         logger.warning(f"Get pinned error: {e}", exc_info=True)
 

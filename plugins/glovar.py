@@ -494,7 +494,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.1"
+version: str = "0.1.2"
 
 # Load data from pickle
 
