@@ -220,7 +220,7 @@ def dafm(client: Client, message: Message) -> bool:
         gid = message.chat.id
         mid = message.message_id
         if init_group_id(gid):
-            if glovar.configs[gid]["sde"] or is_class_c(None, message):
+            if glovar.configs[gid].get("sde", False) or is_class_c(None, message):
                 uid = message.from_user.id
                 confirm_text = get_command_type(message)
                 if confirm_text and re.search("^yes$|^y$", confirm_text, re.I):
