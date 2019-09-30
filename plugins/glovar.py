@@ -346,7 +346,7 @@ default_config: Dict[str, Union[bool, int]] = {
     "voi": True,
     "ast": False,
     "aud": False,
-    "bmd": False,
+    "bmd": True,
     "doc": False,
     "gam": False,
     "gif": False,
