@@ -22,7 +22,7 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import get_content, get_debug_text
-from ..functions.etc import code, general_link, get_text, lang, thread, user_mention
+from ..functions.etc import code, delay, general_link, get_text, lang, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_declared_message, is_detected_url, is_high_score_user
@@ -369,7 +369,7 @@ def process_data(client: Client, message: Message) -> bool:
 
                 elif action == "update":
                     if action_type == "preview":
-                        receive_preview(client, message, data)
+                        delay(10, receive_preview, [client, message, data])
 
             elif sender == "WARN":
 
