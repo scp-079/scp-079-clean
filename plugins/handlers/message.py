@@ -30,9 +30,9 @@ from ..functions.filters import is_in_config, is_not_allowed, is_regex_text, is_
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
-from ..functions.receive import receive_config_reply, receive_declared_message, receive_preview, receive_leave_approve
-from ..functions.receive import receive_regex, receive_refresh, receive_remove_bad, receive_remove_except
-from ..functions.receive import receive_remove_score, receive_remove_watch, receive_text_data
+from ..functions.receive import receive_config_reply, receive_config_show, receive_declared_message, receive_preview
+from ..functions.receive import receive_leave_approve, receive_regex, receive_refresh, receive_remove_bad
+from ..functions.receive import receive_remove_except, receive_remove_score, receive_remove_watch, receive_text_data
 from ..functions.receive import receive_user_score, receive_watch_user
 from ..functions.telegram import get_admins, send_message
 from ..functions.tests import clean_test
@@ -277,6 +277,10 @@ def process_data(client: Client, message: Message) -> bool:
 
                 elif action == "clear":
                     receive_clear_data(action_type, data)
+
+                elif action == "config":
+                    if action_type == "show":
+                        receive_config_show(client, data)
 
                 elif action == "leave":
                     if action_type == "approve":

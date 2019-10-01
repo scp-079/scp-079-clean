@@ -24,7 +24,7 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import ask_for_help, forward_evidence, get_debug_text, send_debug, share_data
-from ..functions.etc import bold, code, delay, get_command_context, get_command_type, get_now, lang
+from ..functions.etc import bold, code, delay, get_config_text, get_command_context, get_command_type, get_now, lang
 from ..functions.etc import thread, user_mention
 from ..functions.file import save
 from ..functions.filters import from_user, is_class_c, test_group
@@ -141,19 +141,8 @@ def config_directly(client: Client, message: Message) -> bool:
             command_type, command_context = get_command_context(message)
             if command_type:
                 if command_type == "show":
-                    default_text = (lambda x: lang('default') if x else lang('custom'))(new_config.get('default'))
-                    delete_text = (lambda x: lang('enabled') if x else lang('disabled'))(new_config.get('delete'))
-                    text += (f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
-                             f"{lang('config')}{lang('colon')}{code(default_text)}\n"
-                             f"{lang('delete')}{lang('colon')}{code(delete_text)}\n")
-                    for name in glovar.types["all"]:
-                        name_text = (lambda x: lang('filter') if x else lang('ignore'))(new_config.get(name))
-                        text += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
-
-                    for name in glovar.types["function"]:
-                        name_text = (lambda x: lang('enabled') if x else lang('disabled'))(new_config.get(name))
-                        text += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
-
+                    config_text = get_config_text(new_config)
+                    text += config_text
                     thread(send_report_message, (30, client, gid, text))
                     thread(delete_message, (client, gid, mid))
                     return True
