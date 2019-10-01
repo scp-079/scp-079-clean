@@ -387,7 +387,8 @@ locks: Dict[str, Lock] = {
     "admin": Lock(),
     "message": Lock(),
     "regex": Lock(),
-    "test": Lock()
+    "test": Lock(),
+    "text": Lock()
 }
 
 names: Dict[str, str] = {
