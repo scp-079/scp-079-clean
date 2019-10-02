@@ -649,7 +649,7 @@ def is_tgl(client: Client, message: Message) -> bool:
                 if link_username:
                     link_username = link_username.group(1)
                     if is_in_config(gid, "friend"):
-                        ptp, pid = resolve_username(client, link_username)
+                        _, pid = resolve_username(client, link_username)
                         if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
                             return True
 
