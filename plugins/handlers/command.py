@@ -155,7 +155,7 @@ def config_directly(client: Client, message: Message) -> bool:
                             new_config = deepcopy(glovar.default_config)
                     else:
                         if command_context:
-                            if command_type in ["delete"] + glovar.types["all"] + glovar.types["function"]:
+                            if command_type in ["delete", "friend"] + glovar.types["all"] + glovar.types["function"]:
                                 if command_context == "off":
                                     new_config[command_type] = False
                                 elif command_context == "on":

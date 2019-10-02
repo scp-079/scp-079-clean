@@ -640,7 +640,7 @@ def is_tgl(client: Client, message: Message) -> bool:
         # Check links
         bypass = get_stripped_link(get_channel_link(message))
         links = get_links(message)
-        tg_links = list(filter(lambda l: is_regex_text("tgl", l), links))
+        tg_links = [l for l in links if is_regex_text("tgl", l)]
 
         # Define a bypass link filter function
         def is_bypass_link(link: str) -> bool:
@@ -648,6 +648,10 @@ def is_tgl(client: Client, message: Message) -> bool:
                 link_username = re.match("t.me/(.+?)/", f"{link}/")
                 if link_username:
                     link_username = link_username.group(1)
+                    if is_in_config(gid, "friend"):
+                        ptp, pid = resolve_username(client, link_username)
+                        if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
+                            return True
 
                 if (f"{bypass}/" in f"{link}/"
                         or link in description
@@ -689,6 +693,10 @@ def is_tgl(client: Client, message: Message) -> bool:
 
                     peer_type, peer_id = resolve_username(client, username)
                     if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
+                        if is_in_config(gid, "friend"):
+                            if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(gid, {}):
+                                continue
+
                         return True
 
                     if peer_type == "user":

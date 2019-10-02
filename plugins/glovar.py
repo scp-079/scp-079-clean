@@ -182,6 +182,7 @@ lang: Dict[str, str] = {
     "clear": (zh_cn and "清空数据") or "Clear",
     "description": (zh_cn and "说明") or "Description",
     "reason": (zh_cn and "原因") or "Reason",
+    "rollback": (zh_cn and "数据回滚") or "Rollback",
     "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "reset": (zh_cn and "重置数据") or "Reset Data",
     "version": (zh_cn and "版本") or "Version",
@@ -191,6 +192,7 @@ lang: Dict[str, str] = {
     "config_show": (zh_cn and "查看设置") or "Show Config",
     "config": (zh_cn and "设置") or "Settings",
     "delete": (zh_cn and "协助删除") or "Help Delete",
+    "friend": (zh_cn and "放行友链") or "Ignore Friend Links",
     "filter": (zh_cn and "过滤") or "Filter",
     "ignore": (zh_cn and "忽略") or "Ignore",
     "config_change": (zh_cn and "更改设置") or "Change Config",
@@ -503,7 +505,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.4"
+version: str = "0.1.5"
 
 # Load data from pickle
 

@@ -26,6 +26,7 @@ from string import ascii_letters, digits
 from threading import Thread, Timer
 from time import sleep, time
 from typing import Any, Callable, Dict, List, Optional, Union
+from unicodedata import normalize
 
 from cryptography.fernet import Fernet
 from opencc import convert
@@ -493,8 +494,9 @@ def random_str(i: int) -> str:
 
 
 def t2s(text: str) -> str:
-    # Convert Traditional Chinese to Simplified Chinese
+    # Convert the string
     try:
+        text = normalize("NFKD", text)
         if glovar.zh_cn:
             text = convert(text, config="t2s.json")
     except Exception as e:

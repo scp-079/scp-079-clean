@@ -267,6 +267,54 @@ def receive_file_data(client: Client, message: Message, decrypt: bool = True) ->
     return data
 
 
+def receive_leave_approve(client: Client, data: dict) -> bool:
+    # Receive leave approve
+    try:
+        admin_id = data["admin_id"]
+        the_id = data["group_id"]
+        reason = data["reason"]
+        if reason in {"permissions", "user"}:
+            reason = lang(f"reason_{reason}")
+
+        if glovar.admin_ids.get(the_id, {}):
+            text = get_debug_text(client, the_id)
+            text += (f"{lang('admin_project')}{lang('colon')}{user_mention(admin_id)}\n"
+                     f"{lang('status')}{lang('colon')}{code(lang('leave_approve'))}\n")
+            if reason:
+                text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+
+            leave_group(client, the_id)
+            thread(send_message, (client, glovar.debug_channel_id, text))
+
+        return True
+    except Exception as e:
+        logger.warning(f"Receive leave approve error: {e}", exc_info=True)
+
+    return False
+
+
+def receive_rollback(client: Client, message: Message, data: dict) -> bool:
+    # Receive rollback data
+    try:
+        aid = data["admin_id"]
+        the_type = data["type"]
+        the_data = receive_file_data(client, message)
+        if the_data:
+            exec(f"glovar.{the_type} = the_data")
+            save(the_type)
+
+        # Send debug message
+        text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
+                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('rollback'))}\n"
+                f"{lang('more')}{lang('colon')}{code(the_type)}\n")
+        thread(send_message, (client, glovar.debug_channel_id, text))
+    except Exception as e:
+        logger.warning(f"Receive rollback error: {e}", exc_info=True)
+
+    return False
+
+
 def receive_preview(client: Client, message: Message, data: dict) -> bool:
     # Receive message's preview
     glovar.locks["message"].acquire()
@@ -308,32 +356,6 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
         logger.warning(f"Receive preview error: {e}", exc_info=True)
     finally:
         glovar.locks["message"].release()
-
-    return False
-
-
-def receive_leave_approve(client: Client, data: dict) -> bool:
-    # Receive leave approve
-    try:
-        admin_id = data["admin_id"]
-        the_id = data["group_id"]
-        reason = data["reason"]
-        if reason in {"permissions", "user"}:
-            reason = lang(f"reason_{reason}")
-
-        if glovar.admin_ids.get(the_id, {}):
-            text = get_debug_text(client, the_id)
-            text += (f"{lang('admin_project')}{lang('colon')}{user_mention(admin_id)}\n"
-                     f"{lang('status')}{lang('colon')}{code(lang('leave_approve'))}\n")
-            if reason:
-                text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
-
-            leave_group(client, the_id)
-            thread(send_message, (client, glovar.debug_channel_id, text))
-
-        return True
-    except Exception as e:
-        logger.warning(f"Receive leave approve error: {e}", exc_info=True)
 
     return False
 
