@@ -155,7 +155,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     ask_for_help(client, "ban", gid, uid)
                     send_debug(client, message.chat, lang("score_ban"), uid, mid, result)
             elif is_watch_user(message, "delete") and the_type in {"aff", "exe", "iml", "qrc", "tgp"}:
-                result = forward_evidence(client, message, lang("auto_delete"), lang("watch"), the_type)
+                result = forward_evidence(client, message, lang("auto_delete"), lang("watch_user"), the_type)
                 if result:
                     add_watch_user(client, "ban", uid)
                     delete_message(client, gid, mid)
