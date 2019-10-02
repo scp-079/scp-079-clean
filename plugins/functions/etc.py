@@ -190,15 +190,18 @@ def get_config_text(config: dict) -> str:
     # Get config text
     result = ""
     try:
+        # Basic
         default_text = (lambda x: lang('default') if x else lang('custom'))(config.get('default'))
         delete_text = (lambda x: lang('enabled') if x else lang('disabled'))(config.get('delete', True))
         result += (f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
                    f"{lang('config')}{lang('colon')}{code(default_text)}\n"
                    f"{lang('delete')}{lang('colon')}{code(delete_text)}\n")
+        # Types
         for name in glovar.types["all"]:
             name_text = (lambda x: lang('filter') if x else lang('ignore'))(config.get(name))
             result += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
 
+        # Functions
         for name in glovar.types["function"]:
             name_text = (lambda x: lang('enabled') if x else lang('disabled'))(config.get(name))
             result += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
