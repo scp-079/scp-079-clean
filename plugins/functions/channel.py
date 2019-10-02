@@ -213,23 +213,25 @@ def get_content(message: Message) -> str:
     # Get the message that will be added to lists, return the file_id and text's hash
     result = ""
     try:
-        if message:
-            file_id, _, _ = get_file_id(message)
-            text = get_text(message)
-            if file_id:
-                result += file_id
+        if not message:
+            return ""
 
-            if message.audio:
-                result += message.audio.file_id
+        file_id, _, _ = get_file_id(message)
+        text = get_text(message)
+        if file_id:
+            result += file_id
 
-            if message.document:
-                result += message.document.file_id
+        if message.audio:
+            result += message.audio.file_id
 
-            if message.sticker and message.sticker.is_animated:
-                result += message.sticker.file_id
+        if message.document:
+            result += message.document.file_id
 
-            if text:
-                result += get_md5sum("string", text)
+        if message.sticker and message.sticker.is_animated:
+            result += message.sticker.file_id
+
+        if text:
+            result += get_md5sum("string", text)
     except Exception as e:
         logger.warning(f"Get content error: {e}", exc_info=True)
 
@@ -303,51 +305,53 @@ def share_data(client: Client, receivers: List[str], action: str, action_type: s
         if glovar.sender in receivers:
             receivers.remove(glovar.sender)
 
-        if receivers:
-            if glovar.should_hide:
-                channel_id = glovar.hide_channel_id
-            else:
-                channel_id = glovar.exchange_channel_id
-
-            if file:
-                text = format_data(
-                    sender=glovar.sender,
-                    receivers=receivers,
-                    action=action,
-                    action_type=action_type,
-                    data=data
-                )
-                if encrypt:
-                    # Encrypt the file, save to the tmp directory
-                    file_path = get_new_path()
-                    crypt_file("encrypt", file, file_path)
-                else:
-                    # Send directly
-                    file_path = file
-
-                result = send_document(client, channel_id, file_path, None, text)
-                # Delete the tmp file
-                if result:
-                    for f in {file, file_path}:
-                        if "tmp/" in f:
-                            thread(delete_file, (f,))
-            else:
-                text = format_data(
-                    sender=glovar.sender,
-                    receivers=receivers,
-                    action=action,
-                    action_type=action_type,
-                    data=data
-                )
-                result = send_message(client, channel_id, text)
-
-            # Sending failed due to channel issue
-            if result is False and not glovar.should_hide:
-                # Use hide channel instead
-                exchange_to_hide(client)
-                thread(share_data, (client, receivers, action, action_type, data, file, encrypt))
-
+        if not receivers:
             return True
+
+        if glovar.should_hide:
+            channel_id = glovar.hide_channel_id
+        else:
+            channel_id = glovar.exchange_channel_id
+
+        if file:
+            text = format_data(
+                sender=glovar.sender,
+                receivers=receivers,
+                action=action,
+                action_type=action_type,
+                data=data
+            )
+            if encrypt:
+                # Encrypt the file, save to the tmp directory
+                file_path = get_new_path()
+                crypt_file("encrypt", file, file_path)
+            else:
+                # Send directly
+                file_path = file
+
+            result = send_document(client, channel_id, file_path, None, text)
+            # Delete the tmp file
+            if result:
+                for f in {file, file_path}:
+                    if "tmp/" in f:
+                        thread(delete_file, (f,))
+        else:
+            text = format_data(
+                sender=glovar.sender,
+                receivers=receivers,
+                action=action,
+                action_type=action_type,
+                data=data
+            )
+            result = send_message(client, channel_id, text)
+
+        # Sending failed due to channel issue
+        if result is False and not glovar.should_hide:
+            # Use hide channel instead
+            exchange_to_hide(client)
+            thread(share_data, (client, receivers, action, action_type, data, file, encrypt))
+
+        return True
     except Exception as e:
         logger.warning(f"Share data error: {e}", exc_info=True)
 
@@ -357,16 +361,18 @@ def share_data(client: Client, receivers: List[str], action: str, action_type: s
 def share_regex_count(client: Client, word_type: str) -> bool:
     # Use this function to share regex count to REGEX
     try:
-        if glovar.regex[word_type]:
-            file = data_to_file(eval(f"glovar.{word_type}_words"))
-            share_data(
-                client=client,
-                receivers=["REGEX"],
-                action="regex",
-                action_type="count",
-                data=f"{word_type}_words",
-                file=file
-            )
+        if not glovar.regex.get(word_type):
+            return True
+
+        file = data_to_file(eval(f"glovar.{word_type}_words"))
+        share_data(
+            client=client,
+            receivers=["REGEX"],
+            action="regex",
+            action_type="count",
+            data=f"{word_type}_words",
+            file=file
+        )
 
         return True
     except Exception as e:
