@@ -165,7 +165,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     if not previous:
                         update_score(client, uid)
 
-                    send_debug(client, message.chat, "watch_delete", uid, mid, result)
+                    send_debug(client, message.chat, lang("watch_delete"), uid, mid, result)
             elif is_detected_user(message) or uid in glovar.recorded_ids[gid] or the_type == "true":
                 delete_message(client, gid, mid)
                 add_detected_user(gid, uid)
