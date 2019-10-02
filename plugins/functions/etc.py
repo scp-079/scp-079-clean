@@ -312,7 +312,7 @@ def get_md5sum(the_type: str, ctx: str) -> str:
     # Get the md5sum of a string or file
     result = ""
     try:
-        if ctx:
+        if ctx.strip():
             if the_type == "file":
                 hash_md5 = md5()
                 with open(ctx, "rb") as f:
