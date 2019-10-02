@@ -283,7 +283,7 @@ def process_data(client: Client, message: Message) -> bool:
                         receive_add_except(client, data)
 
                 elif action == "clear":
-                    receive_clear_data(action_type, data)
+                    receive_clear_data(client, action_type, data)
 
                 elif action == "config":
                     if action_type == "show":

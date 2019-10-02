@@ -103,9 +103,10 @@ def receive_add_bad(sender: str, data: dict) -> bool:
     return False
 
 
-def receive_clear_data(data_type: str, data: dict) -> bool:
+def receive_clear_data(client: Client, data_type: str, data: dict) -> bool:
     # Receive clear data command
     try:
+        aid = data["admin_id"]
         the_type = data["type"]
         if data_type == "bad":
             if the_type == "channels":
@@ -135,6 +136,13 @@ def receive_clear_data(data_type: str, data: dict) -> bool:
                 glovar.watch_ids["delete"] = {}
 
             save("watch_ids")
+
+        # Send debug message
+        text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
+                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('clear'))}\n"
+                f"{lang('more')}{lang('colon')}{code(f'{data_type} {the_type}')}\n")
+        thread(send_message, (client, glovar.debug_channel_id, text))
     except Exception as e:
         logger.warning(f"Receive clear data: {e}", exc_info=True)
 
@@ -335,6 +343,8 @@ def receive_refresh(client: Client, data: int) -> bool:
     try:
         aid = data
         update_admins(client)
+
+        # Send debug message
         text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
                 f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('refresh'))}\n")

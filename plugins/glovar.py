@@ -179,9 +179,11 @@ lang: Dict[str, str] = {
     "action": (zh_cn and "执行操作") or "Action",
     "enabled": (zh_cn and "启用") or "Enabled",
     "disabled": (zh_cn and "禁用") or "Disabled",
+    "clear": (zh_cn and "清空数据") or "Clear",
     "description": (zh_cn and "说明") or "Description",
     "reason": (zh_cn and "原因") or "Reason",
     "custom_group": (zh_cn and "群组自定义") or "Group Custom",
+    "reset": (zh_cn and "重置数据") or "Reset Data",
     "version": (zh_cn and "版本") or "Version",
     # Config
     "default": (zh_cn and "默认") or "Default",
@@ -501,7 +503,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.3"
+version: str = "0.1.4"
 
 # Load data from pickle
 
