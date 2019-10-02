@@ -174,16 +174,15 @@ lang: Dict[str, str] = {
     "admin_project": (zh_cn and "项目管理员") or "Project Admin",
     # Basic
     "colon": (zh_cn and "：") or ": ",
+    "score": (zh_cn and "评分") or "Score",
     "name": (zh_cn and "名称") or "Name",
     "action": (zh_cn and "执行操作") or "Action",
     "enabled": (zh_cn and "启用") or "Enabled",
     "disabled": (zh_cn and "禁用") or "Disabled",
     "description": (zh_cn and "说明") or "Description",
+    "reason": (zh_cn and "原因") or "Reason",
     "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "version": (zh_cn and "版本") or "Version",
-    "reason": (zh_cn and "原因") or "Reason",
-    "score": (zh_cn and "评分") or "Score",
-    "user": (zh_cn and "用户") or "User",
     # Config
     "default": (zh_cn and "默认") or "Default",
     "custom": (zh_cn and "自定义") or "Custom",
@@ -286,6 +285,7 @@ lang: Dict[str, str] = {
     "clean_action": (zh_cn and "清理消息") or "Clean Messages",
     "status_succeed": (zh_cn and "成功执行") or "Succeed",
     "sde_action": (zh_cn and "自助删除") or "Self Deletion",
+    "user": (zh_cn and "用户") or "User",
     "pur_debug": (zh_cn and "指定删除") or "Purge on Demand",
     "pur_action": (zh_cn and "清除消息") or "Purge Messages",
     # Terminate
