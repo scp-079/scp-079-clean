@@ -661,8 +661,8 @@ spe_dict: Dict[str, str] = {}
 for rule in locals()["spe_words"]:
     keys = rule.split("]")[0][1:]
     value = rule.split("?#")[1][1:]
-    for key in keys:
-        spe_dict[key] = value
+    for k in keys:
+        spe_dict[k] = value
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
