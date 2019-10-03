@@ -495,10 +495,20 @@ def random_str(i: int) -> str:
     return text
 
 
-def t2s(text: str) -> str:
+def t2s(text: str, printable: bool = True, special: bool = False) -> str:
     # Convert the string
     try:
-        text = normalize("NFKD", text)
+        if not text:
+            return ""
+
+        if printable:
+            text = text.replace("\n", "2N4$qEUbA!U5I6v5")
+            text = "".join(t for t in text if t.isprintable())
+            text = text.replace("2N4$qEUbA!U5I6v5", "\n")
+
+        if special:
+            text = normalize("NFKC", text)
+
         if glovar.zh_cn:
             text = convert(text, config="t2s.json")
     except Exception as e:
