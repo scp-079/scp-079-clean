@@ -50,7 +50,7 @@ scheduler.add_job(clean_members, "cron", [app], hour=2)
 scheduler.add_job(clean_banned, "cron", [app], hour=3)
 scheduler.add_job(backup_files, "cron", [app], hour=20)
 scheduler.add_job(send_count, "cron", [app], hour=21)
-scheduler.add_job(reset_data, "cron", day=glovar.date_reset, hour=22)
+scheduler.add_job(reset_data, "cron", [app], day=glovar.date_reset, hour=22)
 scheduler.add_job(update_admins, "cron", [app], hour=22, minute=30)
 scheduler.start()
 

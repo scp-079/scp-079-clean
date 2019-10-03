@@ -241,26 +241,28 @@ def receive_file_data(client: Client, message: Message, decrypt: bool = True) ->
     # Receive file's data from exchange channel
     data = None
     try:
-        if message.document:
-            file_id = message.document.file_id
-            file_ref = message.document.file_ref
-            path = get_downloaded_path(client, file_id, file_ref)
-            if path:
-                if decrypt:
-                    # Decrypt the file, save to the tmp directory
-                    path_decrypted = get_new_path()
-                    crypt_file("decrypt", path, path_decrypted)
-                    path_final = path_decrypted
-                else:
-                    # Read the file directly
-                    path_decrypted = ""
-                    path_final = path
+        if not message.document:
+            return None
 
-                with open(path_final, "rb") as f:
-                    data = pickle.load(f)
+        file_id = message.document.file_id
+        file_ref = message.document.file_ref
+        path = get_downloaded_path(client, file_id, file_ref)
+        if path:
+            if decrypt:
+                # Decrypt the file, save to the tmp directory
+                path_decrypted = get_new_path()
+                crypt_file("decrypt", path, path_decrypted)
+                path_final = path_decrypted
+            else:
+                # Read the file directly
+                path_decrypted = ""
+                path_final = path
 
-                for f in {path, path_decrypted}:
-                    thread(delete_file, (f,))
+            with open(path_final, "rb") as f:
+                data = pickle.load(f)
+
+            for f in {path, path_decrypted}:
+                thread(delete_file, (f,))
     except Exception as e:
         logger.warning(f"Receive file error: {e}", exc_info=True)
 
@@ -293,28 +295,6 @@ def receive_leave_approve(client: Client, data: dict) -> bool:
     return False
 
 
-def receive_rollback(client: Client, message: Message, data: dict) -> bool:
-    # Receive rollback data
-    try:
-        aid = data["admin_id"]
-        the_type = data["type"]
-        the_data = receive_file_data(client, message)
-        if the_data:
-            exec(f"glovar.{the_type} = the_data")
-            save(the_type)
-
-        # Send debug message
-        text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
-                f"{lang('action')}{lang('colon')}{code(lang('rollback'))}\n"
-                f"{lang('more')}{lang('colon')}{code(the_type)}\n")
-        thread(send_message, (client, glovar.debug_channel_id, text))
-    except Exception as e:
-        logger.warning(f"Receive rollback error: {e}", exc_info=True)
-
-    return False
-
-
 def receive_preview(client: Client, message: Message, data: dict) -> bool:
     # Receive message's preview
     glovar.locks["message"].acquire()
@@ -322,34 +302,36 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
         gid = data["group_id"]
         uid = data["user_id"]
         mid = data["message_id"]
-        if glovar.admin_ids.get(gid):
-            # Do not check admin's message
-            if uid in glovar.admin_ids[gid]:
-                return True
+        if not glovar.admin_ids.get(gid):
+            return True
 
-            preview = receive_file_data(client, message)
-            if preview:
-                text = preview["text"]
-                image = preview["image"]
-                if image:
-                    image_path = get_new_path()
-                    image.save(image_path, "PNG")
-                else:
-                    image_path = None
+        # Do not check admin's message
+        if uid in glovar.admin_ids[gid]:
+            return True
 
-                if (not is_declared_message_id(gid, mid)
-                        and not is_detected_user_id(gid, uid)):
-                    the_message = get_message(client, gid, mid)
-                    if not the_message or is_class_e(None, the_message):
-                        return True
+        preview = receive_file_data(client, message)
+        if preview:
+            text = preview["text"]
+            image = preview["image"]
+            if image:
+                image_path = get_new_path()
+                image.save(image_path, "PNG")
+            else:
+                image_path = None
 
-                    detection = is_not_allowed(client, the_message, text, image_path)
-                    if detection:
-                        url = get_stripped_link(preview["url"])
-                        if url and detection != "true":
-                            glovar.contents[url] = detection
+            if (not is_declared_message_id(gid, mid)
+                    and not is_detected_user_id(gid, uid)):
+                the_message = get_message(client, gid, mid)
+                if not the_message or is_class_e(None, the_message):
+                    return True
 
-                        terminate_user(client, the_message, detection)
+                detection = is_not_allowed(client, the_message, text, image_path)
+                if detection:
+                    url = get_stripped_link(preview["url"])
+                    if url and detection != "true":
+                        glovar.contents[url] = detection
+
+                    terminate_user(client, the_message, detection)
 
         return True
     except Exception as e:
@@ -516,6 +498,28 @@ def receive_remove_watch(data: dict) -> bool:
         return True
     except Exception as e:
         logger.warning(f"Receive remove watch error: {e}", exc_info=True)
+
+    return False
+
+
+def receive_rollback(client: Client, message: Message, data: dict) -> bool:
+    # Receive rollback data
+    try:
+        aid = data["admin_id"]
+        the_type = data["type"]
+        the_data = receive_file_data(client, message)
+        if the_data:
+            exec(f"glovar.{the_type} = the_data")
+            save(the_type)
+
+        # Send debug message
+        text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
+                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('rollback'))}\n"
+                f"{lang('more')}{lang('colon')}{code(the_type)}\n")
+        thread(send_message, (client, glovar.debug_channel_id, text))
+    except Exception as e:
+        logger.warning(f"Receive rollback error: {e}", exc_info=True)
 
     return False
 
