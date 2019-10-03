@@ -505,8 +505,8 @@ def t2s(text: str, printable: bool = True, special: bool = True) -> str:
             text = "".join(t for t in text if t.isprintable() or t in {"\n", "\r", "\t"})
 
         if special:
-            text = normalize("NFKC", text)
             text = "".join(glovar.spe_dict.get(t, t) for t in text)
+            text = normalize("NFKC", text)
 
         if glovar.zh_cn:
             text = convert(text, config="t2s.json")
