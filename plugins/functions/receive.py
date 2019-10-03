@@ -405,9 +405,9 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
             glovar.spe_dict = {}
             for rule in words_data:
                 keys = rule.split("]")[0][1:]
-                value = rule.split("?#")[1][1:]
-                for key in keys:
-                    glovar.spe_dict[key] = value
+                value = rule.split("?#")[1][1]
+                for k in keys:
+                    glovar.spe_dict[k] = value
 
         return True
     except Exception as e:

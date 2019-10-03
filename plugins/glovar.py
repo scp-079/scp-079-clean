@@ -660,7 +660,7 @@ for file in file_list:
 spe_dict: Dict[str, str] = {}
 for rule in locals()["spe_words"]:
     keys = rule.split("]")[0][1:]
-    value = rule.split("?#")[1][1:]
+    value = rule.split("?#")[1][1]
     for k in keys:
         spe_dict[k] = value
 
