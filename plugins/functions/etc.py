@@ -495,7 +495,7 @@ def random_str(i: int) -> str:
     return text
 
 
-def t2s(text: str, printable: bool = True, special: bool = False) -> str:
+def t2s(text: str, printable: bool = True, special: bool = True) -> str:
     # Convert the string
     try:
         if not text:
