@@ -400,6 +400,15 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
 
             save(file_name)
 
+        # Regenerate special English characters dictionary if possible
+        if file_name == "spe_words":
+            glovar.spe_dict = {}
+            for rule in words_data:
+                keys = rule.split("]")[0][1:]
+                value = rule.split("?#")[1][1:]
+                for key in keys:
+                    glovar.spe_dict[key] = value
+
         return True
     except Exception as e:
         logger.warning(f"Receive regex error: {e}", exc_info=True)

@@ -506,7 +506,7 @@ def t2s(text: str, printable: bool = True, special: bool = True) -> str:
 
         if special:
             text = normalize("NFKC", text)
-            text = "".join(glovar.spe_dic.get(t, t) for t in text)
+            text = "".join(glovar.spe_dict.get(t, t) for t in text)
 
         if glovar.zh_cn:
             text = convert(text, config="t2s.json")
