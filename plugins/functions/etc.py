@@ -502,9 +502,7 @@ def t2s(text: str, printable: bool = True, special: bool = False) -> str:
             return ""
 
         if printable:
-            text = text.replace("\n", "2N4$qEUbA!U5I6v5")
-            text = "".join(t for t in text if t.isprintable())
-            text = text.replace("2N4$qEUbA!U5I6v5", "\n")
+            text = "".join(t for t in text if t.isprintable() or t in {"\n", "\r", "\t"})
 
         if special:
             text = normalize("NFKC", text)
