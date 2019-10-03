@@ -495,7 +495,7 @@ def random_str(i: int) -> str:
     return text
 
 
-def t2s(text: str, printable: bool = True, special: bool = True) -> str:
+def t2s(text: str, printable: bool = True, normal: bool = True) -> str:
     # Convert the string
     try:
         if not text:
@@ -504,7 +504,7 @@ def t2s(text: str, printable: bool = True, special: bool = True) -> str:
         if printable:
             text = "".join(t for t in text if t.isprintable() or t in {"\n", "\r", "\t"})
 
-        if special:
+        if normal:
             text = "".join(glovar.spe_dict.get(t, t) for t in text)
             text = normalize("NFKC", text)
 
