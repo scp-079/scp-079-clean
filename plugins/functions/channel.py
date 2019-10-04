@@ -98,6 +98,8 @@ def exchange_to_hide(client: Client) -> bool:
             action_type="hide",
             data=True
         )
+
+        # Send debug message
         text = (f"{lang('project')}{lang('colon')}{code(glovar.sender)}\n"
                 f"{lang('issue')}{lang('colon')}{code(lang('exchange_invalid'))}\n"
                 f"{lang('auto_fix')}{lang('colon')}{code(lang('protocol_1'))}\n")
