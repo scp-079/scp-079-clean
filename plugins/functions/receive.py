@@ -192,7 +192,7 @@ def receive_config_reply(client: Client, data: dict) -> bool:
     return False
 
 
-def receive_config_show(client, data: dict) -> bool:
+def receive_config_show(client: Client, data: dict) -> bool:
     # Receive config show request
     try:
         aid = data["admin_id"]
