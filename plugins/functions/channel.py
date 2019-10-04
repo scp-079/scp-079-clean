@@ -41,7 +41,7 @@ def ask_for_help(client: Client, level: str, gid: int, uid: int, group: str = "s
                 "group_id": gid,
                 "user_id": uid
         }
-        should_delete = glovar.configs[gid].get("delete", True)
+        should_delete = glovar.configs[gid].get("delete")
         if level == "ban":
             data["delete"] = should_delete
         elif level == "delete":
