@@ -319,16 +319,18 @@ def get_md5sum(the_type: str, ctx: str) -> str:
     # Get the md5sum of a string or file
     result = ""
     try:
-        if ctx.strip():
-            if the_type == "file":
-                hash_md5 = md5()
-                with open(ctx, "rb") as f:
-                    for chunk in iter(lambda: f.read(4096), b""):
-                        hash_md5.update(chunk)
+        if not ctx.strip():
+            return ""
 
-                result = hash_md5.hexdigest()
-            elif the_type == "string":
-                result = md5(ctx.encode()).hexdigest()
+        if the_type == "file":
+            hash_md5 = md5()
+            with open(ctx, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    hash_md5.update(chunk)
+
+            result = hash_md5.hexdigest()
+        elif the_type == "string":
+            result = md5(ctx.encode()).hexdigest()
     except Exception as e:
         logger.warning(f"Get md5sum error: {e}", exc_info=True)
 
