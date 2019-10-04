@@ -199,6 +199,7 @@ def get_config_text(config: dict) -> str:
                    f"{lang('config')}{lang('colon')}{code(default_text)}\n"
                    f"{lang('delete')}{lang('colon')}{code(delete_text)}\n"
                    f"{lang('friend')}{lang('colon')}{code(friend_text)}\n")
+
         # Types
         for name in glovar.types["all"]:
             name_text = (lambda x: lang('filter') if x else lang('ignore'))(config.get(name))
