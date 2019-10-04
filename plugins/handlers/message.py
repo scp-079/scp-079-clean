@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
                    & ~class_d & ~declared_message)
 def check(client: Client, message: Message) -> bool:
     # Check the messages sent from groups
-    if message and message.text:
+    if message and (message.text or message.caption):
         glovar.locks["text"].acquire()
     else:
         glovar.locks["message"].acquire()
@@ -95,7 +95,7 @@ def check(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Check error: {e}", exc_info=True)
     finally:
-        if message and message.text:
+        if message and (message.text or message.caption):
             glovar.locks["text"].release()
         else:
             glovar.locks["message"].release()
