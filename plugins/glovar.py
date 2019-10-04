@@ -245,6 +245,7 @@ lang: Dict[str, str] = {
     "message_type": (zh_cn and "消息类别") or "Message Type",
     "message_game": (zh_cn and "游戏标识") or "Game Short Name",
     "message_lang": (zh_cn and "消息语言") or "Message Language",
+    "message_len": (zh_cn and "消息长度") or "Message Length",
     "message_freq": (zh_cn and "消息频率") or "Message Frequency",
     "user_score": (zh_cn and "用户得分") or "User Score",
     "user_bio": (zh_cn and "用户简介") or "User Bio",
