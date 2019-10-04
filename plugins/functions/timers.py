@@ -296,8 +296,8 @@ def update_admins(client: Client) -> bool:
                         action_type="info",
                         data=gid
                     )
-                    project_link = general_link(glovar.project_name, glovar.project_link)
-                    debug_text = (f"{lang('project')}{lang('colon')}{project_link}\n"
+                    project_text = general_link(glovar.project_name, glovar.project_link)
+                    debug_text = (f"{lang('project')}{lang('colon')}{project_text}\n"
                                   f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
                                   f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
                                   f"{lang('status')}{lang('colon')}{code(lang('leave_auto'))}\n"
