@@ -122,15 +122,19 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
         gid = message.chat.id
         uid = message.from_user.id
         mid = message.message_id
-        # If message is some kind of spam
+
         if the_type in glovar.types["spam"]:
             full_name = get_full_name(message.from_user)
             forward_name = get_forward_name(message)
-            if ((is_regex_text("wb", full_name)
-                    or is_regex_text("wb", forward_name))
-                and (full_name not in glovar.except_ids["long"]
-                     and forward_name not in glovar.except_ids["long"])):
-                result = forward_evidence(client, message, lang("auto_ban"), lang("name_examine"), the_type)
+            if ((is_regex_text("wb", full_name) or is_regex_text("wb", forward_name))
+                    and (full_name not in glovar.except_ids["long"] and forward_name not in glovar.except_ids["long"])):
+                result = forward_evidence(
+                    client=client,
+                    message=message,
+                    level=lang("auto_ban"),
+                    rule=lang("name_examine"),
+                    the_type=the_type
+                )
                 if result:
                     add_bad_user(client, uid)
                     ban_user(client, gid, uid)
@@ -139,7 +143,13 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     ask_for_help(client, "ban", gid, uid)
                     send_debug(client, message.chat, lang("name_ban"), uid, mid, result)
             elif is_watch_user(message, "ban"):
-                result = forward_evidence(client, message, lang("auto_ban"), lang("watch_user"), the_type)
+                result = forward_evidence(
+                    client=client,
+                    message=message,
+                    level=lang("auto_ban"),
+                    rule=lang("watch_user"),
+                    the_type=the_type
+                )
                 if result:
                     add_bad_user(client, uid)
                     ban_user(client, gid, uid)
@@ -149,7 +159,14 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     send_debug(client, message.chat, lang("watch_ban"), uid, mid, result)
             elif is_high_score_user(message):
                 score = is_high_score_user(message)
-                result = forward_evidence(client, message, lang("auto_ban"), lang("score_user"), the_type, score)
+                result = forward_evidence(
+                    client=client,
+                    message=message,
+                    level=lang("auto_ban"),
+                    rule=lang("score_user"),
+                    the_type=the_type,
+                    score=score
+                )
                 if result:
                     add_bad_user(client, uid)
                     ban_user(client, gid, uid)
@@ -158,7 +175,13 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     ask_for_help(client, "ban", gid, uid)
                     send_debug(client, message.chat, lang("score_ban"), uid, mid, result)
             elif is_watch_user(message, "delete") and the_type in {"aff", "exe", "iml", "qrc", "tgp"}:
-                result = forward_evidence(client, message, lang("auto_delete"), lang("watch_user"), the_type)
+                result = forward_evidence(
+                    client=client,
+                    message=message,
+                    level=lang("auto_delete"),
+                    rule=lang("watch_user"),
+                    the_type=the_type
+                )
                 if result:
                     add_watch_user(client, "ban", uid)
                     delete_message(client, gid, mid)
@@ -174,7 +197,13 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                 add_detected_user(gid, uid)
                 declare_message(client, gid, mid)
             else:
-                result = forward_evidence(client, message, lang("auto_delete"), lang("custom_group"), the_type)
+                result = forward_evidence(
+                    client=client,
+                    message=message,
+                    level=lang("auto_delete"),
+                    rule=lang("custom_group"),
+                    the_type=the_type
+                )
                 if result:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
@@ -184,13 +213,18 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         update_score(client, uid)
 
                     send_debug(client, message.chat, lang("auto_delete"), uid, mid, result)
-        # If the message is regular message
         else:
             if uid in glovar.recorded_ids[gid]:
                 delete_message(client, gid, mid)
                 declare_message(client, gid, mid)
             else:
-                result = forward_evidence(client, message, lang("auto_delete"), lang("custom_group"), the_type)
+                result = forward_evidence(
+                    client=client,
+                    message=message,
+                    level=lang("auto_delete"),
+                    rule=lang("custom_group"),
+                    the_type=the_type
+                )
                 if result:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
