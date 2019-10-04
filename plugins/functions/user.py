@@ -113,8 +113,11 @@ def kick_user(client: Client, gid: int, uid: Union[int, str]) -> bool:
 def terminate_user(client: Client, message: Message, the_type: str) -> bool:
     # Delete user's message, or ban the user
     try:
+        result = None
+
+        # Check if it is necessary
         if is_class_d(None, message) or is_declared_message(None, message):
-            return True
+            return False
 
         gid = message.chat.id
         uid = message.from_user.id
@@ -197,7 +200,8 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     else:
                         send_debug(client, message.chat, lang("auto_delete"), uid, mid, result)
 
-        return True
+        if result:
+            return True
     except Exception as e:
         logger.warning(f"Terminate user error: {e}", exc_info=True)
 
