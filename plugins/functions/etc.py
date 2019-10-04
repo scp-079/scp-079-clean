@@ -415,11 +415,13 @@ def get_stripped_link(link: str) -> str:
     # Get stripped link
     result = ""
     try:
-        if link:
-            result = link.replace("http://", "")
-            result = result.replace("https://", "")
-            if result and result[-1] == "/":
-                result = result[:-1]
+        if not link.strip():
+            return ""
+
+        result = link.replace("http://", "")
+        result = result.replace("https://", "")
+        if result and result[-1] == "/":
+            result = result[:-1]
     except Exception as e:
         logger.warning(f"Get stripped link error: {e}", exc_info=True)
 
