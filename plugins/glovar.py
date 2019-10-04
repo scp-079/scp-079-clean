@@ -158,7 +158,7 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or time_punish == 0
         or time_sticker == 0
         or zh_cn not in {False, True}
-        or key in {b"", b"[DATA EXPUNGED]"}
+        or key in {b"", b"[DATA EXPUNGED]", "", "[DATA EXPUNGED]"}
         or password in {"", "[DATA EXPUNGED]"}):
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
