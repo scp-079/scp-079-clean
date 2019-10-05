@@ -182,6 +182,7 @@ lang: Dict[str, str] = {
     "clear": (zh_cn and "清空数据") or "Clear Data",
     "description": (zh_cn and "说明") or "Description",
     "reason": (zh_cn and "原因") or "Reason",
+    "status_failed": (zh_cn and "未执行") or "Failed",
     "rollback": (zh_cn and "数据回滚") or "Rollback",
     "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "reset": (zh_cn and "重置数据") or "Reset Data",
@@ -190,7 +191,6 @@ lang: Dict[str, str] = {
     # Config
     "default": (zh_cn and "默认") or "Default",
     "custom": (zh_cn and "自定义") or "Custom",
-    "config_show": (zh_cn and "查看设置") or "Show Config",
     "config": (zh_cn and "设置") or "Settings",
     "delete": (zh_cn and "协助删除") or "Help Delete",
     "friend": (zh_cn and "放行友链") or "Ignore Friend Links",
@@ -200,6 +200,7 @@ lang: Dict[str, str] = {
     "config_button": (zh_cn and "请点击下方按钮进行设置") or "Press the Button to Config",
     "config_go": (zh_cn and "前往设置") or "Go to Config",
     "config_create": (zh_cn and "创建设置会话") or "Create Config Session",
+    "config_show": (zh_cn and "查看设置") or "Show Config",
     "config_updated": (zh_cn and "已更新") or "Updated",
     # Command
     "command_para": (zh_cn and "命令参数有误") or "Incorrect Command Parameter",
@@ -219,6 +220,7 @@ lang: Dict[str, str] = {
     # Group
     "group_name": (zh_cn and "群组名称") or "Group Name",
     "group_id": (zh_cn and "群组 ID") or "Group ID",
+    "reason_none": (zh_cn and "无数据") or "No Data",
     "reason_permissions": (zh_cn and "权限缺失") or "Missing Permissions",
     "reason_user": (zh_cn and "缺失 USER") or "Missing USER",
     "leave_approve": (zh_cn and "已批准退出群组") or "Approve to Leave the Group",

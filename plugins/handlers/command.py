@@ -141,8 +141,8 @@ def config_directly(client: Client, message: Message) -> bool:
             command_type, command_context = get_command_context(message)
             if command_type:
                 if command_type == "show":
-                    config_text = get_config_text(new_config)
-                    text += config_text
+                    text += f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
+                    text += get_config_text(new_config)
                     thread(send_report_message, (30, client, gid, text))
                     thread(delete_message, (client, gid, mid))
                     return True

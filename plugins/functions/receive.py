@@ -195,13 +195,22 @@ def receive_config_reply(client: Client, data: dict) -> bool:
 def receive_config_show(client: Client, data: dict) -> bool:
     # Receive config show request
     try:
+        # Basic Data
         aid = data["admin_id"]
+        mid = data["message_id"]
         gid = data["group_id"]
-        if glovar.configs.get(gid, {}):
-            result = get_config_text(glovar.configs[gid])
-        else:
-            result = ""
 
+        # Generate report message's text
+        result = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n"
+                  f"{lang('action')}{lang('colon')}{lang('config_show')}\n"
+                  f"{lang('group_id')}{lang('colon')}{code(gid)}\n")
+        if glovar.configs.get(gid, {}):
+            result += get_config_text(glovar.configs[gid])
+        else:
+            result += (f"{lang('status')}{lang('colon')}{lang('status_failed')}\n"
+                       f"{lang('reason')}{lang('colon')}{lang('reason_none')}\n")
+
+        # Send the text data
         file = data_to_file(result)
         share_data(
             client=client,
@@ -210,6 +219,7 @@ def receive_config_show(client: Client, data: dict) -> bool:
             action_type="show",
             data={
                 "admin_id": aid,
+                "message_id": mid,
                 "group_id": gid
             },
             file=file
