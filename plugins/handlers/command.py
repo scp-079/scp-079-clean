@@ -219,7 +219,7 @@ def dafm(client: Client, message: Message) -> bool:
                         if result:
                             glovar.deleted_ids[gid].add(uid)
                             ask_for_help(client, "delete", gid, uid)
-                            send_debug(client, message.chat, lang('sde_action'), uid, mid, result)
+                            send_debug(client, message.chat, lang('sde_debug'), uid, mid, result)
                             text = (f"{lang('user')}{lang('colon')}{user_mention(uid)}\n"
                                     f"{lang('action')}{lang('colon')}{code(lang('sde_action'))}\n"
                                     f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
