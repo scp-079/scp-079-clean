@@ -185,6 +185,7 @@ lang: Dict[str, str] = {
     "rollback": (zh_cn and "数据回滚") or "Rollback",
     "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "reset": (zh_cn and "重置数据") or "Reset Data",
+    "status_succeed": (zh_cn and "成功执行") or "Succeed",
     "version": (zh_cn and "版本") or "Version",
     # Config
     "default": (zh_cn and "默认") or "Default",
@@ -288,7 +289,6 @@ lang: Dict[str, str] = {
     "sticker": (zh_cn and "匹配消息") or "Sticker",
     "clean_debug": (zh_cn and "清理消息") or "Clean Messages",
     "clean_action": (zh_cn and "清理消息") or "Clean Messages",
-    "status_succeed": (zh_cn and "成功执行") or "Succeed",
     "sde_action": (zh_cn and "自助删除") or "Self Deletion",
     "user": (zh_cn and "用户") or "User",
     "pur_debug": (zh_cn and "指定删除") or "Purge on Demand",
