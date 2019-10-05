@@ -130,7 +130,12 @@ def receive_clear_data(client: Client, data_type: str, data: dict) -> bool:
 
             save("user_ids")
         elif data_type == "watch":
-            if the_type == "ban":
+            if the_type == "all":
+                glovar.watch_ids = {
+                    "ban": {},
+                    "delete": {}
+                }
+            elif the_type == "ban":
                 glovar.watch_ids["ban"] = {}
             elif the_type == "delete":
                 glovar.watch_ids["delete"] = {}
