@@ -184,9 +184,9 @@ lang: Dict[str, str] = {
     "reason": (zh_cn and "原因") or "Reason",
     "reset": (zh_cn and "重置数据") or "Reset Data",
     "rollback": (zh_cn and "数据回滚") or "Rollback",
+    "score": (zh_cn and "评分") or "Score",
     "status_failed": (zh_cn and "未执行") or "Failed",
     "status_succeed": (zh_cn and "成功执行") or "Succeed",
-    "score": (zh_cn and "评分") or "Score",
     "version": (zh_cn and "版本") or "Version",
     # Config
     "config": (zh_cn and "设置") or "Settings",
@@ -200,8 +200,8 @@ lang: Dict[str, str] = {
     "custom": (zh_cn and "自定义") or "Custom",
     "default": (zh_cn and "默认") or "Default",
     "delete": (zh_cn and "协助删除") or "Help Delete",
-    "filter": (zh_cn and "过滤") or "Filter",
     "friend": (zh_cn and "放行友链") or "Ignore Friend Links",
+    "filter": (zh_cn and "过滤") or "Filter",
     "ignore": (zh_cn and "忽略") or "Ignore",
     # Command
     "command_lack": (zh_cn and "命令参数缺失") or "Lack of Parameter",
