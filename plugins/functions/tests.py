@@ -23,7 +23,7 @@ from pyrogram import Client, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import code, get_text, lang, thread, user_mention
+from .etc import code, get_md5sum, get_text, lang, thread, user_mention
 from .file import delete_file, get_downloaded_path
 from .filters import is_bmd, is_class_e, is_detected_url, is_exe, is_regex_text, is_tgl
 from .image import get_file_id, get_qrcode
@@ -85,9 +85,11 @@ def clean_test(client: Client, message: Message) -> bool:
 
         # QR code
         file_id, file_ref, big = get_file_id(message)
+        image_hash = ""
         if big:
             image_path = get_downloaded_path(client, file_id, file_ref)
             if image_path:
+                image_hash = get_md5sum("file", image_path)
                 qrcode = get_qrcode(image_path)
                 if qrcode:
                     text += f"{lang('qrc')}{lang('colon')}{code('True')}\n"
@@ -95,7 +97,8 @@ def clean_test(client: Client, message: Message) -> bool:
                 delete_file(image_path)
 
         if text:
-            text += f"{lang('white_listed')}{lang('colon')}{code(is_class_e(None, message))}\n"
+            whitelisted = is_class_e(None, message) or image_hash in glovar.except_ids["temp"]
+            text += f"{lang('white_listed')}{lang('colon')}{code(whitelisted)}\n"
             text = f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n" + text
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
