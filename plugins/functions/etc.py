@@ -502,7 +502,7 @@ def random_str(i: int) -> str:
     return text
 
 
-def t2s(text: str, printable: bool = True, normal: bool = True) -> str:
+def t2s(text: str, printable: bool = True, normal: bool = False) -> str:
     # Convert the string
     try:
         if not text:
