@@ -402,6 +402,14 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
             special = file_name.split("_")[0]
             exec(f"glovar.{special}_dict = {{}}")
             for rule in words_data:
+                # Check keys
+                if "[" not in rule:
+                    continue
+
+                # Check value
+                if "?#" not in rule:
+                    continue
+
                 keys = rule.split("]")[0][1:]
                 value = rule.split("?#")[1][1]
                 for k in keys:
