@@ -21,10 +21,11 @@ from copy import deepcopy
 from time import sleep
 
 from pyrogram import Client
+from pyrogram.errors import FloodWait
 
 from .. import glovar
 from .channel import get_debug_text, share_data, share_regex_count
-from .etc import code, general_link, get_now, lang, thread
+from .etc import code, general_link, get_now, lang, thread, wait_flood
 from .file import save
 from .filters import is_in_config
 from .group import leave_group
@@ -60,32 +61,38 @@ def clean_banned(client: Client) -> bool:
     # Clean deleted accounts in groups
     try:
         for gid in list(glovar.configs):
-            try:
-                if not is_in_config(gid, "tcl"):
-                    continue
+            flood_wait = True
+            while flood_wait:
+                flood_wait = False
+                try:
+                    if not is_in_config(gid, "tcl"):
+                        continue
 
-                members = get_members(client, gid, "kicked")
-                if not members:
-                    continue
+                    members = get_members(client, gid, "kicked")
+                    if not members:
+                        continue
 
-                deleted_members = filter(lambda m: m.user.is_deleted, members)
-                count = 0
-                for member in deleted_members:
-                    uid = member.user.id
-                    thread(unban_user, (client, gid, uid))
-                    count += 1
+                    deleted_members = filter(lambda m: m.user.is_deleted, members)
+                    count = 0
+                    for member in deleted_members:
+                        uid = member.user.id
+                        thread(unban_user, (client, gid, uid))
+                        count += 1
 
-                if not count:
-                    continue
+                    if not count:
+                        continue
 
-                count_text = f"{count} {lang('members')}"
-                text = get_debug_text(client, gid)
-                text += (f"{lang('action')}{lang('colon')}{code(lang('clean_blacklist'))}\n"
-                         f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
-                         f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
-                thread(send_message, (client, glovar.debug_channel_id, text))
-            except Exception as e:
-                logger.warning(f"Clean banned in {gid} error: {e}", exc_info=True)
+                    count_text = f"{count} {lang('members')}"
+                    text = get_debug_text(client, gid)
+                    text += (f"{lang('action')}{lang('colon')}{code(lang('clean_blacklist'))}\n"
+                             f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                             f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
+                    thread(send_message, (client, glovar.debug_channel_id, text))
+                except FloodWait as e:
+                    flood_wait = True
+                    wait_flood(e)
+                except Exception as e:
+                    logger.warning(f"Clean banned in {gid} error: {e}", exc_info=True)
 
         return True
     except Exception as e:
@@ -98,33 +105,39 @@ def clean_members(client: Client) -> bool:
     # Clean deleted accounts in groups
     try:
         for gid in list(glovar.configs):
-            try:
-                if not is_in_config(gid, "tcl"):
-                    continue
+            flood_wait = True
+            while flood_wait:
+                flood_wait = False
+                try:
+                    if not is_in_config(gid, "tcl"):
+                        continue
 
-                members = get_members(client, gid, "all")
-                if not members:
-                    continue
+                    members = get_members(client, gid, "all")
+                    if not members:
+                        continue
 
-                deleted_members = filter(lambda m: m.user.is_deleted, members)
-                count = 0
-                for member in deleted_members:
-                    uid = member.user.id
-                    if member.status not in {"creator", "administrator"}:
-                        thread(kick_user, (client, gid, uid))
-                        count += 1
+                    deleted_members = filter(lambda m: m.user.is_deleted, members)
+                    count = 0
+                    for member in deleted_members:
+                        uid = member.user.id
+                        if member.status not in {"creator", "administrator"}:
+                            thread(kick_user, (client, gid, uid))
+                            count += 1
 
-                if not count:
-                    continue
+                    if not count:
+                        continue
 
-                count_text = f"{count} {lang('members')}"
-                text = get_debug_text(client, gid)
-                text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
-                         f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
-                         f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
-                thread(send_message, (client, glovar.debug_channel_id, text))
-            except Exception as e:
-                logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
+                    count_text = f"{count} {lang('members')}"
+                    text = get_debug_text(client, gid)
+                    text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
+                             f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                             f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
+                    thread(send_message, (client, glovar.debug_channel_id, text))
+                except FloodWait as e:
+                    flood_wait = True
+                    wait_flood(e)
+                except Exception as e:
+                    logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
 
         return True
     except Exception as e:
