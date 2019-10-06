@@ -24,7 +24,8 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import get_channel_link, get_command_type, get_entity_text, get_now, get_links, get_stripped_link, get_text
+from .etc import get_channel_link, get_command_type, get_entity_text, get_now, get_links, get_md5sum
+from .etc import get_stripped_link, get_text
 from .file import delete_file, get_downloaded_path, save
 from .group import get_description, get_group_sticker, get_pinned
 from .ids import init_group_id
@@ -526,8 +527,13 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                         image_path = get_downloaded_path(client, file_id, file_ref)
                         if is_declared_message(None, message):
                             return ""
-                        elif image_path:
+
+                        if image_path:
                             need_delete.append(image_path)
+                            image_hash = get_md5sum("file", image_path)
+                            if image_hash in glovar.except_ids["temp"]:
+                                return ""
+
                             qrcode = get_qrcode(image_path)
                             if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode)):
                                 return "qrc"

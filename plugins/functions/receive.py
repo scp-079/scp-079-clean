@@ -32,6 +32,7 @@ from .file import crypt_file, data_to_file, delete_file, get_new_path, get_downl
 from .filters import is_class_e, is_declared_message_id, is_detected_user_id, is_not_allowed
 from .group import get_message, leave_group
 from .ids import init_group_id, init_user_id
+from .image import get_image_hash
 from .telegram import send_message, send_report_message
 from .timers import update_admins
 from .user import terminate_user
@@ -74,6 +75,10 @@ def receive_add_except(client: Client, data: dict) -> bool:
             if content:
                 glovar.except_ids[the_type].add(content)
                 glovar.contents.pop(content, "")
+
+            image_hash = get_image_hash(client, message)
+            if image_hash:
+                glovar.except_ids["temp"].add(image_hash)
 
         save("except_ids")
 
@@ -483,6 +488,10 @@ def receive_remove_except(client: Client, data: dict) -> bool:
             content = get_content(message)
             if content:
                 glovar.except_ids[the_type].discard(content)
+
+            image_hash = get_image_hash(client, message)
+            if image_hash:
+                glovar.except_ids["temp"].discard(image_hash)
 
         save("except_ids")
 

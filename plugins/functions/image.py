@@ -19,18 +19,35 @@
 import logging
 
 from PIL import Image, ImageEnhance
-from pyrogram import Message
+from pyrogram import Client, Message
 from pyzbar.pyzbar import decode
 
 from .. import glovar
 from .etc import get_md5sum, t2s
+from .file import delete_file, get_downloaded_path
 
 # Enable logging
 logger = logging.getLogger(__name__)
 
 
-def get_image_hash(message: Message) -> str:
-    pass
+def get_image_hash(client: Client, message: Message) -> str:
+    # Get the image's hash
+    result = ""
+    try:
+        file_id, file_ref, big = get_file_id(message)
+        if not file_id:
+            return ""
+
+        image_path = get_downloaded_path(client, file_id, file_ref)
+        if not image_path:
+            return ""
+
+        result = get_md5sum("file", image_path)
+        delete_file(image_path)
+    except Exception as e:
+        logger.warning(f"Get image hash error: {e}", exc_info=True)
+
+    return result
 
 
 def get_file_id(message: Message) -> (str, str, bool):
