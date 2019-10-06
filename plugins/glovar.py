@@ -664,10 +664,12 @@ for file in file_list:
 for special in ["spc", "spe"]:
     locals()[f"{special}_dict"]: Dict[str, str] = {}
     for rule in locals()[f"{special}_words"]:
-        if "?#" not in rule:
+        # Check keys
+        if "[" not in rule:
             continue
 
-        if "[" not in rule:
+        # Check value
+        if "?#" not in rule:
             continue
 
         keys = rule.split("]")[0][1:]
