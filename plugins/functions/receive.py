@@ -217,8 +217,8 @@ def receive_config_show(client: Client, data: dict) -> bool:
         if glovar.configs.get(gid, {}):
             result += get_config_text(glovar.configs[gid])
         else:
-            result += (f"{lang('status')}{lang('colon')}{lang('status_failed')}\n"
-                       f"{lang('reason')}{lang('colon')}{lang('reason_none')}\n")
+            result += (f"{lang('status')}{lang('colon')}{code(lang('status_failed'))}\n"
+                       f"{lang('reason')}{lang('colon')}{code(lang('reason_none'))}\n")
 
         # Send the text data
         file = data_to_file(result)
