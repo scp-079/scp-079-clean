@@ -44,7 +44,7 @@ def backup_files(client: Client) -> bool:
                 client=client,
                 receivers=["BACKUP"],
                 action="backup",
-                action_type="pickle",
+                action_type="data",
                 data=file,
                 file=f"data/{file}"
             )
