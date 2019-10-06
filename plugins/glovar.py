@@ -660,13 +660,14 @@ for file in file_list:
         logger.critical(f"Load data {file} backup error: {e}", exc_info=True)
         raise SystemExit("[DATA CORRUPTION]")
 
-# Special English characters dictionary
-spe_dict: Dict[str, str] = {}
-for rule in locals()["spe_words"]:
-    keys = rule.split("]")[0][1:]
-    value = rule.split("?#")[1][1]
-    for k in keys:
-        spe_dict[k] = value
+# Special characters dictionary
+for special in ["spc", "spe"]:
+    locals()[f"{special}_dict"]: Dict[str, str] = {}
+    for rule in locals()[f"{special}_words"]:
+        keys = rule.split("]")[0][1:]
+        value = rule.split("?#")[1][1]
+        for k in keys:
+            locals()[f"{special}_dict"][k] = value
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"

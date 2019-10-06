@@ -397,14 +397,15 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
 
             save(file_name)
 
-        # Regenerate special English characters dictionary if possible
-        if file_name == "spe_words":
-            glovar.spe_dict = {}
+        # Regenerate special characters dictionary if possible
+        if file_name in {"spc_words", "spe_words"}:
+            special = file_name.split("_")[0]
+            exec(f"glovar.{special}_dict = {{}}")
             for rule in words_data:
                 keys = rule.split("]")[0][1:]
                 value = rule.split("?#")[1][1]
                 for k in keys:
-                    glovar.spe_dict[k] = value
+                    eval(f"glovar.{special}_dict")[k] = value
 
         return True
     except Exception as e:

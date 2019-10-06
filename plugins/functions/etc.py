@@ -512,7 +512,9 @@ def t2s(text: str, printable: bool = True, normal: bool = True) -> str:
             text = "".join(t for t in text if t.isprintable() or t in {"\n", "\r", "\t"})
 
         if normal:
-            text = "".join(glovar.spe_dict.get(t, t) for t in text)
+            for special in ["spc", "spe"]:
+                text = "".join(eval(f"glovar.{special}_dict").get(t, t) for t in text)
+
             text = normalize("NFKC", text)
 
         if glovar.zh_cn:
