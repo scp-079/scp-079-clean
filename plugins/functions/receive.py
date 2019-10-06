@@ -548,7 +548,7 @@ def receive_text_data(message: Message) -> dict:
         if text:
             data = loads(text)
     except Exception as e:
-        logger.warning(f"Receive data error: {e}")
+        logger.warning(f"Receive text data error: {e}")
 
     return data
 
