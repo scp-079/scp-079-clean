@@ -677,6 +677,8 @@ for special in ["spc", "spe"]:
         for k in keys:
             locals()[f"{special}_dict"][k] = value
 
+logger.warning(locals()["spc_words"])
+logger.warning(locals()["spe_words"])
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
