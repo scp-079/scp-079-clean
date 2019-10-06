@@ -523,6 +523,7 @@ def t2s(text: str, printable: bool = True, normal: bool = True) -> str:
         if glovar.zh_cn:
             text = convert(text, config="t2s.json")
 
+        logger.warning(text)
     except Exception as e:
         logger.warning(f"T2S error: {e}", exc_info=True)
 

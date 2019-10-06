@@ -23,10 +23,14 @@ from pyrogram import Message
 from pyzbar.pyzbar import decode
 
 from .. import glovar
-from .etc import t2s
+from .etc import get_md5sum, t2s
 
 # Enable logging
 logger = logging.getLogger(__name__)
+
+
+def get_image_hash(message: Message) -> str:
+    pass
 
 
 def get_file_id(message: Message) -> (str, str, bool):
