@@ -502,7 +502,7 @@ def random_str(i: int) -> str:
     return text
 
 
-def t2s(text: str, printable: bool = True, normal: bool = False) -> str:
+def t2s(text: str, printable: bool = True, normal: bool = True) -> str:
     # Convert the string
     try:
         if not text:
@@ -520,7 +520,6 @@ def t2s(text: str, printable: bool = True, normal: bool = False) -> str:
         if glovar.zh_cn:
             text = convert(text, config="t2s.json")
 
-        logger.warning(text)
     except Exception as e:
         logger.warning(f"T2S error: {e}", exc_info=True)
 
