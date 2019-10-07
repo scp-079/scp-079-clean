@@ -78,6 +78,7 @@ def clean_test(client: Client, message: Message) -> bool:
         # Telegram link
         if is_tgl(client, message):
             text += f"{lang('tgl')}{lang('colon')}{code('True')}\n"
+            text += f"{lang('friend')}{lang('colon')}{code(is_tgl(client, message, True))}\n"
 
         # Telegram proxy
         if is_regex_text("tgp", message_text):

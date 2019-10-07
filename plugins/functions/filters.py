@@ -633,7 +633,7 @@ def is_regex_text(word_type: str, text: str, again: bool = False) -> bool:
     return result
 
 
-def is_tgl(client: Client, message: Message) -> bool:
+def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
     # Check if the message includes the Telegram link
     try:
         # Bypass prepare
@@ -653,7 +653,7 @@ def is_tgl(client: Client, message: Message) -> bool:
                 link_username = re.match("t.me/(.+?)/", f"{link}/")
                 if link_username:
                     link_username = link_username.group(1)
-                    if is_in_config(gid, "friend"):
+                    if is_in_config(gid, "friend") or test:
                         _, pid = resolve_username(client, link_username)
                         if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
                             return True
@@ -698,7 +698,7 @@ def is_tgl(client: Client, message: Message) -> bool:
 
                     peer_type, peer_id = resolve_username(client, username)
                     if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
-                        if is_in_config(gid, "friend"):
+                        if is_in_config(gid, "friend") or test:
                             if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(gid, {}):
                                 continue
 
