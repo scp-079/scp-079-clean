@@ -51,11 +51,11 @@ def add_bad_user(client: Client, uid: int) -> bool:
     return False
 
 
-def add_detected_user(gid: int, uid: int) -> bool:
+def add_detected_user(gid: int, uid: int, now: int = None) -> bool:
     # Add or update a detected user's status
     try:
         init_user_id(uid)
-        now = get_now()
+        now = now or get_now()
         previous = glovar.user_ids[uid]["detected"].get(gid)
         glovar.user_ids[uid]["detected"][gid] = now
 
@@ -208,7 +208,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
                     ask_for_help(client, "delete", gid, uid, "global")
-                    previous = add_detected_user(gid, uid)
+                    previous = add_detected_user(gid, uid, message.date)
                     not previous and update_score(client, uid)
                     send_debug(
                         client=client,
@@ -220,7 +220,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     )
             elif is_detected_user(message) or uid in glovar.recorded_ids[gid] or the_type == "true":
                 delete_message(client, gid, mid)
-                add_detected_user(gid, uid)
+                add_detected_user(gid, uid, message.date)
                 declare_message(client, gid, mid)
             else:
                 result = forward_evidence(
@@ -234,7 +234,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
-                    previous = add_detected_user(gid, uid)
+                    previous = add_detected_user(gid, uid, message.date)
                     not previous and update_score(client, uid)
                     send_debug(
                         client=client,
