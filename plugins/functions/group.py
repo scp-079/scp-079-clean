@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 def delete_message(client: Client, gid: int, mid: int) -> bool:
     # Delete a single message
     try:
-        if not gid and mid:
+        if not gid or not mid:
             return True
 
         mids = [mid]
