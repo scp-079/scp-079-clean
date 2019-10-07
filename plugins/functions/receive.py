@@ -26,7 +26,7 @@ from pyrogram import Client, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from .. import glovar
 from .channel import get_content, get_debug_text, share_data
-from .etc import code, crypt_str, general_link, get_config_text, get_int, get_report_record, get_stripped_link
+from .etc import code, crypt_str, general_link, get_config_text, get_int, get_now, get_report_record, get_stripped_link
 from .etc import get_text, lang, thread, user_mention
 from .file import crypt_file, data_to_file, delete_file, get_new_path, get_downloaded_path, save
 from .filters import is_class_e, is_declared_message_id, is_detected_user_id, is_not_allowed
@@ -324,6 +324,8 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
         gid = data["group_id"]
         uid = data["user_id"]
         mid = data["message_id"]
+        now = message.date or get_now()
+
         if not glovar.admin_ids.get(gid):
             return True
 
@@ -343,7 +345,7 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
         else:
             image_path = None
 
-        if is_declared_message_id(gid, mid) or is_detected_user_id(gid, uid, message.date):
+        if is_declared_message_id(gid, mid) or is_detected_user_id(gid, uid, now):
             return True
 
         the_message = get_message(client, gid, mid)
