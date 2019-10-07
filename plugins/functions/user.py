@@ -51,11 +51,10 @@ def add_bad_user(client: Client, uid: int) -> bool:
     return False
 
 
-def add_detected_user(gid: int, uid: int, now: int = None) -> bool:
+def add_detected_user(gid: int, uid: int, now: int) -> bool:
     # Add or update a detected user's status
     try:
         init_user_id(uid)
-        now = now or get_now()
         previous = glovar.user_ids[uid]["detected"].get(gid)
         glovar.user_ids[uid]["detected"][gid] = now
 
@@ -122,7 +121,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
         gid = message.chat.id
         uid = message.from_user.id
         mid = message.message_id
-        now = message.date
+        now = message.date or get_now()
 
         if the_type in glovar.types["spam"]:
             full_name = get_full_name(message.from_user)

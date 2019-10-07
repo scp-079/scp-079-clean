@@ -289,20 +289,19 @@ def is_detected_user(message: Message) -> bool:
         if message.from_user:
             gid = message.chat.id
             uid = message.from_user.id
-            return is_detected_user_id(gid, uid, message.date)
+            return is_detected_user_id(gid, uid, message.date or get_now())
     except Exception as e:
         logger.warning(f"Is detected user error: {e}", exc_info=True)
 
     return False
 
 
-def is_detected_user_id(gid: int, uid: int, now: int = None) -> bool:
+def is_detected_user_id(gid: int, uid: int, now: int) -> bool:
     # Check if the user_id is detected in the group
     try:
         user = glovar.user_ids.get(uid, {})
         if user:
             status = user["detected"].get(gid, 0)
-            now = now or get_now()
             if now - status < glovar.time_punish:
                 return True
     except Exception as e:
@@ -377,6 +376,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
     try:
         # Basic data
         gid = message.chat.id
+        now = message.date or get_now()
 
         # Regular message
         if not (text or image_path):
@@ -546,7 +546,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                         and message.document.mime_type
                         and "gif" in message.document.mime_type)):
                 mid = message.message_id
-                glovar.message_ids[gid]["stickers"][mid] = get_now()
+                glovar.message_ids[gid]["stickers"][mid] = now
                 save("message_ids")
                 return ""
 
@@ -723,7 +723,7 @@ def is_watch_user(message: Message, the_type: str) -> bool:
     try:
         if message.from_user:
             uid = message.from_user.id
-            now = get_now()
+            now = message.date or get_now()
             until = glovar.watch_ids[the_type].get(uid, 0)
             if now < until:
                 return True
