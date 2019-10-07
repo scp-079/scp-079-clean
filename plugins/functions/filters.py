@@ -289,7 +289,8 @@ def is_detected_user(message: Message) -> bool:
         if message.from_user:
             gid = message.chat.id
             uid = message.from_user.id
-            return is_detected_user_id(gid, uid, message.date or get_now())
+            now = message.date or get_now()
+            return is_detected_user_id(gid, uid, now)
     except Exception as e:
         logger.warning(f"Is detected user error: {e}", exc_info=True)
 
