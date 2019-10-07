@@ -66,7 +66,7 @@ logging_channel_id: int = 0
 test_group_id: int = 0
 
 # [custom]
-backup: Union[str, bool] = ""
+backup: Union[bool, str] = ""
 date_reset: str = ""
 default_group_link: str = ""
 image_size: int = 0
@@ -75,10 +75,10 @@ project_name: str = ""
 time_punish: int = 0
 time_ban: int = 0
 time_sticker: int = 0
-zh_cn: Union[str, bool] = ""
+zh_cn: Union[bool, str] = ""
 
 # [encrypt]
-key: Union[str, bytes] = ""
+key: Union[bytes, str] = ""
 password: str = ""
 
 try:
