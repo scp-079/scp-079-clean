@@ -194,10 +194,12 @@ def get_config_text(config: dict) -> str:
         # Basic
         default_text = (lambda x: lang("default") if x else lang("custom"))(config.get("default"))
         delete_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("delete"))
-        friend_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("friend"))
         result += (f"{lang('config')}{lang('colon')}{code(default_text)}\n"
-                   f"{lang('delete')}{lang('colon')}{code(delete_text)}\n"
-                   f"{lang('friend')}{lang('colon')}{code(friend_text)}\n")
+                   f"{lang('delete')}{lang('colon')}{code(delete_text)}\n")
+
+        # Friend Link
+        friend_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("friend"))
+        result += f"{lang('friend')}{lang('colon')}{code(friend_text)}\n"
 
         # Types
         for name in glovar.types["all"]:
