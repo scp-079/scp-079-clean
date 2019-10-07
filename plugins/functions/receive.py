@@ -512,9 +512,11 @@ def receive_remove_score(data: int) -> bool:
     # Receive remove user's score
     try:
         uid = data
-        if glovar.user_ids.get(uid, {}):
-            glovar.user_ids[uid] = glovar.default_user_status
-            save("user_ids")
+        if not glovar.user_ids.get(uid):
+            return True
+
+        glovar.user_ids[uid] = glovar.default_user_status
+        save("user_ids")
 
         return True
     except Exception as e:
