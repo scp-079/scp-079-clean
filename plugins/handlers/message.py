@@ -22,7 +22,7 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import get_content, get_debug_text
-from ..functions.etc import code, delay, general_link, get_text, lang, thread, user_mention
+from ..functions.etc import code, delay, general_link, get_filename, get_text, lang, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_declared_message, is_detected_url, is_high_score_user
@@ -60,6 +60,7 @@ def check(client: Client, message: Message) -> bool:
         # Work with NOSPAM
         gid = message.chat.id
         if glovar.nospam_id in glovar.admin_ids[gid]:
+            # Text
             message_text = get_text(message)
             if is_ban_text(message_text):
                 return False
@@ -67,6 +68,18 @@ def check(client: Client, message: Message) -> bool:
             if is_regex_text("del", message_text):
                 return False
 
+            # File name
+            filename = get_filename(message)
+            if is_ban_text(filename):
+                return False
+
+            if is_regex_text("fil", filename):
+                return False
+
+            if is_regex_text("del", filename):
+                return False
+
+            # User status
             if is_watch_user(message, "ban"):
                 return False
 

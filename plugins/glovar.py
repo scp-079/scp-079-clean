@@ -490,6 +490,7 @@ regex: Dict[str, bool] = {
     "ban": False,
     "con": False,
     "del": False,
+    "fil": False,
     "iml": True,
     "sho": True,
     "spc": False,
