@@ -122,6 +122,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
         gid = message.chat.id
         uid = message.from_user.id
         mid = message.message_id
+        now = message.date
 
         if the_type in glovar.types["spam"]:
             full_name = get_full_name(message.from_user)
@@ -208,7 +209,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
                     ask_for_help(client, "delete", gid, uid, "global")
-                    previous = add_detected_user(gid, uid, message.date)
+                    previous = add_detected_user(gid, uid, now)
                     not previous and update_score(client, uid)
                     send_debug(
                         client=client,
@@ -220,7 +221,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     )
             elif is_detected_user(message) or uid in glovar.recorded_ids[gid] or the_type == "true":
                 delete_message(client, gid, mid)
-                add_detected_user(gid, uid, message.date)
+                add_detected_user(gid, uid, now)
                 declare_message(client, gid, mid)
             else:
                 result = forward_evidence(
@@ -234,7 +235,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
-                    previous = add_detected_user(gid, uid, message.date)
+                    previous = add_detected_user(gid, uid, now)
                     not previous and update_score(client, uid)
                     send_debug(
                         client=client,
