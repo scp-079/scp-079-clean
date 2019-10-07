@@ -345,13 +345,12 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
                 if not the_message or is_class_e(None, the_message):
                     return True
 
+                url = get_stripped_link(preview["url"])
                 detection = is_not_allowed(client, the_message, text, image_path)
                 if detection:
                     result = terminate_user(client, the_message, detection)
-                    if result:
-                        url = get_stripped_link(preview["url"])
-                        if url and detection != "true":
-                            glovar.contents[url] = detection
+                    if result and url and detection != "true" and detection in glovar.types["spam"]:
+                        glovar.contents[url] = detection
 
         return True
     except Exception as e:
