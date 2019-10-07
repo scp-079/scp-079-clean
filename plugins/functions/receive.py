@@ -298,15 +298,17 @@ def receive_leave_approve(client: Client, data: dict) -> bool:
         if reason in {"permissions", "user"}:
             reason = lang(f"reason_{reason}")
 
-        if glovar.admin_ids.get(the_id, {}):
-            text = get_debug_text(client, the_id)
-            text += (f"{lang('admin_project')}{lang('colon')}{user_mention(admin_id)}\n"
-                     f"{lang('status')}{lang('colon')}{code(lang('leave_approve'))}\n")
-            if reason:
-                text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+        if not glovar.admin_ids.get(the_id):
+            return True
 
-            leave_group(client, the_id)
-            thread(send_message, (client, glovar.debug_channel_id, text))
+        text = get_debug_text(client, the_id)
+        text += (f"{lang('admin_project')}{lang('colon')}{user_mention(admin_id)}\n"
+                 f"{lang('status')}{lang('colon')}{code(lang('leave_approve'))}\n")
+        if reason:
+            text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+
+        leave_group(client, the_id)
+        thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
     except Exception as e:
@@ -393,16 +395,18 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
             return True
 
         words_data = receive_file_data(client, message)
-        if words_data:
-            pop_set = set(eval(f"glovar.{file_name}")) - set(words_data)
-            new_set = set(words_data) - set(eval(f"glovar.{file_name}"))
-            for word in pop_set:
-                eval(f"glovar.{file_name}").pop(word, 0)
+        if not words_data:
+            return True
 
-            for word in new_set:
-                eval(f"glovar.{file_name}")[word] = 0
+        pop_set = set(eval(f"glovar.{file_name}")) - set(words_data)
+        new_set = set(words_data) - set(eval(f"glovar.{file_name}"))
+        for word in pop_set:
+            eval(f"glovar.{file_name}").pop(word, 0)
 
-            save(file_name)
+        for word in new_set:
+            eval(f"glovar.{file_name}")[word] = 0
+
+        save(file_name)
 
         # Regenerate special characters dictionary if possible
         if file_name in {"spc_words", "spe_words"}:
