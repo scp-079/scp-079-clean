@@ -655,7 +655,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                     link_username = link_username.group(1)
                     if is_in_config(gid, "friend") or test:
                         _, pid = resolve_username(client, link_username)
-                        if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
+                        if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
                             return True
 
                 if (f"{bypass}/" in f"{link}/"
