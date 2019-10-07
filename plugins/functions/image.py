@@ -23,7 +23,7 @@ from pyrogram import Client, Message
 from pyzbar.pyzbar import decode
 
 from .. import glovar
-from .etc import get_md5sum, t2s
+from .etc import get_md5sum, t2t
 from .file import delete_file, get_downloaded_path
 
 # Enable logging
@@ -131,7 +131,7 @@ def get_qrcode(path: str) -> str:
 
             if result:
                 result = result[:-1]
-                result = t2s(result)
+                result = t2t(result)
     except Exception as e:
         logger.warning(f"Get qrcode error: {e}", exc_info=True)
 
