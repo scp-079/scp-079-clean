@@ -141,7 +141,14 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
                     ask_for_help(client, "ban", gid, uid)
-                    send_debug(client, message.chat, lang("name_ban"), uid, mid, result)
+                    send_debug(
+                        client=client,
+                        chat=message.chat,
+                        action=lang("name_ban"),
+                        uid=uid,
+                        mid=mid,
+                        em=result
+                    )
             elif is_watch_user(message, "ban"):
                 result = forward_evidence(
                     client=client,
@@ -156,7 +163,14 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
                     ask_for_help(client, "ban", gid, uid)
-                    send_debug(client, message.chat, lang("watch_ban"), uid, mid, result)
+                    send_debug(
+                        client=client,
+                        chat=message.chat,
+                        action=lang("watch_ban"),
+                        uid=uid,
+                        mid=mid,
+                        em=result
+                    )
             elif is_high_score_user(message):
                 score = is_high_score_user(message)
                 result = forward_evidence(
@@ -173,7 +187,14 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
                     ask_for_help(client, "ban", gid, uid)
-                    send_debug(client, message.chat, lang("score_ban"), uid, mid, result)
+                    send_debug(
+                        client=client,
+                        chat=message.chat,
+                        action=lang("score_ban"),
+                        uid=uid,
+                        mid=mid,
+                        em=result
+                    )
             elif is_watch_user(message, "delete") and the_type in {"aff", "exe", "iml", "qrc", "tgp"}:
                 result = forward_evidence(
                     client=client,
@@ -188,10 +209,15 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     declare_message(client, gid, mid)
                     ask_for_help(client, "delete", gid, uid, "global")
                     previous = add_detected_user(gid, uid)
-                    if not previous:
-                        update_score(client, uid)
-
-                    send_debug(client, message.chat, lang("watch_delete"), uid, mid, result)
+                    not previous and update_score(client, uid)
+                    send_debug(
+                        client=client,
+                        chat=message.chat,
+                        action=lang("watch_delete"),
+                        uid=uid,
+                        mid=mid,
+                        em=result
+                    )
             elif is_detected_user(message) or uid in glovar.recorded_ids[gid] or the_type == "true":
                 delete_message(client, gid, mid)
                 add_detected_user(gid, uid)
@@ -209,10 +235,15 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
                     previous = add_detected_user(gid, uid)
-                    if not previous:
-                        update_score(client, uid)
-
-                    send_debug(client, message.chat, lang("auto_delete"), uid, mid, result)
+                    not previous and update_score(client, uid)
+                    send_debug(
+                        client=client,
+                        chat=message.chat,
+                        action=lang("auto_delete"),
+                        uid=uid,
+                        mid=mid,
+                        em=result
+                    )
         else:
             if uid in glovar.recorded_ids[gid]:
                 delete_message(client, gid, mid)
@@ -229,10 +260,16 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
-                    if the_type in {"bmd", "ser"}:
-                        send_debug(client, message.chat, lang("auto_delete"), uid, mid, result, the_type)
-                    else:
-                        send_debug(client, message.chat, lang("auto_delete"), uid, mid, result)
+                    the_type = (lambda x: x if x in {"bmd", "ser"} else None)(the_type)
+                    send_debug(
+                        client=client,
+                        chat=message.chat,
+                        action=lang("auto_delete"),
+                        uid=uid,
+                        mid=mid,
+                        em=result,
+                        the_type=the_type
+                    )
 
         if result:
             return True
