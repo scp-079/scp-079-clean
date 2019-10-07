@@ -330,27 +330,30 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
             return True
 
         preview = receive_file_data(client, message)
-        if preview:
-            text = preview["text"]
-            image = preview["image"]
-            if image:
-                image_path = get_new_path()
-                image.save(image_path, "PNG")
-            else:
-                image_path = None
+        if not preview:
+            return True
 
-            if (not is_declared_message_id(gid, mid)
-                    and not is_detected_user_id(gid, uid)):
-                the_message = get_message(client, gid, mid)
-                if not the_message or is_class_e(None, the_message):
-                    return True
+        text = preview["text"]
+        image = preview["image"]
+        if image:
+            image_path = get_new_path()
+            image.save(image_path, "PNG")
+        else:
+            image_path = None
 
-                url = get_stripped_link(preview["url"])
-                detection = is_not_allowed(client, the_message, text, image_path)
-                if detection:
-                    result = terminate_user(client, the_message, detection)
-                    if result and url and detection != "true" and detection in glovar.types["spam"]:
-                        glovar.contents[url] = detection
+        if is_declared_message_id(gid, mid) or is_detected_user_id(gid, uid):
+            return True
+
+        the_message = get_message(client, gid, mid)
+        if not the_message or is_class_e(None, the_message):
+            return True
+
+        url = get_stripped_link(preview["url"])
+        detection = is_not_allowed(client, the_message, text, image_path)
+        if detection:
+            result = terminate_user(client, the_message, detection)
+            if result and url and detection != "true" and detection in glovar.types["spam"]:
+                glovar.contents[url] = detection
 
         return True
     except Exception as e:
