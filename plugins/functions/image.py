@@ -131,7 +131,7 @@ def get_qrcode(path: str) -> str:
 
             if result:
                 result = result[:-1]
-                result = t2t(result)
+                result = t2t(result, False)
     except Exception as e:
         logger.warning(f"Get qrcode error: {e}", exc_info=True)
 

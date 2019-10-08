@@ -232,7 +232,7 @@ def get_entity_text(message: Message, entity: MessageEntity) -> str:
     return result
 
 
-def get_filename(message: Message) -> str:
+def get_filename(message: Message, normal: bool = True) -> str:
     # Get file's filename
     text = ""
     try:
@@ -244,14 +244,14 @@ def get_filename(message: Message) -> str:
                 text += message.audio.file_name
 
         if text:
-            text = t2t(text)
+            text = t2t(text, normal)
     except Exception as e:
         logger.warning(f"Get filename error: {e}", exc_info=True)
 
     return text
 
 
-def get_forward_name(message: Message) -> str:
+def get_forward_name(message: Message, normal: bool = True) -> str:
     # Get forwarded message's origin sender's name
     text = ""
     try:
@@ -265,14 +265,14 @@ def get_forward_name(message: Message) -> str:
             text = chat.title
 
         if text:
-            text = t2t(text)
+            text = t2t(text, normal)
     except Exception as e:
         logger.warning(f"Get forward name error: {e}", exc_info=True)
 
     return text
 
 
-def get_full_name(user: User) -> str:
+def get_full_name(user: User, normal: bool = True) -> str:
     # Get user's full name
     text = ""
     try:
@@ -282,7 +282,7 @@ def get_full_name(user: User) -> str:
                 text += f" {user.last_name}"
 
         if text:
-            text = t2t(text)
+            text = t2t(text, normal)
     except Exception as e:
         logger.warning(f"Get full name error: {e}", exc_info=True)
 
@@ -454,7 +454,7 @@ def get_stripped_link(link: str) -> str:
     return result
 
 
-def get_text(message: Message) -> str:
+def get_text(message: Message, normal: bool = True) -> str:
     # Get message's text, including links and buttons
     text = ""
     try:
@@ -485,7 +485,7 @@ def get_text(message: Message) -> str:
                                     text += f"\n{button.url}"
 
         if text:
-            text = t2t(text)
+            text = t2t(text, normal)
     except Exception as e:
         logger.warning(f"Get text error: {e}", exc_info=True)
 
@@ -526,20 +526,20 @@ def random_str(i: int) -> str:
     return text
 
 
-def t2t(text: str, printable: bool = True, normal: bool = True) -> str:
+def t2t(text: str, normal: bool, printable: bool = True) -> str:
     # Convert the string, text to text
     try:
         if not text:
             return ""
-
-        if printable:
-            text = "".join(t for t in text if t.isprintable() or t in {"\n", "\r", "\t"})
 
         if normal:
             for special in ["spc", "spe"]:
                 text = "".join(eval(f"glovar.{special}_dict").get(t, t) for t in text)
 
             text = normalize("NFKC", text)
+
+        if printable:
+            text = "".join(t for t in text if t.isprintable() or t in {"\n", "\r", "\t"})
 
         if glovar.zh_cn:
             text = convert(text, config="t2s.json")

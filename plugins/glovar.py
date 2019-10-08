@@ -661,7 +661,7 @@ for file in file_list:
         logger.critical(f"Load data {file} backup error: {e}", exc_info=True)
         raise SystemExit("[DATA CORRUPTION]")
 
-# Special characters dictionary
+# Generate special characters dictionary
 for special in ["spc", "spe"]:
     locals()[f"{special}_dict"]: Dict[str, str] = {}
     for rule in locals()[f"{special}_words"]:
