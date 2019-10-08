@@ -22,11 +22,12 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import get_content, get_debug_text
-from ..functions.etc import code, delay, general_link, get_filename, get_text, lang, thread, user_mention
+from ..functions.etc import code, delay, general_link, get_filename, get_forward_name, get_full_name, get_text, lang
+from ..functions.etc import thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
-from ..functions.filters import is_ban_text, is_declared_message, is_detected_url, is_high_score_user
-from ..functions.filters import is_in_config, is_not_allowed, is_regex_text, is_watch_user, new_group, test_group
+from ..functions.filters import is_ban_text, is_declared_message, is_detected_url, is_high_score_user, is_in_config
+from ..functions.filters import is_nm_text, is_not_allowed, is_regex_text, is_watch_user, new_group, test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
@@ -67,6 +68,18 @@ def check(client: Client, message: Message) -> bool:
 
             if is_regex_text("del", message_text):
                 return False
+
+            # Check the forward from name:
+            forward_name = get_forward_name(message)
+            if forward_name and forward_name not in glovar.except_ids["long"]:
+                if is_nm_text(forward_name):
+                    return False
+
+            # Check the user's name:
+            name = get_full_name(message.from_user)
+            if name and name not in glovar.except_ids["long"]:
+                if is_nm_text(name):
+                    return False
 
             # File name
             filename = get_filename(message, True)
