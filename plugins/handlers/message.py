@@ -61,14 +61,6 @@ def check(client: Client, message: Message) -> bool:
         # Work with NOSPAM
         gid = message.chat.id
         if glovar.nospam_id in glovar.admin_ids[gid]:
-            # Text
-            message_text = get_text(message, True)
-            if is_ban_text(message_text):
-                return False
-
-            if is_regex_text("del", message_text):
-                return False
-
             # Check the forward from name:
             forward_name = get_forward_name(message, True)
             if forward_name and forward_name not in glovar.except_ids["long"]:
@@ -80,6 +72,14 @@ def check(client: Client, message: Message) -> bool:
             if name and name not in glovar.except_ids["long"]:
                 if is_nm_text(name):
                     return False
+
+            # Text
+            message_text = get_text(message, True)
+            if is_ban_text(message_text):
+                return False
+
+            if is_regex_text("del", message_text):
+                return False
 
             # File name
             filename = get_filename(message, True)
