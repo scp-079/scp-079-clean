@@ -232,7 +232,7 @@ def get_entity_text(message: Message, entity: MessageEntity) -> str:
     return result
 
 
-def get_filename(message: Message, normal: bool = True) -> str:
+def get_filename(message: Message, normal: bool = False) -> str:
     # Get file's filename
     text = ""
     try:
@@ -251,13 +251,13 @@ def get_filename(message: Message, normal: bool = True) -> str:
     return text
 
 
-def get_forward_name(message: Message, normal: bool = True) -> str:
+def get_forward_name(message: Message, normal: bool = False) -> str:
     # Get forwarded message's origin sender's name
     text = ""
     try:
         if message.forward_from:
             user = message.forward_from
-            text = get_full_name(user)
+            text = get_full_name(user, normal)
         elif message.forward_sender_name:
             text = message.forward_sender_name
         elif message.forward_from_chat:
@@ -272,7 +272,7 @@ def get_forward_name(message: Message, normal: bool = True) -> str:
     return text
 
 
-def get_full_name(user: User, normal: bool = True) -> str:
+def get_full_name(user: User, normal: bool = False) -> str:
     # Get user's full name
     text = ""
     try:

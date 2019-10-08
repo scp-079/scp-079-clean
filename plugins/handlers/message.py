@@ -61,7 +61,7 @@ def check(client: Client, message: Message) -> bool:
         gid = message.chat.id
         if glovar.nospam_id in glovar.admin_ids[gid]:
             # Text
-            message_text = get_text(message)
+            message_text = get_text(message, True)
             if is_ban_text(message_text):
                 return False
 
@@ -69,7 +69,7 @@ def check(client: Client, message: Message) -> bool:
                 return False
 
             # File name
-            filename = get_filename(message)
+            filename = get_filename(message, True)
             if is_ban_text(filename):
                 return False
 

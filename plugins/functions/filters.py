@@ -490,7 +490,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             # Spam messages
 
             if not (is_class_c(None, message) or is_class_e(None, message)):
-                message_text = get_text(message)
+                message_text = get_text(message, True)
 
                 # AFF link
                 if is_in_config(gid, "aff"):
@@ -642,7 +642,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
         gid = message.chat.id
         description = get_description(client, gid)
         pinned_message = get_pinned(client, gid)
-        pinned_text = get_text(pinned_message)
+        pinned_text = get_text(pinned_message, True)
 
         # Check links
         bypass = get_stripped_link(get_channel_link(message))

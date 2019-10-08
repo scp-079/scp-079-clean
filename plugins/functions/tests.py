@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 def clean_test(client: Client, message: Message) -> bool:
     # Test image porn score in the test group
     try:
-        message_text = get_text(message)
+        message_text = get_text(message, True)
         if re.search(f"^{lang('admin')}{lang('colon')}[0-9]", message_text):
             return True
         else:
