@@ -580,9 +580,12 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # QR code
                 if is_in_config(gid, "qrc"):
+                    # Get the image
                     file_id, file_ref, big = get_file_id(message)
                     image_path = big and get_downloaded_path(client, file_id, file_ref)
                     image_path and need_delete.append(image_path)
+
+                    # Check hash
                     image_hash = image_path and get_md5sum("file", image_path)
                     if image_path and image_hash and image_hash not in glovar.except_ids["temp"]:
                         # Check declare status
