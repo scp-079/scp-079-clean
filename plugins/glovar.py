@@ -72,8 +72,9 @@ default_group_link: str = ""
 image_size: int = 0
 project_link: str = ""
 project_name: str = ""
-time_punish: int = 0
 time_ban: int = 0
+time_new: int = 0
+time_punish: int = 0
 time_sticker: int = 0
 zh_cn: Union[bool, str] = ""
 
@@ -116,6 +117,7 @@ try:
     project_link = config["custom"].get("project_link", project_link)
     project_name = config["custom"].get("project_name", project_name)
     time_ban = int(config["custom"].get("time_ban", time_ban))
+    time_new = int(config["custom"].get("time_new", time_new))
     time_punish = int(config["custom"].get("time_punish", time_punish))
     time_sticker = int(config["custom"].get("time_sticker", time_sticker))
     zh_cn = config["custom"].get("zh_cn", zh_cn)
@@ -155,6 +157,7 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or project_link in {"", "[DATA EXPUNGED]"}
         or project_name in {"", "[DATA EXPUNGED]"}
         or time_ban == 0
+        or time_new == 0
         or time_punish == 0
         or time_sticker == 0
         or zh_cn not in {False, True}
@@ -298,6 +301,7 @@ lang: Dict[str, str] = {
     "auto_delete": (zh_cn and "自动删除") or "Auto Delete",
     "name_ban": (zh_cn and "名称封禁") or "Ban by Name",
     "name_examine": (zh_cn and "名称检查") or "Name Examination",
+    "op_upgrade": (zh_cn and "操作升级") or "Operation Upgrade",
     "score_ban": (zh_cn and "评分封禁") or "Ban by Score",
     "score_user": (zh_cn and "用户评分") or "High Score",
     "watch_ban": (zh_cn and "追踪封禁") or "Watch Ban",
@@ -383,6 +387,7 @@ default_config: Dict[str, Union[bool, int]] = {
 
 default_user_status: Dict[str, Dict[Union[int, str], Union[float, int]]] = {
     "detected": {},
+    "join": {},
     "score": {
         "captcha": 0.0,
         "clean": 0.0,
@@ -513,7 +518,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.5"
+version: str = "0.1.6"
 
 # Load data from pickle
 
@@ -570,6 +575,9 @@ user_ids: Dict[int, Dict[str, Dict[Union[int, str], Union[float, int]]]] = {}
 #     12345678: {
 #         "detected": {
 #               -10012345678: 1512345678
+#         },
+#         "join": {
+#             -10012345678: 1512345678
 #         },
 #         "score": {
 #             "captcha": 0.0,

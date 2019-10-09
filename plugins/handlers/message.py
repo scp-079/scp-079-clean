@@ -22,12 +22,13 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import get_content, get_debug_text
-from ..functions.etc import code, delay, general_link, get_filename, get_forward_name, get_full_name, get_text, lang
-from ..functions.etc import thread, user_mention
+from ..functions.etc import code, delay, general_link, get_filename, get_forward_name, get_full_name, get_now, get_text
+from ..functions.etc import lang, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
-from ..functions.filters import is_ban_text, is_declared_message, is_detected_url, is_high_score_user, is_in_config
-from ..functions.filters import is_nm_text, is_not_allowed, is_regex_text, is_watch_user, new_group, test_group
+from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, is_detected_url, is_high_score_user
+from ..functions.filters import is_in_config, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
+from ..functions.filters import new_group, test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
@@ -35,7 +36,7 @@ from ..functions.receive import receive_config_reply, receive_config_show, recei
 from ..functions.receive import receive_leave_approve, receive_regex, receive_refresh, receive_remove_bad
 from ..functions.receive import receive_remove_except, receive_remove_score, receive_remove_watch, receive_rollback
 from ..functions.receive import receive_text_data, receive_user_score, receive_watch_user
-from ..functions.telegram import get_admins, send_message
+from ..functions.telegram import get_admins, get_user_bio, send_message
 from ..functions.tests import clean_test
 from ..functions.timers import backup_files, send_count
 from ..functions.user import terminate_user
@@ -134,8 +135,36 @@ def check_join(client: Client, message: Message) -> bool:
     # Check new joined user
     glovar.locks["message"].acquire()
     try:
+        # Basic data
         gid = message.chat.id
         mid = message.message_id
+        now = message.date or get_now()
+
+        for new in message.new_chat_members:
+            # Basic data
+            uid = new.id
+
+            # Work with NOSPAM
+            if glovar.nospam_id in glovar.admin_ids[gid]:
+                # Check if the user is Class D personnel
+                if uid in glovar.bad_ids["users"]:
+                    return True
+
+                # Check name
+                name = get_full_name(new, True)
+                if name and is_nm_text(name):
+                    return True
+
+                # Check bio
+                bio = get_user_bio(client, new.username or new.id, True)
+                if bio and is_bio_text(bio):
+                    return True
+
+            # Update user's join status
+            glovar.user_ids[uid]["join"][gid] = now
+            save("user_ids")
+
+        # Delete service message
         if is_in_config(gid, "ser"):
             if glovar.message_ids[gid]["service"]:
                 thread(delete_message, (client, gid, glovar.message_ids[gid]["service"]))
