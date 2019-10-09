@@ -58,13 +58,13 @@ def check(client: Client, message: Message) -> bool:
         # Work with NOSPAM
         gid = message.chat.id
         if glovar.nospam_id in glovar.admin_ids[gid]:
-            # Check the forward from name:
+            # Check the forward from name
             forward_name = get_forward_name(message, True)
             if forward_name and forward_name not in glovar.except_ids["long"]:
                 if is_nm_text(forward_name):
                     return False
 
-            # Check the user's name:
+            # Check the user's name
             name = get_full_name(message.from_user, True)
             if name and name not in glovar.except_ids["long"]:
                 if is_nm_text(name):
