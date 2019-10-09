@@ -74,7 +74,7 @@ def check(client: Client, message: Message) -> bool:
                 if is_nm_text(name):
                     return False
 
-            # Check text
+            # Check the text
             message_text = get_text(message, True)
             if is_ban_text(message_text):
                 return False
