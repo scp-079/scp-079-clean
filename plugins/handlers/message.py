@@ -89,6 +89,11 @@ def check(client: Client, message: Message) -> bool:
             if is_regex_text("del", filename):
                 return False
 
+            # Check sticker
+            set_name = message.sticker and message.sticker.set_name
+            if is_regex_text("sti", set_name):
+                return False
+
             # User status
             if is_watch_user(message, "ban"):
                 return False
