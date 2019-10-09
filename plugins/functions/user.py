@@ -40,10 +40,12 @@ logger = logging.getLogger(__name__)
 def add_bad_user(client: Client, uid: int) -> bool:
     # Add a bad user, share it
     try:
-        if uid not in glovar.bad_ids["users"]:
-            glovar.bad_ids["users"].add(uid)
-            save("bad_ids")
-            share_bad_user(client, uid)
+        if uid in glovar.bad_ids["users"]:
+            return True
+
+        glovar.bad_ids["users"].add(uid)
+        save("bad_ids")
+        share_bad_user(client, uid)
 
         return True
     except Exception as e:
@@ -55,7 +57,9 @@ def add_bad_user(client: Client, uid: int) -> bool:
 def add_detected_user(gid: int, uid: int, now: int) -> bool:
     # Add or update a detected user's status
     try:
-        init_user_id(uid)
+        if not init_user_id(uid):
+            return False
+
         previous = glovar.user_ids[uid]["detected"].get(gid)
         glovar.user_ids[uid]["detected"][gid] = now
 

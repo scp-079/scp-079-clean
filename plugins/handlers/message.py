@@ -204,20 +204,27 @@ def exchange_emergency(client: Client, message: Message) -> bool:
         action = data["action"]
         action_type = data["type"]
         data = data["data"]
-        if "EMERGENCY" in receivers:
-            if action == "backup":
-                if action_type == "hide":
-                    if data is True:
-                        glovar.should_hide = data
-                    elif data is False and sender == "MANAGE":
-                        glovar.should_hide = data
 
-                    project_text = general_link(glovar.project_name, glovar.project_link)
-                    hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
-                    text = (f"{lang('project')}{lang('colon')}{project_text}\n"
-                            f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
-                            f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
-                    thread(send_message, (client, glovar.debug_channel_id, text))
+        if "EMERGENCY" not in receivers:
+            return True
+
+        if action != "backup":
+            return True
+
+        if action_type != "hide":
+            return True
+
+        if data is True:
+            glovar.should_hide = data
+        elif data is False and sender == "MANAGE":
+            glovar.should_hide = data
+
+        project_text = general_link(glovar.project_name, glovar.project_link)
+        hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
+        text = (f"{lang('project')}{lang('colon')}{project_text}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
+                f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
+        thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
     except Exception as e:
@@ -235,6 +242,7 @@ def init_group(client: Client, message: Message) -> bool:
         gid = message.chat.id
         text = get_debug_text(client, message.chat)
         invited_by = message.from_user.id
+
         # Check permission
         if invited_by == glovar.user_id:
             # Remove the left status
@@ -242,17 +250,19 @@ def init_group(client: Client, message: Message) -> bool:
                 glovar.left_group_ids.discard(gid)
 
             # Update group's admin list
-            if init_group_id(gid):
-                admin_members = get_admins(client, gid)
-                if admin_members:
-                    glovar.admin_ids[gid] = {admin.user.id for admin in admin_members
-                                             if not admin.user.is_bot and not admin.user.is_deleted}
-                    save("admin_ids")
-                    text += f"{lang('status')}{lang('colon')}{code(lang('status_joined'))}\n"
-                else:
-                    thread(leave_group, (client, gid))
-                    text += (f"{lang('status')}{lang('colon')}{code(lang('status_left'))}\n"
-                             f"{lang('reason')}{lang('colon')}{code(lang('reason_admin'))}\n")
+            if not init_group_id(gid):
+                return True
+
+            admin_members = get_admins(client, gid)
+            if admin_members:
+                glovar.admin_ids[gid] = {admin.user.id for admin in admin_members
+                                         if not admin.user.is_bot and not admin.user.is_deleted}
+                save("admin_ids")
+                text += f"{lang('status')}{lang('colon')}{code(lang('status_joined'))}\n"
+            else:
+                thread(leave_group, (client, gid))
+                text += (f"{lang('status')}{lang('colon')}{code(lang('status_left'))}\n"
+                         f"{lang('reason')}{lang('colon')}{code(lang('reason_admin'))}\n")
         else:
             if gid in glovar.left_group_ids:
                 return leave_group(client, gid)

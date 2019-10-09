@@ -285,6 +285,7 @@ lang: Dict[str, str] = {
     "clean_debug": (zh_cn and "清理消息") or "Clean Messages",
     "clean_more": (zh_cn and "群管要求删除贴纸动图") or "Group Admin's Decision",
     "pur_action": (zh_cn and "清除消息") or "Purge Messages",
+    "pur_begin": (zh_cn and "指定清理起始") or "Mark as Purge Begin",
     "pur_debug": (zh_cn and "指定删除") or "Purge on Demand",
     "pur_more": (zh_cn and "群管要求删除指定消息") or "Group Admin's Decision",
     "sde_action": (zh_cn and "自助删除") or "Self Deletion",
@@ -522,7 +523,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.7"
+version: str = "0.1.8"
 
 # Load data from pickle
 

@@ -40,11 +40,17 @@ def is_class_c(_, message: Message) -> bool:
     # Check if the message is Class C object
     try:
         if message.from_user:
+            # Basic data
             uid = message.from_user.id
             gid = message.chat.id
-            if init_group_id(gid):
-                if uid in glovar.admin_ids[gid] or uid in glovar.bot_ids or message.from_user.is_self:
-                    return True
+
+            # Init the group
+            if not init_group_id(gid):
+                return False
+
+            # Check permission
+            if uid in glovar.admin_ids[gid] or uid in glovar.bot_ids or message.from_user.is_self:
+                return True
     except Exception as e:
         logger.warning(f"Is class c error: {e}", exc_info=True)
 
@@ -419,7 +425,6 @@ def is_nm_text(text: str) -> bool:
 
 def is_not_allowed(client: Client, message: Message, text: str = None, image_path: str = None) -> str:
     # Check if the message is not allowed in the group
-    result = ""
     if image_path:
         need_delete = [image_path]
     else:
@@ -649,7 +654,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
         for file in need_delete:
             delete_file(file)
 
-    return result
+    return ""
 
 
 def is_regex_text(word_type: str, text: str, again: bool = False) -> bool:
