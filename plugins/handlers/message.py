@@ -55,10 +55,6 @@ def check(client: Client, message: Message) -> bool:
         glovar.locks["message"].acquire()
 
     try:
-        # Check declare status
-        if is_declared_message(None, message):
-            return True
-
         # Work with NOSPAM
         gid = message.chat.id
         if glovar.nospam_id in glovar.admin_ids[gid]:
@@ -99,6 +95,10 @@ def check(client: Client, message: Message) -> bool:
 
             if is_high_score_user(message):
                 return False
+
+        # Check declare status
+        if is_declared_message(None, message):
+            return True
 
         # Detected url
         detection = is_detected_url(message)
