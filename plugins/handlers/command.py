@@ -508,6 +508,8 @@ def purge_end(client: Client, message: Message) -> bool:
             # Purge
             glovar.purged_ids.add(gid)
             thread(delete_messages, (client, gid, range(bid, eid + 1)))
+            glovar.message_ids[gid]["purge"] = (0, 0)
+            save("message_ids")
 
             # Generate the report message's text
             aid = message.from_user.id
