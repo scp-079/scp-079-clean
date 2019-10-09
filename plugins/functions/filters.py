@@ -583,13 +583,13 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                     file_id, file_ref, big = get_file_id(message)
                     if big:
                         image_path = get_downloaded_path(client, file_id, file_ref)
-                        if is_declared_message(None, message):
-                            return ""
-
                         if image_path:
                             need_delete.append(image_path)
                             image_hash = get_md5sum("file", image_path)
                             if image_hash in glovar.except_ids["temp"]:
+                                return ""
+
+                            if is_declared_message(None, message):
                                 return ""
 
                             qrcode = get_qrcode(image_path)
