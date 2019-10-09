@@ -518,7 +518,7 @@ def receive_remove_score(data: int) -> bool:
         if not glovar.user_ids.get(uid):
             return True
 
-        glovar.user_ids[uid] = glovar.default_user_status
+        glovar.user_ids[uid] = deepcopy(glovar.default_user_status)
         save("user_ids")
 
         return True
