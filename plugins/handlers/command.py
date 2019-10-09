@@ -24,8 +24,8 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import ask_for_help, forward_evidence, get_debug_text, send_debug, share_data
-from ..functions.etc import bold, code, delay, get_config_text, get_command_context, get_command_type, get_now, lang
-from ..functions.etc import message_link, thread, user_mention
+from ..functions.etc import bold, code, delay, general_link, get_config_text, get_command_context, get_command_type
+from ..functions.etc import get_now, lang, message_link, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import from_user, is_class_c, test_group
 from ..functions.group import delete_message
@@ -442,7 +442,7 @@ def purge_begin(client: Client, message: Message) -> bool:
         text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('pur_begin'))}\n"
                 f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n"
-                f"{lang('triggered_by')}{lang('colon')}{message_link(r_message)}\n")
+                f"{lang('triggered_by')}{lang('colon')}{general_link(mid, message_link(r_message))}\n")
         reason = get_command_type(message)
 
         if reason:
