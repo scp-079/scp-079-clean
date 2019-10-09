@@ -23,7 +23,7 @@ from os import mkdir
 from os.path import exists
 from shutil import rmtree
 from threading import Lock
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Set, Tuple, Union
 
 from pyrogram import Chat
 
@@ -462,6 +462,10 @@ other_commands: Set[str] = {
     "mention",
     "print",
     "purge",
+    "purge_begin",
+    "pb",
+    "purge_end",
+    "pe",
     "report",
     "t2s",
     "unban",
@@ -518,7 +522,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.6"
+version: str = "0.1.7"
 
 # Load data from pickle
 
@@ -559,9 +563,10 @@ except_ids: Dict[str, Set[Union[int, str]]] = {
 #     "temp": {"content"}
 # }
 
-message_ids: Dict[int, Dict[str, Union[int, Dict[int, int]]]] = {}
+message_ids: Dict[int, Dict[str, Union[int, Dict[int, int], Tuple[int, int]]]] = {}
 # message_ids = {
 #     -10012345678: {
+#         "purge": (123, 1512345678)
 #         "service": 123,
 #         "stickers": {
 #             456: 1512345678,

@@ -149,10 +149,21 @@ def clean_members(client: Client) -> bool:
 def interval_hour_01(client: Client) -> bool:
     # Execute every hour
     try:
+        # Basic data
+        now = get_now()
+
+        # Reset purge status
+        for gid in list(glovar.message_ids):
+            mid, time = glovar.message_ids[gid]["purge"]
+            if not mid or not time:
+                continue
+
+            if now - time > 3600:
+                glovar.message_ids[gid]["purge"] = (0, 0)
+
         # Delete stickers and animations in groups
         for gid in list(glovar.message_ids):
             mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
-            now = get_now()
             mid_list = list(filter(lambda m: now - mid_dict[m] >= glovar.time_sticker, mid_dict))
             if not mid_list:
                 continue

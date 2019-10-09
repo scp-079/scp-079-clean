@@ -30,7 +30,7 @@ from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, i
 from ..functions.filters import is_in_config, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
 from ..functions.filters import new_group, test_group
 from ..functions.group import delete_message, leave_group
-from ..functions.ids import init_group_id
+from ..functions.ids import init_group_id, init_user_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
 from ..functions.receive import receive_config_reply, receive_config_show, receive_declared_message, receive_preview
 from ..functions.receive import receive_leave_approve, receive_regex, receive_refresh, receive_remove_bad
@@ -159,6 +159,14 @@ def check_join(client: Client, message: Message) -> bool:
                 bio = get_user_bio(client, new.username or new.id, True)
                 if bio and is_bio_text(bio):
                     return True
+
+            # Check declare status
+            if is_declared_message(None, message):
+                return True
+
+            # Init the user's status
+            if not init_user_id(uid):
+                continue
 
             # Update user's join status
             glovar.user_ids[uid]["join"][gid] = now
