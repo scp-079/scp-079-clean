@@ -221,6 +221,7 @@ def get_content(message: Message) -> str:
 
         file_id, _, _ = get_file_id(message)
         text = get_text(message)
+
         if file_id:
             result += file_id
 
