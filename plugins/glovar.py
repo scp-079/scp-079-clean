@@ -188,6 +188,11 @@ lang: Dict[str, str] = {
     "status_failed": (zh_cn and "未执行") or "Failed",
     "status_succeed": (zh_cn and "成功执行") or "Succeed",
     "version": (zh_cn and "版本") or "Version",
+    # Command
+    "command_lack": (zh_cn and "命令参数缺失") or "Lack of Parameter",
+    "command_para": (zh_cn and "命令参数有误") or "Incorrect Command Parameter",
+    "command_type": (zh_cn and "命令类别有误") or "Incorrect Command Type",
+    "command_usage": (zh_cn and "用法有误") or "Incorrect Usage",
     # Config
     "config": (zh_cn and "设置") or "Settings",
     "config_button": (zh_cn and "请点击下方按钮进行设置") or "Press the Button to Config",
@@ -203,11 +208,6 @@ lang: Dict[str, str] = {
     "friend": (zh_cn and "放行友链") or "Ignore Friend Links",
     "filter": (zh_cn and "过滤") or "Filter",
     "ignore": (zh_cn and "忽略") or "Ignore",
-    # Command
-    "command_lack": (zh_cn and "命令参数缺失") or "Lack of Parameter",
-    "command_para": (zh_cn and "命令参数有误") or "Incorrect Command Parameter",
-    "command_type": (zh_cn and "命令类别有误") or "Incorrect Command Type",
-    "command_usage": (zh_cn and "用法有误") or "Incorrect Usage",
     # Debug
     "triggered_by": (zh_cn and "触发消息") or "Triggered By",
     # Emergency
@@ -410,35 +410,6 @@ locks: Dict[str, Lock] = {
     "regex": Lock(),
     "test": Lock(),
     "text": Lock()
-}
-
-names: Dict[str, str] = {
-    "con": lang.get("con", "con"),
-    "loc": lang.get("loc", "loc"),
-    "vdn": lang.get("vdn", "vdn"),
-    "voi": lang.get("voi", "voi"),
-    "ast": lang.get("ast", "ast"),
-    "aud": lang.get("aud", "aud"),
-    "bmd": lang.get("bmd", "bmd"),
-    "doc": lang.get("doc", "doc"),
-    "gam": lang.get("gam", "gam"),
-    "gif": lang.get("gif", "gif"),
-    "via": lang.get("via", "via"),
-    "vid": lang.get("vid", "vid"),
-    "ser": lang.get("ser", "ser"),
-    "sti": lang.get("sti", "sti"),
-    "aff": lang.get("aff", "aff"),
-    "exe": lang.get("exe", "ext"),
-    "iml": lang.get("iml", "iml"),
-    "sho": lang.get("sho", "sho"),
-    "tgl": lang.get("tgl", "tgl"),
-    "tgp": lang.get("tgp", "tgp"),
-    "qrc": lang.get("qrc", "qrc"),
-    "sde": lang.get("sde", "sde"),
-    "tcl": lang.get("tcl", "tcl"),
-    "ttd": lang.get("ttd", "ttd"),
-    "pur": lang.get("pur", "pur"),
-    "cln": lang.get("cln", "cln")
 }
 
 other_commands: Set[str] = {

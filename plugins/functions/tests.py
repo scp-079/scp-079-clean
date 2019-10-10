@@ -48,12 +48,12 @@ def clean_test(client: Client, message: Message) -> bool:
         content = get_content(message)
         detection = glovar.contents.get(content, "")
         if detection:
-            text += f"{lang('record_content')}{lang('colon')}{code(glovar.names[detection])}\n"
+            text += f"{lang('record_content')}{lang('colon')}{code(lang(detection))}\n"
 
         # Detected url
         detection = is_detected_url(message)
         if detection:
-            text += f"{lang('record_link')}{lang('colon')}{code(glovar.names[detection])}\n"
+            text += f"{lang('record_link')}{lang('colon')}{code(lang(detection))}\n"
 
         # Bot command
         if is_bmd(message):
@@ -86,16 +86,13 @@ def clean_test(client: Client, message: Message) -> bool:
 
         # QR code
         file_id, file_ref, big = get_file_id(message)
-        image_hash = ""
-        if big:
-            image_path = get_downloaded_path(client, file_id, file_ref)
-            if image_path:
-                image_hash = get_md5sum("file", image_path)
-                qrcode = get_qrcode(image_path)
-                if qrcode:
-                    text += f"{lang('qrc')}{lang('colon')}{code('True')}\n"
+        image_path = big and get_downloaded_path(client, file_id, file_ref)
+        image_hash = image_path and get_md5sum("file", image_path)
+        qrcode = image_path and get_qrcode(image_path)
+        image_path and delete_file(image_path)
 
-                delete_file(image_path)
+        if qrcode:
+            text += f"{lang('qrc')}{lang('colon')}{code('True')}\n"
 
         if text:
             whitelisted = is_class_e(None, message) or image_hash in glovar.except_ids["temp"]

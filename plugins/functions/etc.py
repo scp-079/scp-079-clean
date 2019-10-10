@@ -204,12 +204,12 @@ def get_config_text(config: dict) -> str:
         # Types
         for name in glovar.types["all"]:
             name_text = (lambda x: lang('filter') if x else lang('ignore'))(config.get(name))
-            result += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
+            result += f"{lang(name)}{lang('colon')}{code(name_text)}\n"
 
         # Functions
         for name in glovar.types["function"]:
             name_text = (lambda x: lang('enabled') if x else lang('disabled'))(config.get(name))
-            result += f"{glovar.names[name]}{lang('colon')}{code(name_text)}\n"
+            result += f"{lang(name)}{lang('colon')}{code(name_text)}\n"
     except Exception as e:
         logger.warning(f"Get config text error: {e}", exc_info=True)
 

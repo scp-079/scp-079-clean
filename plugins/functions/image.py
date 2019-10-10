@@ -30,26 +30,6 @@ from .file import delete_file, get_downloaded_path
 logger = logging.getLogger(__name__)
 
 
-def get_image_hash(client: Client, message: Message) -> str:
-    # Get the image's hash
-    result = ""
-    try:
-        file_id, file_ref, big = get_file_id(message)
-        if not file_id:
-            return ""
-
-        image_path = get_downloaded_path(client, file_id, file_ref)
-        if not image_path:
-            return ""
-
-        result = get_md5sum("file", image_path)
-        delete_file(image_path)
-    except Exception as e:
-        logger.warning(f"Get image hash error: {e}", exc_info=True)
-
-    return result
-
-
 def get_file_id(message: Message) -> (str, str, bool):
     # Get media message's image file id
     file_id = ""
@@ -104,6 +84,26 @@ def get_file_id(message: Message) -> (str, str, bool):
         logger.warning(f"Get image status error: {e}", exc_info=True)
 
     return file_id, file_ref, big
+
+
+def get_image_hash(client: Client, message: Message) -> str:
+    # Get the image's hash
+    result = ""
+    try:
+        file_id, file_ref, big = get_file_id(message)
+        if not file_id:
+            return ""
+
+        image_path = get_downloaded_path(client, file_id, file_ref)
+        if not image_path:
+            return ""
+
+        result = get_md5sum("file", image_path)
+        delete_file(image_path)
+    except Exception as e:
+        logger.warning(f"Get image hash error: {e}", exc_info=True)
+
+    return result
 
 
 def get_qrcode(path: str) -> str:

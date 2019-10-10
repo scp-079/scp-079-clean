@@ -149,7 +149,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
 
         # Additional information
         if the_type:
-            text += f"{lang('message_type')}{lang('colon')}{code(glovar.names[the_type])}\n"
+            text += f"{lang('message_type')}{lang('colon')}{code(lang(the_type))}\n"
 
         if message.game:
             text += f"{lang('message_game')}{lang('colon')}{code(message.game.short_name)}\n"
@@ -271,7 +271,7 @@ def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: 
                  f"{lang('triggered_by')}{lang('colon')}{general_link(mid, message_link(em))}\n")
 
         if the_type:
-            text += f"{lang('message_type')}{lang('colon')}{code(glovar.names[the_type])}\n"
+            text += f"{lang('message_type')}{lang('colon')}{code(lang(the_type))}\n"
 
         thread(send_message, (client, glovar.debug_channel_id, text))
 
