@@ -297,7 +297,7 @@ lang: Dict[str, str] = {
     "sticker": (zh_cn and "匹配消息") or "Sticker",
     "user": (zh_cn and "用户") or "User",
     # Terminate
-    "custom_group": (zh_cn and "群组自定义") or "Group Custom",
+    "rule_custom": (zh_cn and "群组自定义") or "Custom Rule",
     "auto_ban": (zh_cn and "自动封禁") or "Auto Ban",
     "auto_delete": (zh_cn and "自动删除") or "Auto Delete",
     "name_ban": (zh_cn and "名称封禁") or "Ban by Name",

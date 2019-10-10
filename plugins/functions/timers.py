@@ -85,7 +85,7 @@ def clean_banned(client: Client) -> bool:
                     count_text = f"{count} {lang('members')}"
                     text = get_debug_text(client, gid)
                     text += (f"{lang('action')}{lang('colon')}{code(lang('clean_blacklist'))}\n"
-                             f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                             f"{lang('rule')}{lang('colon')}{code(lang('rule_custom'))}\n"
                              f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
                     thread(send_message, (client, glovar.debug_channel_id, text))
                 except FloodWait as e:
@@ -130,7 +130,7 @@ def clean_members(client: Client) -> bool:
                     count_text = f"{count} {lang('members')}"
                     text = get_debug_text(client, gid)
                     text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
-                             f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                             f"{lang('rule')}{lang('colon')}{code(lang('rule_custom'))}\n"
                              f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
                     thread(send_message, (client, glovar.debug_channel_id, text))
                 except FloodWait as e:
@@ -176,7 +176,7 @@ def interval_hour_01(client: Client) -> bool:
                 count_text = f"{len(mid_list)} {lang('messages')}"
                 text = get_debug_text(client, gid)
                 text += (f"{lang('action')}{lang('colon')}{code(lang('schedule_delete'))}\n"
-                         f"{lang('rule')}{lang('colon')}{code(lang('custom_group'))}\n"
+                         f"{lang('rule')}{lang('colon')}{code(lang('rule_custom'))}\n"
                          f"{lang('sticker')}{lang('colon')}{code(count_text)}\n")
                 thread(send_message, (client, glovar.debug_channel_id, text))
 

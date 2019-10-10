@@ -60,7 +60,7 @@ def clean(client: Client, message: Message) -> bool:
             client=client,
             message=message,
             level=lang("auto_delete"),
-            rule=lang("custom_group"),
+            rule=lang("rule_custom"),
             the_type="cln"
         )
         if result:
@@ -294,7 +294,7 @@ def dafm(client: Client, message: Message) -> bool:
             client=client,
             message=message,
             level=lang("auto_delete"),
-            rule=lang("custom_group"),
+            rule=lang("rule_custom"),
             the_type="sde"
         )
         if result:
@@ -365,7 +365,7 @@ def purge(client: Client, message: Message) -> bool:
             client=client,
             message=message,
             level=lang("auto_delete"),
-            rule=lang("custom_group"),
+            rule=lang("rule_custom"),
             the_type="pur"
         )
         if result:
@@ -501,7 +501,7 @@ def purge_end(client: Client, message: Message) -> bool:
             client=client,
             message=message,
             level=lang("auto_delete"),
-            rule=lang("custom_group"),
+            rule=lang("rule_custom"),
             the_type="pur"
         )
         if result:
