@@ -81,7 +81,7 @@ def clean(client: Client, message: Message) -> bool:
             # Send the report message
             thread(send_report_message, (20, client, gid, text))
 
-            # Send debug
+            # Send debug message
             send_debug(
                 client=client,
                 chat=message.chat,
@@ -151,7 +151,7 @@ def config(client: Client, message: Message) -> bool:
             }
         )
 
-        # Send debug
+        # Send debug message
         text = get_debug_text(client, message.chat)
         text += (f"{lang('admin_group')}{lang('colon')}{code(message.from_user.id)}\n"
                  f"{lang('action')}{lang('colon')}{code(lang('config_create'))}\n")
@@ -238,7 +238,7 @@ def config_directly(client: Client, message: Message) -> bool:
             glovar.configs[gid] = new_config
             save("configs")
 
-            # Send debug
+            # Send debug message
             debug_text = get_debug_text(client, message.chat)
             debug_text += (f"{lang('admin_group')}{lang('colon')}{code(message.from_user.id)}\n"
                            f"{lang('action')}{lang('colon')}{code(lang('config_change'))}\n"
@@ -310,7 +310,7 @@ def dafm(client: Client, message: Message) -> bool:
             # Send the report message
             thread(send_report_message, (15, client, gid, text))
 
-            # Send debug
+            # Send debug message
             send_debug(
                 client=client,
                 chat=message.chat,
@@ -386,7 +386,7 @@ def purge(client: Client, message: Message) -> bool:
             # Send the report message
             thread(send_report_message, (20, client, gid, text))
 
-            # Send debug
+            # Send debug message
             send_debug(
                 client=client,
                 chat=message.chat,
@@ -524,7 +524,7 @@ def purge_end(client: Client, message: Message) -> bool:
             # Send the report message
             thread(send_report_message, (20, client, gid, text))
 
-            # Send debug
+            # Send debug message
             send_debug(
                 client=client,
                 chat=message.chat,

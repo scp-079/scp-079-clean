@@ -204,17 +204,19 @@ def get_user_bio(client: Client, uid: int, normal: bool = False) -> Optional[str
     result = None
     try:
         user_id = resolve_peer(client, uid)
-        if user_id:
-            flood_wait = True
-            while flood_wait:
-                flood_wait = False
-                try:
-                    user: UserFull = client.send(GetFullUser(id=user_id))
-                    if user and user.about:
-                        result = t2t(user.about, normal)
-                except FloodWait as e:
-                    flood_wait = True
-                    wait_flood(e)
+        if not user_id:
+            return None
+
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                user: UserFull = client.send(GetFullUser(id=user_id))
+                if user and user.about:
+                    result = t2t(user.about, normal)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
     except Exception as e:
         logger.warning(f"Get user bio error: {e}", exc_info=True)
 
@@ -283,16 +285,18 @@ def resolve_username(client: Client, username: str) -> (str, int):
     peer_type = ""
     peer_id = 0
     try:
-        if username:
-            result = resolve_peer(client, username)
-            if result:
-                if isinstance(result, InputPeerChannel):
-                    peer_type = "channel"
-                    peer_id = result.channel_id
-                    peer_id = get_int(f"-100{peer_id}")
-                elif isinstance(result, InputPeerUser):
-                    peer_type = "user"
-                    peer_id = result.user_id
+        if not username:
+            return "", 0
+
+        result = resolve_peer(client, username)
+        if result:
+            if isinstance(result, InputPeerChannel):
+                peer_type = "channel"
+                peer_id = result.channel_id
+                peer_id = get_int(f"-100{peer_id}")
+            elif isinstance(result, InputPeerUser):
+                peer_type = "user"
+                peer_id = result.user_id
     except Exception as e:
         logger.warning(f"Resolve username error: {e}", exc_info=True)
 
@@ -333,24 +337,26 @@ def send_message(client: Client, cid: int, text: str, mid: int = None,
     # Send a message to a chat
     result = None
     try:
-        if text.strip():
-            flood_wait = True
-            while flood_wait:
-                flood_wait = False
-                try:
-                    result = client.send_message(
-                        chat_id=cid,
-                        text=text,
-                        parse_mode="html",
-                        disable_web_page_preview=True,
-                        reply_to_message_id=mid,
-                        reply_markup=markup
-                    )
-                except FloodWait as e:
-                    flood_wait = True
-                    wait_flood(e)
-                except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
-                    return False
+        if not text.strip():
+            return None
+
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.send_message(
+                    chat_id=cid,
+                    text=text,
+                    parse_mode="html",
+                    disable_web_page_preview=True,
+                    reply_to_message_id=mid,
+                    reply_markup=markup
+                )
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+            except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
+                return False
     except Exception as e:
         logger.warning(f"Send message to {cid} error: {e}", exc_info=True)
 
@@ -362,26 +368,28 @@ def send_report_message(secs: int, client: Client, cid: int, text: str, mid: int
     # Send a message that will be auto deleted to a chat
     result = None
     try:
-        if text.strip():
-            flood_wait = True
-            while flood_wait:
-                flood_wait = False
-                try:
-                    result = client.send_message(
-                        chat_id=cid,
-                        text=text,
-                        parse_mode="html",
-                        disable_web_page_preview=True,
-                        reply_to_message_id=mid,
-                        reply_markup=markup
-                    )
-                except FloodWait as e:
-                    flood_wait = True
-                    wait_flood(e)
+        if not text.strip():
+            return None
 
-            mid = result.message_id
-            mids = [mid]
-            delay(secs, delete_messages, [client, cid, mids])
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.send_message(
+                    chat_id=cid,
+                    text=text,
+                    parse_mode="html",
+                    disable_web_page_preview=True,
+                    reply_to_message_id=mid,
+                    reply_markup=markup
+                )
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+
+        mid = result.message_id
+        mids = [mid]
+        delay(secs, delete_messages, [client, cid, mids])
     except Exception as e:
         logger.warning(f"Send message to {cid} error: {e}", exc_info=True)
 
