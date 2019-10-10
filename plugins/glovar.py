@@ -176,7 +176,6 @@ lang: Dict[str, str] = {
     "action": (zh_cn and "执行操作") or "Action",
     "clear": (zh_cn and "清空数据") or "Clear Data",
     "colon": (zh_cn and "：") or ": ",
-    "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "description": (zh_cn and "说明") or "Description",
     "disabled": (zh_cn and "禁用") or "Disabled",
     "enabled": (zh_cn and "启用") or "Enabled",
@@ -298,6 +297,7 @@ lang: Dict[str, str] = {
     "sticker": (zh_cn and "匹配消息") or "Sticker",
     "user": (zh_cn and "用户") or "User",
     # Terminate
+    "custom_group": (zh_cn and "群组自定义") or "Group Custom",
     "auto_ban": (zh_cn and "自动封禁") or "Auto Ban",
     "auto_delete": (zh_cn and "自动删除") or "Auto Delete",
     "name_ban": (zh_cn and "名称封禁") or "Ban by Name",
