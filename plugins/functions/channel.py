@@ -269,6 +269,7 @@ def send_debug(client: Client, chat: Chat, action: str, uid: int, mid: int, em: 
         text += (f"{lang('user_id')}{lang('colon')}{code(uid)}\n"
                  f"{lang('action')}{lang('colon')}{code(action)}\n"
                  f"{lang('triggered_by')}{lang('colon')}{general_link(mid, message_link(em))}\n")
+
         if the_type:
             text += f"{lang('message_type')}{lang('colon')}{code(glovar.names[the_type])}\n"
 
