@@ -325,8 +325,11 @@ all_commands: List[str] = [
     "config_clean",
     "dafm",
     "purge",
-    "version",
-    "mention"
+    "purge_begin",
+    "pb",
+    "purge_end",
+    "pe",
+    "version"
 ]
 
 bot_ids: Set[int] = {avatar_id, captcha_id, clean_id, lang_id, long_id, noflood_id,
@@ -433,16 +436,10 @@ other_commands: Set[str] = {
     "long",
     "mention",
     "print",
-    "purge",
-    "purge_begin",
-    "pb",
-    "purge_end",
-    "pe",
     "report",
-    "t2s",
+    "t2t",
     "unban",
     "undo",
-    "version",
     "warn"
 }
 

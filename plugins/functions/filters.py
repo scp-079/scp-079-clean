@@ -265,7 +265,7 @@ def is_bmd(message: Message) -> bool:
     try:
         text = get_text(message)
         if (re.search("^/[a-z]|^/$", text, re.I) and "/" not in text.split(" ")[0][1:]
-                and not any([re.search(f"^/{c}$", text) for c in glovar.other_commands])):
+                and not any(re.search(f"^/{c}$", text) for c in glovar.other_commands)):
             if not get_command_type(message):
                 return True
     except Exception as e:
