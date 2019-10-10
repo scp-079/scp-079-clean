@@ -18,6 +18,7 @@
 
 import logging
 import pickle
+import re
 from copy import deepcopy
 from json import loads
 from typing import Any
@@ -33,7 +34,7 @@ from .filters import is_class_e, is_declared_message_id, is_detected_user_id, is
 from .group import get_message, leave_group
 from .ids import init_group_id, init_user_id
 from .image import get_image_hash
-from .telegram import send_message, send_report_message
+from .telegram import resolve_username, send_message, send_report_message
 from .timers import update_admins
 from .user import terminate_user
 
@@ -370,8 +371,19 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
         if not preview:
             return True
 
+        # Read the data
+        url = get_stripped_link(preview["url"])
         text = preview["text"]
         image = preview["image"]
+
+        # Bypass
+        link_username = re.match(r"t\.me/(.+?)/", f"{url}/")
+        if link_username:
+            link_username = link_username.group(1)
+            _, pid = resolve_username(client, link_username)
+            if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
+                return True
+
         if image:
             image_path = get_new_path()
             image.save(image_path, "PNG")
@@ -388,7 +400,6 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
             return True
 
         # Detect
-        url = get_stripped_link(preview["url"])
         detection = is_not_allowed(client, the_message, text, image_path)
         if detection:
             result = terminate_user(client, the_message, detection)
