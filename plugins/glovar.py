@@ -297,12 +297,12 @@ lang: Dict[str, str] = {
     "sticker": (zh_cn and "匹配消息") or "Sticker",
     "user": (zh_cn and "用户") or "User",
     # Terminate
-    "rule_custom": (zh_cn and "群组自定义") or "Custom Rule",
     "auto_ban": (zh_cn and "自动封禁") or "Auto Ban",
     "auto_delete": (zh_cn and "自动删除") or "Auto Delete",
     "name_ban": (zh_cn and "名称封禁") or "Ban by Name",
     "name_examine": (zh_cn and "名称检查") or "Name Examination",
     "op_upgrade": (zh_cn and "操作升级") or "Operation Upgrade",
+    "rule_custom": (zh_cn and "群组自定义") or "Custom Rule",
     "score_ban": (zh_cn and "评分封禁") or "Ban by Score",
     "score_user": (zh_cn and "用户评分") or "High Score",
     "watch_ban": (zh_cn and "追踪封禁") or "Watch Ban",
