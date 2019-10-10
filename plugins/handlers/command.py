@@ -442,7 +442,7 @@ def purge_begin(client: Client, message: Message) -> bool:
         text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('pur_begin'))}\n"
                 f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n"
-                f"{lang('triggered_by')}{lang('colon')}{general_link(mid, message_link(r_message))}\n")
+                f"{lang('triggered_by')}{lang('colon')}{general_link(r_mid, message_link(r_message))}\n")
         reason = get_command_type(message)
 
         if reason:
