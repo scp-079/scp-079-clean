@@ -20,7 +20,7 @@ import logging
 import re
 from typing import Union
 
-from pyrogram import Chat, Client, Filters, Message, User
+from pyrogram import Client, Filters, Message, User
 
 from .. import glovar
 from .channel import get_content
@@ -30,7 +30,7 @@ from .file import delete_file, get_downloaded_path, save
 from .group import get_description, get_group_sticker, get_pinned
 from .ids import init_group_id
 from .image import get_file_id, get_qrcode
-from .telegram import get_chat, get_chat_member, resolve_username
+from .telegram import get_chat_member, resolve_username
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -713,17 +713,12 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                 if link_username:
                     link_username = link_username.group(1)
                     if is_in_config(gid, "friend") or test:
-                        pid = 0
                         if link_username == "joinchat":
                             link_username = ""
-                            chat = get_chat(client, link)
-                            if chat and isinstance(chat, Chat):
-                                pid = chat.id
                         else:
                             _, pid = resolve_username(client, link_username)
-
-                        if pid and (pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {})):
-                            return True
+                            if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
+                                return True
 
                 if (f"{bypass}/" in f"{link}/"
                         or link in description
