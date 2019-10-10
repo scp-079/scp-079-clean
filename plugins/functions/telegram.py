@@ -19,7 +19,7 @@
 import logging
 from typing import Generator, Iterable, List, Optional, Union
 
-from pyrogram import Chat, ChatMember, Client, InlineKeyboardMarkup, Message
+from pyrogram import Chat, ChatMember, ChatPreview, Client, InlineKeyboardMarkup, Message
 from pyrogram.api.functions.users import GetFullUser
 from pyrogram.api.types import InputPeerUser, InputPeerChannel, UserFull
 from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
@@ -94,7 +94,7 @@ def get_admins(client: Client, cid: int) -> Optional[Union[bool, List[ChatMember
     return result
 
 
-def get_chat(client: Client, cid: Union[int, str]) -> Optional[Chat]:
+def get_chat(client: Client, cid: Union[int, str]) -> Optional[Union[Chat, ChatPreview]]:
     # Get a chat
     result = None
     try:
