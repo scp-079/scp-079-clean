@@ -745,34 +745,38 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
 
         # Check mentions
         entities = message.entities or message.caption_entities
-        if entities:
-            for en in entities:
-                if en.type == "mention":
-                    username = get_entity_text(message, en)[1:]
-                    if message.chat.username and username == message.chat.username:
+        if not entities:
+            return False
+
+        for en in entities:
+            if en.type != "mention":
+                continue
+
+            username = get_entity_text(message, en)[1:]
+            if message.chat.username and username == message.chat.username:
+                continue
+
+            if username in description:
+                continue
+
+            if username in pinned_text:
+                continue
+
+            peer_type, peer_id = resolve_username(client, username)
+            if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
+                if is_in_config(gid, "friend") or test:
+                    if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
                         continue
 
-                    if username in description:
-                        continue
+                return True
 
-                    if username in pinned_text:
-                        continue
+            if peer_type == "user":
+                member = get_chat_member(client, message.chat.id, peer_id)
+                if member is False:
+                    return True
 
-                    peer_type, peer_id = resolve_username(client, username)
-                    if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
-                        if is_in_config(gid, "friend") or test:
-                            if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
-                                continue
-
-                        return True
-
-                    if peer_type == "user":
-                        member = get_chat_member(client, message.chat.id, peer_id)
-                        if member is False:
-                            return True
-
-                        if member and member.status not in {"creator", "administrator", "member", "restricted"}:
-                            return True
+                if member and member.status not in {"creator", "administrator", "member", "restricted"}:
+                    return True
     except Exception as e:
         logger.warning(f"Is tgl error: {e}", exc_info=True)
 
