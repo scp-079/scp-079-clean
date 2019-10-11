@@ -170,7 +170,7 @@ def config(client: Client, message: Message) -> bool:
 
 
 @Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command(["config_clean"], glovar.prefix))
+                   & Filters.command([f"config_{glovar.sender.lower()}"], glovar.prefix))
 def config_directly(client: Client, message: Message) -> bool:
     # Config the bot directly
 
