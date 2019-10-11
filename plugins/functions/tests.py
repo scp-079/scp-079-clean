@@ -94,6 +94,7 @@ def clean_test(client: Client, message: Message) -> bool:
         if qrcode:
             text += f"{lang('qrc')}{lang('colon')}{code('True')}\n"
 
+        # Send the result
         if text:
             whitelisted = is_class_e(None, message) or image_hash in glovar.except_ids["temp"]
             text += f"{lang('white_listed')}{lang('colon')}{code(whitelisted)}\n"
