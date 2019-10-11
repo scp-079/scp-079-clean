@@ -451,7 +451,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             group_sticker = get_group_sticker(client, gid)
             if message.sticker:
                 sticker_name = message.sticker.set_name
-                if sticker_name == group_sticker:
+                if sticker_name and sticker_name == group_sticker:
                     return ""
 
             # Check detected records
