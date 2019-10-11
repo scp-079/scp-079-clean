@@ -763,7 +763,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                 continue
 
             peer_type, peer_id = resolve_username(client, username)
-            if peer_type == "channel" and peer_id not in glovar.except_ids["channels"]:
+            if peer_type == "channel":
                 if is_in_config(gid, "friend") or test:
                     if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
                         continue
@@ -775,7 +775,10 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                 if member is False:
                     return True
 
-                if member and member.status not in {"creator", "administrator", "member", "restricted"}:
+                if member:
+                    if member.status in {"creator", "administrator", "member", "restricted"}:
+                        continue
+
                     return True
     except Exception as e:
         logger.warning(f"Is tgl error: {e}", exc_info=True)
