@@ -426,7 +426,39 @@ def is_in_config(gid: int, the_type: str) -> bool:
     return False
 
 
-def is_new_user(user: User, now: int, joined: bool = False) -> bool:
+def is_limited_user(gid: int, user: User, now: int) -> bool:
+    # Check the user is limited
+    try:
+        if is_class_e_user(user):
+            return False
+
+        if glovar.configs[gid].get("new"):
+            if is_new_user(user, now, gid):
+                return True
+
+        uid = user.id
+
+        if not glovar.user_ids.get(uid, {}):
+            return False
+
+        if not glovar.user_ids[uid].get("join", {}):
+            return False
+
+        join = glovar.user_ids[uid]["join"].get(gid, 0)
+        if now - join < glovar.time_short:
+            return True
+
+        track = [gid for gid in glovar.user_ids[uid]["join"]
+                 if now - glovar.user_ids[uid]["join"][gid] < glovar.time_track]
+        if len(track) >= glovar.limit_track:
+            return True
+    except Exception as e:
+        logger.warning(f"Is limited user error: {e}", exc_info=True)
+
+    return False
+
+
+def is_new_user(user: User, now: int, gid: int = 0, joined: bool = False) -> bool:
     # Check if the message is sent from a new joined member
     try:
         if is_class_e_user(user):
@@ -443,10 +475,15 @@ def is_new_user(user: User, now: int, joined: bool = False) -> bool:
         if joined:
             return True
 
-        for gid in list(glovar.user_ids[uid]["join"]):
+        if gid:
             join = glovar.user_ids[uid]["join"].get(gid, 0)
             if now - join < glovar.time_new:
                 return True
+        else:
+            for gid in list(glovar.user_ids[uid]["join"]):
+                join = glovar.user_ids[uid]["join"].get(gid, 0)
+                if now - join < glovar.time_new:
+                    return True
     except Exception as e:
         logger.warning(f"Is new user error: {e}", exc_info=True)
 
@@ -738,7 +775,7 @@ def is_regex_text(word_type: str, text: str, again: bool = False) -> bool:
     return result
 
 
-def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
+def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
     # Check if the message includes the Telegram link
     try:
         # Bypass prepare
@@ -762,7 +799,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                         link_username = ""
                     else:
                         ptp, pid = resolve_username(client, link_username)
-                        if ptp == "channel" and (is_in_config(gid, "friend") or test):
+                        if ptp == "channel" and (glovar.configs[gid].get("friend") or friend):
                             if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
                                 return True
 
@@ -814,7 +851,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                 continue
 
             peer_type, peer_id = resolve_username(client, username)
-            if peer_type == "channel" and (is_in_config(gid, "friend") or test):
+            if peer_type == "channel" and (glovar.configs[gid].get("friend") or friend):
                 if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
                     continue
 
