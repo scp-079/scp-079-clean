@@ -779,6 +779,8 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
 
         bypass_list = [link for link in tg_links if is_bypass_link(link)]
         if len(bypass_list) != len(tg_links):
+            logger.warning(bypass_list)
+            logger.warning(tg_links)
             return True
 
         # Check text
@@ -815,17 +817,20 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                     if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
                         continue
 
+                logger.warning(en)
                 return True
 
             if peer_type == "user":
                 member = get_member(client, gid, peer_id)
                 if member is False:
+                    logger.warning(en)
                     return True
 
                 if member:
                     if member.status in {"creator", "administrator", "member", "restricted"}:
                         continue
 
+                    logger.warning(en)
                     return True
     except Exception as e:
         logger.warning(f"Is tgl error: {e}", exc_info=True)
