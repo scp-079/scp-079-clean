@@ -805,7 +805,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
 
                         if ptp == "user":
                             m = get_member(client, gid, pid)
-                            if m and m.status in {"creator", "administrator", "member", "restricted"}:
+                            if m and m.status in {"creator", "administrator", "member"}:
                                 return True
 
                 if (f"{bypass}/" in f"{link}/"
@@ -837,35 +837,39 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
             return False
 
         for en in entities:
-            if en.type != "mention":
-                continue
-
-            username = get_entity_text(message, en)[1:]
-            if message.chat.username and username == message.chat.username:
-                continue
-
-            if username in description:
-                continue
-
-            if username in pinned_text:
-                continue
-
-            peer_type, peer_id = resolve_username(client, username)
-            if peer_type == "channel" and (glovar.configs[gid].get("friend") or friend):
-                if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
+            if en.type == "mention":
+                username = get_entity_text(message, en)[1:]
+                if message.chat.username and username == message.chat.username:
                     continue
 
-                return True
+                if username in description:
+                    continue
 
-            if peer_type == "user":
-                member = get_member(client, gid, peer_id)
+                if username in pinned_text:
+                    continue
+
+                peer_type, peer_id = resolve_username(client, username)
+                if peer_type == "channel":
+                    if glovar.configs[gid].get("friend") or friend:
+                        if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
+                            continue
+                    return True
+
+                if peer_type == "user":
+                    member = get_member(client, gid, peer_id)
+                    if member is False:
+                        return True
+
+                    if member and member.status not in {"creator", "administrator", "member"}:
+                        return True
+
+            if en.type == "user":
+                uid = en.user.id
+                member = get_member(client, gid, uid)
                 if member is False:
                     return True
 
-                if member:
-                    if member.status in {"creator", "administrator", "member", "restricted"}:
-                        continue
-
+                if member and member.status not in {"creator", "administrator", "member"}:
                     return True
     except Exception as e:
         logger.warning(f"Is tgl error: {e}", exc_info=True)

@@ -45,10 +45,9 @@ def ask_for_help(client: Client, level: str, gid: int, uid: int, group: str = "s
         if level == "ban":
             data["delete"] = should_delete
         elif level == "delete":
+            data["type"] = group
             if not should_delete:
                 return True
-
-            data["type"] = group
 
         share_data(
             client=client,
