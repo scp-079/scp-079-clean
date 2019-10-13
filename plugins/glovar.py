@@ -373,6 +373,7 @@ default_config: Dict[str, Union[bool, int]] = {
     "default": True,
     "lock": 0,
     "delete": True,
+    "restrict": False,
     "friend": True,
     "con": True,
     "loc": True,
