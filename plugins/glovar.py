@@ -610,6 +610,7 @@ configs: Dict[int, Dict[str, Union[bool, int]]] = {}
 #         "default": False,
 #         "lock": 1512345678,
 #         "delete": True,
+#         "restrict": False,
 #         "friend": True,
 #         "con": True,
 #         "loc": True,
