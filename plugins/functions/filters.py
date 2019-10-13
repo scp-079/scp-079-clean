@@ -399,20 +399,27 @@ def is_exe(message: Message) -> bool:
     return False
 
 
-def is_high_score_user(message: Message) -> Union[bool, float]:
+def is_high_score_user(message: Union[Message, User]) -> float:
     # Check if the message is sent by a high score user
     try:
-        if message.from_user:
-            uid = message.from_user.id
-            user = glovar.user_ids.get(uid, {})
-            if user:
-                score = sum(user["score"].values())
-                if score >= 3.0:
-                    return score
+        if isinstance(message, Message):
+            user = message.from_user
+        else:
+            user = message
+
+        if not user:
+            return 0.0
+
+        uid = user.id
+        user_status = glovar.user_ids.get(uid, {})
+        if user_status:
+            score = sum(user_status["score"].values())
+            if score >= 3.0:
+                return score
     except Exception as e:
         logger.warning(f"Is high score user error: {e}", exc_info=True)
 
-    return False
+    return 0.0
 
 
 def is_in_config(gid: int, the_type: str) -> bool:
@@ -443,6 +450,9 @@ def is_limited_user(gid: int, user: User, now: int) -> bool:
 
         if not glovar.user_ids[uid].get("join", {}):
             return False
+
+        if is_high_score_user(user) >= 1.8:
+            return True
 
         join = glovar.user_ids[uid]["join"].get(gid, 0)
         if now - join < glovar.time_short:

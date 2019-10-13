@@ -24,11 +24,11 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import ask_for_help, forward_evidence, get_debug_text, send_debug, share_data
-from ..functions.etc import bold, code, delay, general_link, get_config_text, get_command_context, get_command_type
-from ..functions.etc import get_now, lang, message_link, thread, user_mention
+from ..functions.etc import bold, code, delay, general_link, get_command_context, get_command_type, get_now, lang
+from ..functions.etc import message_link, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import from_user, is_class_c, test_group
-from ..functions.group import delete_message
+from ..functions.group import delete_message, get_config_text
 from ..functions.ids import init_group_id
 from ..functions.telegram import delete_messages, get_group_info, send_message, send_report_message
 

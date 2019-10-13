@@ -187,37 +187,6 @@ def get_command_type(message: Message) -> str:
     return result
 
 
-def get_config_text(config: dict) -> str:
-    # Get config text
-    result = ""
-    try:
-        # Basic
-        default_text = (lambda x: lang("default") if x else lang("custom"))(config.get("default"))
-        delete_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("delete"))
-        restrict_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("restrict"))
-        result += (f"{lang('config')}{lang('colon')}{code(default_text)}\n"
-                   f"{lang('delete')}{lang('colon')}{code(delete_text)}\n"
-                   f"{lang('restrict')}{lang('colon')}{code(restrict_text)}\n")
-
-        # Friend Link
-        friend_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("friend"))
-        result += f"{lang('friend')}{lang('colon')}{code(friend_text)}\n"
-
-        # Types
-        for name in glovar.types["all"]:
-            name_text = (lambda x: lang('filter') if x else lang('ignore'))(config.get(name))
-            result += f"{lang(name)}{lang('colon')}{code(name_text)}\n"
-
-        # Functions
-        for name in glovar.types["function"]:
-            name_text = (lambda x: lang('enabled') if x else lang('disabled'))(config.get(name))
-            result += f"{lang(name)}{lang('colon')}{code(name_text)}\n"
-    except Exception as e:
-        logger.warning(f"Get config text error: {e}", exc_info=True)
-
-    return result
-
-
 def get_entity_text(message: Message, entity: MessageEntity) -> str:
     # Get a message's entity text
     result = ""

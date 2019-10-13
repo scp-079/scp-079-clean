@@ -22,7 +22,7 @@ from typing import Optional
 from pyrogram import Chat, ChatMember, Client, Message
 
 from .. import glovar
-from .etc import thread
+from .etc import code, lang, thread
 from .file import save
 from .telegram import delete_messages, get_chat, get_chat_member, get_messages, leave_chat
 
@@ -44,6 +44,37 @@ def delete_message(client: Client, gid: int, mid: int) -> bool:
         logger.warning(f"Delete message error: {e}", exc_info=True)
 
     return False
+
+
+def get_config_text(config: dict) -> str:
+    # Get config text
+    result = ""
+    try:
+        # Basic
+        default_text = (lambda x: lang("default") if x else lang("custom"))(config.get("default"))
+        delete_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("delete"))
+        restrict_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("restrict"))
+        result += (f"{lang('config')}{lang('colon')}{code(default_text)}\n"
+                   f"{lang('delete')}{lang('colon')}{code(delete_text)}\n"
+                   f"{lang('restrict')}{lang('colon')}{code(restrict_text)}\n")
+
+        # Friend Link
+        friend_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("friend"))
+        result += f"{lang('friend')}{lang('colon')}{code(friend_text)}\n"
+
+        # Types
+        for name in glovar.types["all"]:
+            name_text = (lambda x: lang('filter') if x else lang('ignore'))(config.get(name))
+            result += f"{lang(name)}{lang('colon')}{code(name_text)}\n"
+
+        # Functions
+        for name in glovar.types["function"]:
+            name_text = (lambda x: lang('enabled') if x else lang('disabled'))(config.get(name))
+            result += f"{lang(name)}{lang('colon')}{code(name_text)}\n"
+    except Exception as e:
+        logger.warning(f"Get config text error: {e}", exc_info=True)
+
+    return result
 
 
 def get_description(client: Client, gid: int) -> str:
