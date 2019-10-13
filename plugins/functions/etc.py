@@ -194,8 +194,10 @@ def get_config_text(config: dict) -> str:
         # Basic
         default_text = (lambda x: lang("default") if x else lang("custom"))(config.get("default"))
         delete_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("delete"))
+        restrict_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("restrict"))
         result += (f"{lang('config')}{lang('colon')}{code(default_text)}\n"
-                   f"{lang('delete')}{lang('colon')}{code(delete_text)}\n")
+                   f"{lang('delete')}{lang('colon')}{code(delete_text)}\n"
+                   f"{lang('restrict')}{lang('colon')}{code(restrict_text)}\n")
 
         # Friend Link
         friend_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("friend"))
