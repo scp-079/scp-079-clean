@@ -214,6 +214,7 @@ lang: Dict[str, str] = {
     "custom": (zh_cn and "自定义") or "Custom",
     "default": (zh_cn and "默认") or "Default",
     "delete": (zh_cn and "协助删除") or "Help Delete",
+    "restrict": (zh_cn and "禁言模式") or "Restriction Mode",
     "friend": (zh_cn and "放行友链") or "Ignore Friend Links",
     "filter": (zh_cn and "过滤") or "Filter",
     "ignore": (zh_cn and "忽略") or "Ignore",
