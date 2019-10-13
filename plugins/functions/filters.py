@@ -770,6 +770,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                             m = get_member(client, gid, pid)
                             if m and m.status in {"creator", "administrator", "member", "restricted"}:
                                 return True
+
                 if (f"{bypass}/" in f"{link}/"
                         or link in description
                         or (link_username and link_username in description)
