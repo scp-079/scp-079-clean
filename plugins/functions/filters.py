@@ -28,7 +28,7 @@ from .channel import get_content
 from .etc import get_channel_link, get_command_type, get_entity_text, get_now, get_links, get_md5sum
 from .etc import get_stripped_link, get_text
 from .file import delete_file, get_downloaded_path, save
-from .group import get_description, get_group, get_group_sticker, get_member, get_pinned
+from .group import get_description, get_group_sticker, get_member, get_pinned
 from .ids import init_group_id
 from .image import get_file_id, get_qrcode
 from .telegram import resolve_username
@@ -758,14 +758,18 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                 link_username = re.match(r"t\.me/(.+?)/", f"{link}/")
                 if link_username:
                     link_username = link_username.group(1)
-                    if is_in_config(gid, "friend") or test:
-                        if link_username == "joinchat":
-                            link_username = ""
-                        else:
-                            _, pid = resolve_username(client, link_username)
+                    if link_username == "joinchat":
+                        link_username = ""
+                    else:
+                        ptp, pid = resolve_username(client, link_username)
+                        if ptp == "channel" and (is_in_config(gid, "friend") or test):
                             if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
                                 return True
 
+                        if ptp == "user":
+                            m = get_member(client, gid, peer_id)
+                            if m and m.status in {"creator", "administrator", "member", "restricted"}:
+                                return True
                 if (f"{bypass}/" in f"{link}/"
                         or link in description
                         or (link_username and link_username in description)
@@ -779,11 +783,6 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
 
         bypass_list = [link for link in tg_links if is_bypass_link(link)]
         if len(bypass_list) != len(tg_links):
-            logger.warning(get_group(client, gid))
-            logger.warning(description)
-            logger.warning(pinned_text)
-            logger.warning(bypass_list)
-            logger.warning(tg_links)
             return True
 
         # Check text
@@ -814,10 +813,9 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                 continue
 
             peer_type, peer_id = resolve_username(client, username)
-            if peer_type == "channel":
-                if is_in_config(gid, "friend") or test:
-                    if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
-                        continue
+            if peer_type == "channel" and (is_in_config(gid, "friend") or test):
+                if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
+                    continue
 
                 return True
 
