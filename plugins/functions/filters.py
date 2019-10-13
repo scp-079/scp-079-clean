@@ -767,7 +767,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                                 return True
 
                         if ptp == "user":
-                            m = get_member(client, gid, peer_id)
+                            m = get_member(client, gid, pid)
                             if m and m.status in {"creator", "administrator", "member", "restricted"}:
                                 return True
                 if (f"{bypass}/" in f"{link}/"
