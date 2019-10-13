@@ -454,7 +454,7 @@ def get_stripped_link(link: str) -> str:
     return result
 
 
-def get_text(message: Message, normal: bool = True) -> str:
+def get_text(message: Message, normal: bool = False) -> str:
     # Get message's text, including links and buttons
     text = ""
     try:

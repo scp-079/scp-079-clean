@@ -26,7 +26,7 @@ from string import ascii_lowercase
 from threading import Lock
 from typing import Dict, List, Set, Tuple, Union
 
-from pyrogram import Chat
+from pyrogram import Chat, ChatMember
 
 # Enable logging
 logging.basicConfig(
@@ -71,12 +71,15 @@ backup: Union[bool, str] = ""
 date_reset: str = ""
 default_group_link: str = ""
 image_size: int = 0
+limit_track: int = 0
 project_link: str = ""
 project_name: str = ""
 time_ban: int = 0
 time_new: int = 0
 time_punish: int = 0
+time_short: int = 0
 time_sticker: int = 0
+time_track: int = 0
 zh_cn: Union[bool, str] = ""
 
 # [encrypt]
@@ -115,12 +118,15 @@ try:
     date_reset = config["custom"].get("date_reset", date_reset)
     default_group_link = config["custom"].get("default_group_link", default_group_link)
     image_size = int(config["custom"].get("image_size", image_size))
+    limit_track = int(config["custom"].get("limit_track", limit_track))
     project_link = config["custom"].get("project_link", project_link)
     project_name = config["custom"].get("project_name", project_name)
     time_ban = int(config["custom"].get("time_ban", time_ban))
     time_new = int(config["custom"].get("time_new", time_new))
     time_punish = int(config["custom"].get("time_punish", time_punish))
+    time_short = int(config["custom"].get("time_short", time_short))
     time_sticker = int(config["custom"].get("time_sticker", time_sticker))
+    time_track = int(config["custom"].get("time_track", time_track))
     zh_cn = config["custom"].get("zh_cn", zh_cn)
     zh_cn = eval(zh_cn)
     # [encrypt]
@@ -155,12 +161,15 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or date_reset in {"", "[DATA EXPUNGED]"}
         or default_group_link in {"", "[DATA EXPUNGED]"}
         or image_size == 0
+        or limit_track == 0
         or project_link in {"", "[DATA EXPUNGED]"}
         or project_name in {"", "[DATA EXPUNGED]"}
         or time_ban == 0
         or time_new == 0
         or time_punish == 0
+        or time_short == 0
         or time_sticker == 0
+        or time_track == 0
         or zh_cn not in {False, True}
         or key in {b"", b"[DATA EXPUNGED]", "", "[DATA EXPUNGED]"}
         or password in {"", "[DATA EXPUNGED]"}):
@@ -416,6 +425,13 @@ locks: Dict[str, Lock] = {
     "text": Lock()
 }
 
+members: Dict[int, Dict[int, ChatMember]] = {}
+# members = {
+#     -10012345678: {
+#         12345678: ChatMember
+#     }
+# }
+
 other_commands: Set[str] = {
     "admin",
     "admins",
@@ -495,7 +511,7 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
 }
 
-version: str = "0.1.8"
+version: str = "0.1.9"
 
 # Load data from pickle
 

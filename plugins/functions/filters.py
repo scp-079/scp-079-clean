@@ -28,10 +28,10 @@ from .channel import get_content
 from .etc import get_channel_link, get_command_type, get_entity_text, get_now, get_links, get_md5sum
 from .etc import get_stripped_link, get_text
 from .file import delete_file, get_downloaded_path, save
-from .group import get_description, get_group_sticker, get_pinned
+from .group import get_description, get_group_sticker, get_member, get_pinned
 from .ids import init_group_id
 from .image import get_file_id, get_qrcode
-from .telegram import get_chat_member, resolve_username
+from .telegram import resolve_username
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -782,11 +782,12 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
             return True
 
         # Check text
-        text = get_text(message)
+        message_text = get_text(message, True)
         for bypass in bypass_list:
-            text = text.replace(bypass, "")
+            message_text = message_text.replace(bypass, "")
 
-        if is_regex_text("tgl", text):
+        if is_regex_text("tgl", message_text):
+            logger.warning(message_text)
             return True
 
         # Check mentions
@@ -817,7 +818,7 @@ def is_tgl(client: Client, message: Message, test: bool = False) -> bool:
                 return True
 
             if peer_type == "user":
-                member = get_chat_member(client, message.chat.id, peer_id)
+                member = get_member(client, gid, peer_id)
                 if member is False:
                     return True
 
