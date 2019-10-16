@@ -1,6 +1,6 @@
 APScheduler==3.6.1
-asn1crypto==1.0.1
-cffi==1.12.3
+asn1crypto==1.1.0
+cffi==1.13.0
 cryptography==2.7
 OpenCC==0.2
 Pillow==6.2.0
