@@ -110,6 +110,7 @@ def clean_test(client: Client, message: Message) -> bool:
             text = f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n" + text
 
             # Show emoji
+            logger.warning(message_text)
             emoji_dict = {}
             emoji_list = [emoji for emoji in glovar.emoji_set
                           if emoji in message_text and emoji not in glovar.emoji_protect]
