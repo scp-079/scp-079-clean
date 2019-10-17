@@ -545,8 +545,8 @@ def is_nm_text(text: str) -> bool:
     # Check if the text is nm text
     try:
         if (is_regex_text("nm", text)
-                or is_ban_text(text)
-                or is_regex_text("bio", text)):
+                or is_regex_text("bio", text)
+                or is_ban_text(text)):
             return True
     except Exception as e:
         logger.warning(f"Is nm text error: {e}", exc_info=True)
