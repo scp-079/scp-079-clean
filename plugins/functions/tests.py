@@ -119,7 +119,7 @@ def clean_test(client: Client, message: Message) -> bool:
             if emoji_dict:
                 text += f"{lang('emoji_total')}{lang('colon')}{code(sum(emoji_dict.values()))}\n\n"
                 for emoji in emoji_dict:
-                    text += "\t" * 4 + f"{emoji_dict[emoji]}    {code(emoji_dict[emoji])}\n"
+                    text += "\t" * 4 + f"{emoji}    {code(emoji_dict[emoji])}\n"
 
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
