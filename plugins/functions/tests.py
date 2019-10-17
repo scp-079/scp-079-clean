@@ -20,12 +20,11 @@ import logging
 import re
 from copy import deepcopy
 
-from emoji import UNICODE_EMOJI
 from pyrogram import Client, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import code, get_md5sum, get_text, italic, lang, thread, user_mention
+from .etc import code, get_md5sum, get_text, lang, thread, user_mention
 from .file import delete_file, get_downloaded_path
 from .filters import is_bmd, is_class_e, is_detected_url, is_emoji, is_exe, is_regex_text, is_tgl
 from .image import get_file_id, get_qrcode
@@ -111,11 +110,11 @@ def clean_test(client: Client, message: Message) -> bool:
             text = f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n" + text
 
             # Show emoji
-            logger.warning(message_text)
             emoji_dict = {}
             emoji_set = {emoji for emoji in glovar.emoji_set
                          if emoji in message_text and emoji not in glovar.emoji_protect}
             emoji_old_set = deepcopy(emoji_set)
+
             for emoji in emoji_old_set:
                 if any(emoji in emoji_old and emoji != emoji_old for emoji_old in emoji_old_set):
                     emoji_set.discard(emoji)
@@ -126,7 +125,7 @@ def clean_test(client: Client, message: Message) -> bool:
             if emoji_dict:
                 text += f"{lang('emoji_total')}{lang('colon')}{code(sum(emoji_dict.values()))}\n\n"
                 for emoji in emoji_dict:
-                    text += "\t" * 4 + f"{emoji}    {code(emoji_dict[emoji])}    {italic(UNICODE_EMOJI[emoji])}\n"
+                    text += "\t" * 4 + f"{emoji}    {code(emoji_dict[emoji])}\n"
 
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 

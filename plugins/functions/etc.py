@@ -463,18 +463,6 @@ def get_text(message: Message, normal: bool = False) -> str:
     return text
 
 
-def italic(text: Any) -> str:
-    # Get italic text
-    try:
-        text = str(text)
-        if text:
-            return f"<i>{escape(str(text))}</i>"
-    except Exception as e:
-        logger.warning(f"Italic error: {e}", exc_info=True)
-
-    return ""
-
-
 def lang(text: str) -> str:
     # Get the text
     result = ""
