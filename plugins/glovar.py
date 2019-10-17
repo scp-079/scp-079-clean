@@ -545,6 +545,14 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "spam": {"aff", "emo", "exe", "iml", "pho", "sho", "tgl", "tgp", "qrc", "true"}
 }
 
+usernames: Dict[str, Dict[str, Union[int, str]]] = {}
+# usernames = {
+#     "SCP_079": {
+#         "peer_type": "channel",
+#         "peer_id": -1001196128009
+#     }
+# }
+
 version: str = "0.2.0"
 
 # Load data from pickle
