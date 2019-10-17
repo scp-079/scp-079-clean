@@ -103,30 +103,29 @@ def clean_test(client: Client, message: Message) -> bool:
         if qrcode:
             text += f"{lang('qrc')}{lang('colon')}{code('True')}\n"
 
+        # Show emoji
+        emoji_dict = {}
+        emoji_set = {emoji for emoji in glovar.emoji_set
+                     if emoji in message_text and emoji not in glovar.emoji_protect}
+        emoji_old_set = deepcopy(emoji_set)
+
+        for emoji in emoji_old_set:
+            if any(emoji in emoji_old and emoji != emoji_old for emoji_old in emoji_old_set):
+                emoji_set.discard(emoji)
+
+        for emoji in emoji_set:
+            emoji_dict[emoji] = message_text.count(emoji)
+
+        if emoji_dict:
+            text += f"{lang('emoji_total')}{lang('colon')}{code(sum(emoji_dict.values()))}\n\n"
+            for emoji in emoji_dict:
+                text += "\t" * 4 + f"{emoji}    {code(emoji_dict[emoji])}\n"
+
         # Send the result
         if text:
             whitelisted = is_class_e(None, message) or image_hash in glovar.except_ids["temp"]
-            text += f"{lang('white_listed')}{lang('colon')}{code(whitelisted)}\n"
+            text = f"{lang('white_listed')}{lang('colon')}{code(whitelisted)}\n" + text
             text = f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n" + text
-
-            # Show emoji
-            emoji_dict = {}
-            emoji_set = {emoji for emoji in glovar.emoji_set
-                         if emoji in message_text and emoji not in glovar.emoji_protect}
-            emoji_old_set = deepcopy(emoji_set)
-
-            for emoji in emoji_old_set:
-                if any(emoji in emoji_old and emoji != emoji_old for emoji_old in emoji_old_set):
-                    emoji_set.discard(emoji)
-
-            for emoji in emoji_set:
-                emoji_dict[emoji] = message_text.count(emoji)
-
-            if emoji_dict:
-                text += f"{lang('emoji_total')}{lang('colon')}{code(sum(emoji_dict.values()))}\n\n"
-                for emoji in emoji_dict:
-                    text += "\t" * 4 + f"{emoji}    {code(emoji_dict[emoji])}\n"
-
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
         return True
