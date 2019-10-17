@@ -18,6 +18,7 @@
 
 import logging
 import re
+from copy import deepcopy
 
 from emoji import UNICODE_EMOJI
 from pyrogram import Client, Message
@@ -112,11 +113,14 @@ def clean_test(client: Client, message: Message) -> bool:
             # Show emoji
             logger.warning(message_text)
             emoji_dict = {}
-            emoji_list = [emoji for emoji in glovar.emoji_set
-                          if emoji in message_text and emoji not in glovar.emoji_protect]
+            emoji_set = {emoji for emoji in glovar.emoji_set if emoji in text and emoji not in glovar.emoji_protect}
+            emoji_old_set = deepcopy(emoji_set)
+            for emoji in emoji_old_set:
+                if any(emoji in emoji_old for emoji_old in emoji_old_set):
+                    emoji_set.discard(emoji)
 
-            for emoji in emoji_list:
-                emoji_dict[emoji] = message_text.count(emoji)
+            for emoji in emoji_set:
+                emoji_dict[emoji] = text.count(emoji)
 
             if emoji_dict:
                 text += f"{lang('emoji_total')}{lang('colon')}{code(sum(emoji_dict.values()))}\n\n"
