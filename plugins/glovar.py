@@ -18,6 +18,7 @@
 
 import logging
 import pickle
+from codecs import getdecoder
 from configparser import RawConfigParser
 from os import mkdir
 from os.path import exists
@@ -26,6 +27,7 @@ from string import ascii_lowercase
 from threading import Lock
 from typing import Dict, List, Set, Tuple, Union
 
+from emoji import UNICODE_EMOJI
 from pyrogram import Chat, ChatMember
 
 # Enable logging
@@ -82,6 +84,13 @@ time_sticker: int = 0
 time_track: int = 0
 zh_cn: Union[bool, str] = ""
 
+# [emoji]
+emoji_ad_single: int = 0
+emoji_ad_total: int = 0
+emoji_protect: str = ""
+emoji_wb_single: int = 0
+emoji_wb_total: int = 0
+
 # [encrypt]
 key: Union[bytes, str] = ""
 password: str = ""
@@ -129,6 +138,12 @@ try:
     time_track = int(config["custom"].get("time_track", time_track))
     zh_cn = config["custom"].get("zh_cn", zh_cn)
     zh_cn = eval(zh_cn)
+    # [emoji]
+    emoji_ad_single = int(config["emoji"].get("emoji_ad_single", emoji_ad_single))
+    emoji_ad_total = int(config["emoji"].get("emoji_ad_total", emoji_ad_total))
+    emoji_protect = getdecoder("unicode_escape")(config["emoji"].get("emoji_protect", emoji_protect))[0]
+    emoji_wb_single = int(config["emoji"].get("emoji_wb_single", emoji_wb_single))
+    emoji_wb_total = int(config["emoji"].get("emoji_wb_total", emoji_wb_total))
     # [encrypt]
     key = config["encrypt"].get("key", key)
     key = key.encode("utf-8")
@@ -171,6 +186,11 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or time_sticker == 0
         or time_track == 0
         or zh_cn not in {False, True}
+        or emoji_ad_single == 0
+        or emoji_ad_total == 0
+        or emoji_protect in {"", "[DATA EXPUNGED]"}
+        or emoji_wb_single == 0
+        or emoji_wb_total == 0
         or key in {b"", b"[DATA EXPUNGED]", "", "[DATA EXPUNGED]"}
         or password in {"", "[DATA EXPUNGED]"}):
     logger.critical("No proper settings")
@@ -279,8 +299,10 @@ lang: Dict[str, str] = {
     "vid": (zh_cn and "视频") or "Video",
     "sti": (zh_cn and "贴纸") or "Sticker",
     "aff": (zh_cn and "推广链接") or "AFF Link",
+    "emo": (zh_cn and "过多 Emoji") or "Too Many Emoji Characters",
     "exe": (zh_cn and "可执行文件") or "Executable File",
     "iml": (zh_cn and "即时通讯联系方式") or "IM Link",
+    "pho": (zh_cn and "电话号码") or "Phone Number",
     "sho": (zh_cn and "短链接") or "Short Link",
     "tgl": (zh_cn and "TG 链接") or "Telegram Link",
     "tgp": (zh_cn and "TG 代理") or "Telegram Proxy",
@@ -323,6 +345,7 @@ lang: Dict[str, str] = {
     "record_content": (zh_cn and "过滤记录") or "Recorded content",
     "record_link": (zh_cn and "过滤链接") or "Recorded link",
     "white_listed": (zh_cn and "白名单") or "White Listed",
+    "emoji_total": (zh_cn and "Emoji 总数") or "Total Emoji Characters",
     # Unit
     "members": (zh_cn and "名") or "member(s)",
     "messages": (zh_cn and "条") or "message(s)"
@@ -390,8 +413,10 @@ default_config: Dict[str, Union[bool, int]] = {
     "ser": True,
     "sti": False,
     "aff": False,
+    "emo": False,
     "exe": False,
     "iml": False,
+    "pho": False,
     "sho": False,
     "tgl": False,
     "tgp": False,
@@ -416,6 +441,8 @@ default_user_status: Dict[str, Dict[Union[int, str], Union[float, int]]] = {
         "warn": 0.0
     }
 }
+
+emoji_set: Set[str] = set(UNICODE_EMOJI)
 
 left_group_ids: Set[int] = set()
 
@@ -491,6 +518,7 @@ regex: Dict[str, bool] = {
     "fil": False,
     "iml": True,
     "nm": False,
+    "pho": False,
     "sho": True,
     "spc": False,
     "spe": False,
@@ -507,13 +535,14 @@ sender: str = "CLEAN"
 should_hide: bool = False
 
 types: Dict[str, Union[List[str], Set[str]]] = {
-    "all": ["con", "loc", "vdn", "voi", "ast", "aud", "bmd", "doc", "gam", "gif",
-            "via", "vid", "ser", "sti", "aff", "exe", "iml", "sho", "tgl", "tgp", "qrc"],
+    "all": ["con", "loc", "vdn", "voi",
+            "ast", "aud", "bmd", "doc", "gam", "gif", "via", "vid", "ser", "sti",
+            "aff", "emo", "exe", "iml", "pho", "sho", "tgl", "tgp", "qrc"],
     "function": ["sde", "tcl", "ttd"],
-    "spam": {"aff", "exe", "iml", "qrc", "sho", "tgl", "tgp", "true"}
+    "spam": {"aff", "emo", "exe", "iml", "pho", "sho", "tgl", "tgp", "qrc", "true"}
 }
 
-version: str = "0.1.9"
+version: str = "0.2.0"
 
 # Load data from pickle
 
@@ -627,8 +656,10 @@ configs: Dict[int, Dict[str, Union[bool, int]]] = {}
 #         "ser": True,
 #         "sti": False,
 #         "aff": True,
+#         "emo": True,
 #         "exe": True,
 #         "iml": True,
+#         "pho": True,
 #         "sho": True,
 #         "tgl": True,
 #         "tgp": True,
