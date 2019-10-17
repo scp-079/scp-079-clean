@@ -107,6 +107,17 @@ def clean_test(client: Client, message: Message) -> bool:
             whitelisted = is_class_e(None, message) or image_hash in glovar.except_ids["temp"]
             text += f"{lang('white_listed')}{lang('colon')}{code(whitelisted)}\n"
             text = f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n" + text
+
+            # Show emoji
+            emoji_dict = {}
+            emoji_list = [emoji for emoji in glovar.emoji_set if emoji in text and emoji not in glovar.emoji_protect]
+            for emoji in emoji_list:
+                emoji_dict[emoji] = text.count(emoji)
+            if emoji_dict:
+                text += f"{lang('emoji_total')}{lang('colon')}{code(sum(emoji_dict.values()))}\n\n"
+                for emoji in emoji_dict:
+                    text += "\t" * 4 + f"{emoji_dict[emoji]}    {code(emoji_dict[emoji])}\n"
+
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
         return True
