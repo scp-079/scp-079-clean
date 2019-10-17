@@ -396,7 +396,7 @@ def is_emoji(the_type: str, text: str) -> bool:
 
         # Check many
         elif the_type == "many":
-            if sum(emoji_dict.values()) >= 15:
+            if sum(emoji_dict.values()) >= glovar.emoji_many:
                 return True
 
         # Check wb

@@ -87,6 +87,7 @@ zh_cn: Union[bool, str] = ""
 # [emoji]
 emoji_ad_single: int = 0
 emoji_ad_total: int = 0
+emoji_many: int = 0
 emoji_protect: str = ""
 emoji_wb_single: int = 0
 emoji_wb_total: int = 0
@@ -141,6 +142,7 @@ try:
     # [emoji]
     emoji_ad_single = int(config["emoji"].get("emoji_ad_single", emoji_ad_single))
     emoji_ad_total = int(config["emoji"].get("emoji_ad_total", emoji_ad_total))
+    emoji_many = int(config["emoji"].get("emoji_many", emoji_many))
     emoji_protect = getdecoder("unicode_escape")(config["emoji"].get("emoji_protect", emoji_protect))[0]
     emoji_wb_single = int(config["emoji"].get("emoji_wb_single", emoji_wb_single))
     emoji_wb_total = int(config["emoji"].get("emoji_wb_total", emoji_wb_total))
@@ -188,6 +190,7 @@ if (bot_token in {"", "[DATA EXPUNGED]"}
         or zh_cn not in {False, True}
         or emoji_ad_single == 0
         or emoji_ad_total == 0
+        or emoji_many == 0
         or emoji_protect in {"", "[DATA EXPUNGED]"}
         or emoji_wb_single == 0
         or emoji_wb_total == 0
