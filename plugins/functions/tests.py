@@ -116,7 +116,7 @@ def clean_test(client: Client, message: Message) -> bool:
             emoji_set = {emoji for emoji in glovar.emoji_set if emoji in text and emoji not in glovar.emoji_protect}
             emoji_old_set = deepcopy(emoji_set)
             for emoji in emoji_old_set:
-                if any(emoji in emoji_old for emoji_old in emoji_old_set):
+                if any(emoji in emoji_old for emoji_old in emoji_old_set if emoji != emoji_old):
                     emoji_set.discard(emoji)
 
             for emoji in emoji_set:
