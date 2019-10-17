@@ -202,7 +202,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         mid=mid,
                         em=result
                     )
-            elif is_watch_user(message, "delete") and the_type in {"aff", "exe", "iml", "qrc", "tgp"}:
+            elif is_watch_user(message, "delete") and the_type in {"aff", "exe", "iml", "pho", "tgp", "qrc"}:
                 result = forward_evidence(
                     client=client,
                     message=message,
@@ -227,7 +227,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     )
             elif ((is_new_user(message.from_user, now, 0, True) and the_type in {"exe", "qrc"})
                   or (is_new_user(message.from_user, now, gid) and the_type in {"aff", "sho", "tgp"})
-                  or (is_limited_user(gid, message.from_user, now) and the_type in {"iml", "tgl"})):
+                  or (is_limited_user(gid, message.from_user, now) and the_type in {"iml", "pho", "tgl"})):
                 result = forward_evidence(
                     client=client,
                     message=message,
