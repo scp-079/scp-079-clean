@@ -594,11 +594,16 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                 if is_detected_user(message):
                     return "true"
 
-                # If the message has been detected
+                # Content
                 if message_content:
                     detection = glovar.contents.get(message_content, "")
                     if detection and is_in_config(gid, detection):
                         return detection
+
+                # Url
+                detected_url = is_detected_url(message)
+                if is_in_config(gid, detected_url):
+                    return detected_url
 
             # Privacy messages
 

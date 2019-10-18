@@ -26,7 +26,7 @@ from ..functions.etc import code, delay, general_link, get_filename, get_forward
 from ..functions.etc import lang, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
-from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, is_detected_url, is_high_score_user
+from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, is_high_score_user
 from ..functions.filters import is_in_config, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
 from ..functions.filters import new_group, test_group
 from ..functions.group import delete_message, leave_group
@@ -104,11 +104,6 @@ def check(client: Client, message: Message) -> bool:
         # Check declare status
         if is_declared_message(None, message):
             return True
-
-        # Detected url
-        detection = is_detected_url(message)
-        if detection:
-            return terminate_user(client, message, detection)
 
         # Not allowed message
         content = get_content(message)
