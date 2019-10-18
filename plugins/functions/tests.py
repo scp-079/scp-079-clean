@@ -107,15 +107,17 @@ def clean_test(client: Client, message: Message) -> bool:
         # Show emoji
         emoji_dict = {}
         emoji_set = {emoji for emoji in glovar.emoji_set
-                     if emoji in origin_text and emoji not in glovar.emoji_protect}
+                     if emoji in message_text and emoji not in glovar.emoji_protect}
+        logger.warning(emoji_set)
         emoji_old_set = deepcopy(emoji_set)
 
         for emoji in emoji_old_set:
             if any(emoji in emoji_old and emoji != emoji_old for emoji_old in emoji_old_set):
                 emoji_set.discard(emoji)
 
+        logger.warning(emoji_set)
         for emoji in emoji_set:
-            emoji_dict[emoji] = origin_text.count(emoji)
+            emoji_dict[emoji] = message_text.count(emoji)
 
         if emoji_dict:
             text += f"{lang('emoji_total')}{lang('colon')}{code(sum(emoji_dict.values()))}\n\n"
