@@ -115,7 +115,6 @@ def clean_test(client: Client, message: Message) -> bool:
             if any(emoji in emoji_old and emoji != emoji_old for emoji_old in emoji_old_set):
                 emoji_set.discard(emoji)
 
-        logger.warning(emoji_set)
         for emoji in emoji_set:
             emoji_dict[emoji] = emoji_text.count(emoji)
 
