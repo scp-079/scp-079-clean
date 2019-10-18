@@ -24,7 +24,7 @@ from pyrogram import Client, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import code, get_md5sum, get_text, lang, thread, user_mention
+from .etc import code, get_int, get_md5sum, get_text, lang, thread, user_mention
 from .file import delete_file, get_downloaded_path
 from .filters import is_bmd, is_class_e, is_detected_url, is_emoji, is_exe, is_regex_text, is_tgl
 from .image import get_file_id, get_qrcode
@@ -38,8 +38,9 @@ def clean_test(client: Client, message: Message) -> bool:
     # Test image porn score in the test group
     try:
         message_text = get_text(message, True)
+        logger.warning(message_text)
         if re.search(f"^{lang('admin')}{lang('colon')}[0-9]", message_text):
-            return True
+            aid = get_int(message_text.split("\n\n")[0].split(lang('colon'))[1])
         else:
             aid = message.from_user.id
 
