@@ -106,6 +106,8 @@ def clean_test(client: Client, message: Message) -> bool:
 
         # Show emoji
         emoji_dict = {}
+        logger.warning(message_text)
+        logger.warning(message_text in glovar.emoji_set)
         emoji_set = {emoji for emoji in glovar.emoji_set
                      if emoji in message_text and emoji not in glovar.emoji_protect}
         logger.warning(emoji_set)
