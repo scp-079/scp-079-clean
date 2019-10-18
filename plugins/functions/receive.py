@@ -546,6 +546,9 @@ def receive_remove_except(client: Client, data: dict) -> bool:
             else:
                 return True
 
+            if (message.sticker or message.via_bot) and record["more"]:
+                glovar.except_ids["long"].discard(record["more"])
+
             content = get_content(message)
             if content:
                 glovar.except_ids[the_type].discard(content)
