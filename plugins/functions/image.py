@@ -110,6 +110,9 @@ def get_qrcode(path: str) -> str:
     # Get QR code
     result = ""
     try:
+        if not path:
+            return ""
+
         # Open
         image = Image.open(path)
 
