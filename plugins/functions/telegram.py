@@ -428,7 +428,7 @@ def send_report_message(secs: int, client: Client, cid: int, text: str, mid: int
         mids = [mid]
         delay(secs, delete_messages, [client, cid, mids])
     except Exception as e:
-        logger.warning(f"Send message to {cid} error: {e}", exc_info=True)
+        logger.warning(f"Send report message to {cid} error: {e}", exc_info=True)
 
     return result
 
