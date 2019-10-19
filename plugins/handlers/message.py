@@ -27,7 +27,7 @@ from ..functions.etc import lang, thread, user_mention
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, is_high_score_user
-from ..functions.filters import is_in_config, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
+from ..functions.filters import is_in_config, is_limited_user, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
 from ..functions.filters import new_group, test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id, init_user_id
@@ -57,6 +57,7 @@ def check(client: Client, message: Message) -> bool:
     try:
         # Work with NOSPAM
         gid = message.chat.id
+        now = message.date or get_now()
         if glovar.nospam_id in glovar.admin_ids[gid]:
             # Check the forward from name
             forward_name = get_forward_name(message, True)
@@ -99,6 +100,9 @@ def check(client: Client, message: Message) -> bool:
                 return False
 
             if is_high_score_user(message):
+                return False
+
+            if is_limited_user(gid, message.from_user, now):
                 return False
 
         # Check declare status
