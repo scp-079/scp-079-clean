@@ -443,6 +443,35 @@ def is_exe(message: Message) -> bool:
     return False
 
 
+def is_friend_username(client: Client, gid: int, username: str, friend: bool) -> bool:
+    # Check if it is a friend username
+    try:
+        username = username.strip()
+        if not username:
+            return False
+
+        if username[0] != "@":
+            username = "@" + username
+
+        if not re.search(r"\B@([a-z][0-9a-z_]{4,31})", username, re.I | re.M | re.S):
+            return False
+
+        peer_type, peer_id = resolve_username(client, username)
+        if peer_type == "channel":
+            if glovar.configs[gid].get("friend") or friend:
+                if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
+                    return True
+
+        if peer_type == "user":
+            member = get_member(client, gid, peer_id)
+            if member and member.status in {"creator", "administrator", "member"}:
+                return True
+    except Exception as e:
+        logger.warning(f"Is friend username: {e}", exc_info=True)
+
+    return False
+
+
 def is_high_score_user(message: Union[Message, User]) -> float:
     # Check if the message is sent by a high score user
     try:
@@ -865,15 +894,8 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
                     if link_username == "joinchat":
                         link_username = ""
                     else:
-                        ptp, pid = resolve_username(client, link_username)
-                        if ptp == "channel" and (glovar.configs[gid].get("friend") or friend):
-                            if pid in glovar.except_ids["channels"] or glovar.admin_ids.get(pid, {}):
-                                return True
-
-                        if ptp == "user":
-                            m = get_member(client, gid, pid)
-                            if m and m.status in {"creator", "administrator", "member"}:
-                                return True
+                        if is_friend_username(client, gid, link_username, friend):
+                            return True
 
                 if (f"{bypass}/" in f"{link}/"
                         or link in description
@@ -915,20 +937,8 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
                 if username in pinned_text:
                     continue
 
-                peer_type, peer_id = resolve_username(client, username)
-                if peer_type == "channel":
-                    if glovar.configs[gid].get("friend") or friend:
-                        if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
-                            continue
+                if not is_friend_username(client, gid, username, friend):
                     return True
-
-                if peer_type == "user":
-                    member = get_member(client, gid, peer_id)
-                    if member is False:
-                        return True
-
-                    if member and member.status not in {"creator", "administrator", "member"}:
-                        return True
 
             if en.type == "user":
                 uid = en.user.id
