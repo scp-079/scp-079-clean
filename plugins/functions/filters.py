@@ -846,6 +846,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 def is_regex_text(word_type: str, text: str, again: bool = False) -> Optional[Match]:
     # Check if the text hit the regex rules
     result = None
+    glovar.locks["regex"].acquire()
     try:
         if text:
             if not again:
@@ -871,6 +872,8 @@ def is_regex_text(word_type: str, text: str, again: bool = False) -> Optional[Ma
         return is_regex_text(word_type, text, True)
     except Exception as e:
         logger.warning(f"Is regex text error: {e}", exc_info=True)
+    finally:
+        glovar.locks["regex"].release()
 
     return result
 
