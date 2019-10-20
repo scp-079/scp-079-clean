@@ -455,6 +455,7 @@ left_group_ids: Set[int] = set()
 
 locks: Dict[str, Lock] = {
     "admin": Lock(),
+    "config": Lock(),
     "message": Lock(),
     "regex": Lock(),
     "test": Lock(),

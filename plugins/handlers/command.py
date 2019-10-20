@@ -48,8 +48,11 @@ def clean(client: Client, message: Message) -> bool:
     gid = message.chat.id
     mid = message.message_id
 
-    glovar.locks["message"].acquire()
     try:
+        # Check record
+        if gid in glovar.cleaned_ids:
+            return True
+
         # Check permission
         if not is_class_c(None, message):
             return True
@@ -67,11 +70,15 @@ def clean(client: Client, message: Message) -> bool:
         if result:
             # Clean
             glovar.cleaned_ids.add(gid)
-            mids = glovar.message_ids[gid]["stickers"]
+
+            with glovar.locks["message"]:
+                mids = deepcopy(glovar.message_ids[gid]["stickers"])
+
             thread(delete_messages, (client, gid, mids))
 
             for mid in mids:
                 glovar.message_ids[gid]["stickers"].pop(mid, 0)
+
             save("message_ids")
 
             # Generate the report message's text
@@ -100,7 +107,6 @@ def clean(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Clean error: {e}", exc_info=True)
     finally:
-        glovar.locks["message"].release()
         thread(delete_message, (client, gid, mid))
 
     return False
