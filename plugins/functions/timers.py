@@ -153,6 +153,7 @@ def clean_members(client: Client) -> bool:
 
 def interval_hour_01(client: Client) -> bool:
     # Execute every hour
+    glovar.locks["message"].acquire()
     try:
         # Basic data
         now = get_now()
@@ -168,9 +169,7 @@ def interval_hour_01(client: Client) -> bool:
 
         # Delete stickers and animations in groups
         for gid in list(glovar.configs):
-            with glovar.locks["message"]:
-                mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
-
+            mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
             mid_list = list(filter(lambda m: now - mid_dict[m] >= glovar.time_sticker, mid_dict))
 
             if not mid_list:
@@ -191,6 +190,8 @@ def interval_hour_01(client: Client) -> bool:
         save("message_ids")
     except Exception as e:
         logger.warning(f"Interval hour 01 error: {e}", exc_info=True)
+    finally:
+        glovar.locks["message"].release()
 
     return False
 
