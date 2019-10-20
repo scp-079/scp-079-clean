@@ -457,7 +457,8 @@ locks: Dict[str, Lock] = {
     "admin": Lock(),
     "message": Lock(),
     "regex": Lock(),
-    "test": Lock()
+    "test": Lock(),
+    "text": Lock()
 }
 
 members: Dict[int, Dict[int, ChatMember]] = {}

@@ -49,7 +49,14 @@ logger = logging.getLogger(__name__)
                    & ~class_d & ~declared_message)
 def check(client: Client, message: Message) -> bool:
     # Check the messages sent from groups
-    glovar.locks["message"].acquire()
+
+    has_text = message and (message.text or message.caption)
+
+    if has_text:
+        glovar.locks["text"].acquire()
+    else:
+        glovar.locks["message"].acquire()
+
     try:
         # Work with NOSPAM
         gid = message.chat.id
@@ -121,7 +128,10 @@ def check(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Check error: {e}", exc_info=True)
     finally:
-        glovar.locks["message"].release()
+        if has_text:
+            glovar.locks["text"].release()
+        else:
+            glovar.locks["message"].release()
 
     return False
 
