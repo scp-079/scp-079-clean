@@ -168,8 +168,11 @@ def interval_hour_01(client: Client) -> bool:
 
         # Delete stickers and animations in groups
         for gid in list(glovar.message_ids):
-            mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
+            with glovar.locks["message"]:
+                mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
+
             mid_list = list(filter(lambda m: now - mid_dict[m] >= glovar.time_sticker, mid_dict))
+
             if not mid_list:
                 continue
 
