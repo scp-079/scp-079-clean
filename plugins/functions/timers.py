@@ -158,7 +158,7 @@ def interval_hour_01(client: Client) -> bool:
         now = get_now()
 
         # Reset purge status
-        for gid in list(glovar.message_ids):
+        for gid in list(glovar.configs):
             mid, time = glovar.message_ids[gid]["purge"]
             if not mid or not time:
                 continue
@@ -167,7 +167,7 @@ def interval_hour_01(client: Client) -> bool:
                 glovar.message_ids[gid]["purge"] = (0, 0)
 
         # Delete stickers and animations in groups
-        for gid in list(glovar.message_ids):
+        for gid in list(glovar.configs):
             with glovar.locks["message"]:
                 mid_dict = deepcopy(glovar.message_ids[gid]["stickers"])
 
@@ -197,6 +197,7 @@ def interval_hour_01(client: Client) -> bool:
 
 def interval_min_10() -> bool:
     # Execute every 10 minutes
+    glovar.locks["message"].acquire()
     try:
         # Clear used /clean group list
         glovar.cleaned_ids = set()
@@ -215,6 +216,8 @@ def interval_min_10() -> bool:
         return True
     except Exception as e:
         logger.warning(f"Interval min 10 error: {e}", exc_info=True)
+    finally:
+        glovar.locks["message"].release()
 
     return False
 
