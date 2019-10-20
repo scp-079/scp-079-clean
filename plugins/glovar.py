@@ -457,8 +457,7 @@ locks: Dict[str, Lock] = {
     "admin": Lock(),
     "message": Lock(),
     "regex": Lock(),
-    "test": Lock(),
-    "text": Lock()
+    "test": Lock()
 }
 
 members: Dict[int, Dict[int, ChatMember]] = {}
@@ -557,7 +556,7 @@ usernames: Dict[str, Dict[str, Union[int, str]]] = {}
 #     }
 # }
 
-version: str = "0.2.0"
+version: str = "0.2.1"
 
 # Load data from pickle
 
