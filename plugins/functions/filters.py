@@ -899,7 +899,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
                 if link_username:
                     link_username = link_username.group(1)
 
-                    if any(re.search(ii, link_username, re.I) for ii in glovar.invalid):
+                    if any(re.search(f"^{ii}$", link_username, re.I) for ii in glovar.invalid):
                         return True
 
                     if link_username == "joinchat":
@@ -940,7 +940,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
             if en.type == "mention":
                 username = get_entity_text(message, en)[1:]
 
-                if any(re.search(i, username, re.I) for i in glovar.invalid):
+                if any(re.search(f"^{i}$", username, re.I) for i in glovar.invalid):
                     continue
 
                 if message.chat.username and username == message.chat.username:
