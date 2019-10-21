@@ -886,7 +886,6 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
         description = get_description(client, gid)
         pinned_message = get_pinned(client, gid)
         pinned_text = get_text(pinned_message)
-        invalid = {"admin", "admins"}
 
         # Check links
         bypass = get_stripped_link(get_channel_link(message))
@@ -897,12 +896,12 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
         def is_bypass_link(link: str) -> bool:
             try:
                 link_username = re.match(r"t\.me/(.+?)/", f"{link}/")
-
-                if link_username in invalid:
-                    return True
-
                 if link_username:
                     link_username = link_username.group(1)
+
+                    if any(re.search(ii, link_username, re.I) for ii in glovar.invalid):
+                        return True
+
                     if link_username == "joinchat":
                         link_username = ""
                     else:
@@ -941,7 +940,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
             if en.type == "mention":
                 username = get_entity_text(message, en)[1:]
 
-                if username in invalid:
+                if any(re.search(i, username, re.I) for i in glovar.invalid):
                     continue
 
                 if message.chat.username and username == message.chat.username:
