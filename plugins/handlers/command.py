@@ -107,7 +107,7 @@ def clean(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Clean error: {e}", exc_info=True)
     finally:
-        thread(delete_message, (client, gid, mid))
+        delete_message(client, gid, mid)
 
     return False
 
@@ -176,7 +176,7 @@ def config(client: Client, message: Message) -> bool:
         if is_class_c(None, message):
             delay(3, delete_message, [client, gid, mid])
         else:
-            thread(delete_message, (client, gid, mid))
+            delete_message(client, gid, mid)
 
     return False
 
@@ -210,7 +210,6 @@ def config_directly(client: Client, message: Message) -> bool:
                 text += f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
                 text += get_config_text(new_config)
                 thread(send_report_message, (30, client, gid, text))
-                thread(delete_message, (client, gid, mid))
                 return True
 
             now = get_now()
@@ -265,7 +264,7 @@ def config_directly(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Config directly error: {e}", exc_info=True)
     finally:
-        thread(delete_message, (client, gid, mid))
+        delete_message(client, gid, mid)
 
     return False
 
@@ -338,7 +337,7 @@ def dafm(client: Client, message: Message) -> bool:
         logger.warning(f"DAFM error: {e}", exc_info=True)
     finally:
         glovar.locks["message"].release()
-        thread(delete_message, (client, gid, mid))
+        delete_message(client, gid, mid)
 
     return False
 
@@ -414,7 +413,7 @@ def purge(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Purge error: {e}", exc_info=True)
     finally:
-        thread(delete_message, (client, gid, mid))
+        delete_message(client, gid, mid)
 
     return False
 
@@ -469,7 +468,7 @@ def purge_begin(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Purge begin error: {e}", exc_info=True)
     finally:
-        thread(delete_message, (client, gid, mid))
+        delete_message(client, gid, mid)
 
     return False
 
@@ -552,7 +551,7 @@ def purge_end(client: Client, message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Purge end error: {e}", exc_info=True)
     finally:
-        thread(delete_message, (client, gid, mid))
+        delete_message(client, gid, mid)
 
     return False
 

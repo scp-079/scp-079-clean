@@ -182,7 +182,7 @@ def check_join(client: Client, message: Message) -> bool:
         # Delete service message
         if is_in_config(gid, "ser"):
             if glovar.message_ids[gid]["service"]:
-                thread(delete_message, (client, gid, glovar.message_ids[gid]["service"]))
+                delete_message(client, gid, glovar.message_ids[gid]["service"])
 
             glovar.message_ids[gid]["service"] = mid
             save("message_ids")
