@@ -131,6 +131,7 @@ try:
     image_size = int(config["custom"].get("image_size", image_size))
     invalid = config["custom"].get("invalid", invalid)
     invalid = set(invalid.split())
+    invalid = {i.lower() for i in invalid}
     limit_track = int(config["custom"].get("limit_track", limit_track))
     project_link = config["custom"].get("project_link", project_link)
     project_name = config["custom"].get("project_name", project_name)
