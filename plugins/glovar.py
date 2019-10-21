@@ -439,6 +439,12 @@ default_config: Dict[str, Union[bool, int]] = {
     "ttd": False
 }
 
+default_message_data: Dict[str, Union[int, Dict[int, int], Tuple[int, int]]] = {
+    "purge": (0, 0),
+    "service": 0,
+    "stickers": {}
+}
+
 default_user_status: Dict[str, Dict[Union[int, str], Union[float, int]]] = {
     "detected": {},
     "join": {},

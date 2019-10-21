@@ -37,11 +37,7 @@ def init_group_id(gid: int) -> bool:
             save("admin_ids")
 
         if glovar.message_ids.get(gid) is None:
-            glovar.message_ids[gid] = {
-                "purge": (0, 0),
-                "service": 0,
-                "stickers": {}
-            }
+            glovar.message_ids[gid] = deepcopy(glovar.default_message_data)
             save("message_ids")
 
         if glovar.configs.get(gid) is None:
