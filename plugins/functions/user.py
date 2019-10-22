@@ -117,7 +117,7 @@ def kick_user(client: Client, gid: int, uid: Union[int, str]) -> bool:
 
 
 def terminate_user(client: Client, message: Message, the_type: str) -> bool:
-    # Delete user's message, or ban the user
+    # Terminate the user
     try:
         result = None
 
