@@ -151,12 +151,12 @@ def check_join(client: Client, message: Message) -> bool:
             # Basic data
             uid = new.id
 
+            # Check if the user is Class D personnel
+            if uid in glovar.bad_ids["users"]:
+                return True
+
             # Work with NOSPAM
             if glovar.nospam_id in glovar.admin_ids[gid]:
-                # Check if the user is Class D personnel
-                if uid in glovar.bad_ids["users"]:
-                    return True
-
                 # Check name
                 name = get_full_name(new, True)
                 if name and is_nm_text(name):
