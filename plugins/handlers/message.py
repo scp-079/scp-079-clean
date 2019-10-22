@@ -105,7 +105,7 @@ def check(client: Client, message: Message) -> bool:
             if is_high_score_user(message):
                 return False
 
-            if is_limited_user(gid, message.from_user, now):
+            if is_limited_user(gid, message.from_user, now, False):
                 return False
 
         # Check declare status

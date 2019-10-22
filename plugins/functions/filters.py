@@ -510,7 +510,7 @@ def is_in_config(gid: int, the_type: str) -> bool:
     return False
 
 
-def is_limited_user(gid: int, user: User, now: int) -> bool:
+def is_limited_user(gid: int, user: User, now: int, short: bool = True) -> bool:
     # Check the user is limited
     try:
         if is_class_e_user(user):
@@ -532,7 +532,7 @@ def is_limited_user(gid: int, user: User, now: int) -> bool:
             return True
 
         join = glovar.user_ids[uid]["join"].get(gid, 0)
-        if now - join < glovar.time_short:
+        if short and now - join < glovar.time_short:
             return True
 
         track = [gid for gid in glovar.user_ids[uid]["join"]
