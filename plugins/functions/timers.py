@@ -132,17 +132,20 @@ def clean_members(client: Client) -> bool:
                     if not members:
                         continue
 
-                    deleted_members = filter(lambda m: m.user.is_deleted, members)
+                    # deleted_members = filter(lambda m: m.user.is_deleted, members)
 
-                    logger.warning(deleted_members)
+                    # logger.warning(deleted_members)
 
                     count = 0
 
                     logger.warning("Loop start")
 
-                    for member in deleted_members:
+                    for member in members:
 
                         logger.warning(member)
+
+                        if not member or not member.user or not member.user.is_deleted:
+                            continue
 
                         uid = member.user.id
                         if member.status not in {"creator", "administrator"}:
