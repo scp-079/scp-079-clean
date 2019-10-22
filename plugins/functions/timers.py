@@ -110,12 +110,6 @@ def clean_members(client: Client) -> bool:
     # Clean deleted accounts in groups
     try:
         for gid in list(glovar.configs):
-            # Debug for groups members exceed 10000
-            if gid != -1001116410516:
-                continue
-
-            logger.warning(f"Debug start")
-
             flood_wait = True
             while flood_wait:
                 flood_wait = False
@@ -123,39 +117,17 @@ def clean_members(client: Client) -> bool:
                     if not is_in_config(gid, "tcl"):
                         continue
 
-                    logger.warning("Config")
-
                     members = get_members(client, gid, "all")
-
-                    logger.warning(members)
-
                     if not members:
                         continue
 
-                    # deleted_members = filter(lambda m: m.user.is_deleted, members)
-
-                    # logger.warning(deleted_members)
-
+                    deleted_members = filter(lambda m: m.user.is_deleted, members)
                     count = 0
-
-                    total = 0
-
-                    logger.warning("Loop start")
-
-                    for member in members:
-
-                        total += 1
-
-                        if not member or not member.user or not member.user.is_deleted:
-                            continue
-
+                    for member in deleted_members:
                         uid = member.user.id
                         if member.status not in {"creator", "administrator"}:
                             thread(kick_user, (client, gid, uid))
                             count += 1
-
-                    logger.warning(total)
-                    logger.warning("Loop stop")
 
                     if not count:
                         continue
@@ -171,8 +143,6 @@ def clean_members(client: Client) -> bool:
                     wait_flood(e)
                 except Exception as e:
                     logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
-
-            logger.warning("Debug stop")
 
         return True
     except Exception as e:
