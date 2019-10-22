@@ -133,7 +133,13 @@ def clean_members(client: Client) -> bool:
                         continue
 
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
+
+                    logger.warning(deleted_members)
+
                     count = 0
+
+                    logger.warning("Loop start")
+
                     for member in deleted_members:
 
                         logger.warning(member)
@@ -142,6 +148,8 @@ def clean_members(client: Client) -> bool:
                         if member.status not in {"creator", "administrator"}:
                             thread(kick_user, (client, gid, uid))
                             count += 1
+
+                    logger.warning("Loop stop")
 
                     if not count:
                         continue
@@ -157,6 +165,8 @@ def clean_members(client: Client) -> bool:
                     wait_flood(e)
                 except Exception as e:
                     logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
+
+            logger.warning("Debug stop")
 
         return True
     except Exception as e:
