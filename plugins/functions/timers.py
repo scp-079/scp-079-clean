@@ -138,11 +138,13 @@ def clean_members(client: Client) -> bool:
 
                     count = 0
 
+                    total = 0
+
                     logger.warning("Loop start")
 
                     for member in members:
 
-                        logger.warning(member)
+                        total += 1
 
                         if not member or not member.user or not member.user.is_deleted:
                             continue
@@ -152,6 +154,7 @@ def clean_members(client: Client) -> bool:
                             thread(kick_user, (client, gid, uid))
                             count += 1
 
+                    logger.warning(total)
                     logger.warning("Loop stop")
 
                     if not count:
