@@ -41,6 +41,9 @@ app.start()
 # Send online status
 update_status(app, "online")
 
+# Debug
+clean_members(app)
+
 # Timer
 scheduler = BackgroundScheduler(job_defaults={"misfire_grace_time": 60})
 scheduler.add_job(interval_hour_01, "interval", [app], hours=1)

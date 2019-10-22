@@ -554,6 +554,7 @@ def user_mention(uid: int) -> str:
 def wait_flood(e: FloodWait) -> bool:
     # Wait flood secs
     try:
+        logger.warning(f"Sleep for {e.x} seconds")
         sleep(e.x + uniform(0.5, 1.0))
 
         return True
