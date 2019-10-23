@@ -111,40 +111,43 @@ def clean_members(client: Client) -> bool:
     try:
         for gid in list(glovar.configs):
             members_count = get_chat_members_count(client, gid)
-            if members_count and members_count <= 10000:
-                flood_wait = True
-                while flood_wait:
-                    flood_wait = False
-                    try:
-                        if not is_in_config(gid, "tcl"):
-                            continue
 
-                        members = get_members(client, gid, "all")
-                        if not members:
-                            continue
+            if not members_count or members_count > 10000:
+                continue
 
-                        deleted_members = filter(lambda m: m.user.is_deleted, members)
-                        count = 0
-                        for member in deleted_members:
-                            uid = member.user.id
-                            if member.status not in {"creator", "administrator"}:
-                                thread(kick_user, (client, gid, uid))
-                                count += 1
+            flood_wait = True
+            while flood_wait:
+                flood_wait = False
+                try:
+                    if not is_in_config(gid, "tcl"):
+                        continue
 
-                        if not count:
-                            continue
+                    members = get_members(client, gid, "all")
+                    if not members:
+                        continue
 
-                        count_text = f"{count} {lang('members')}"
-                        text = get_debug_text(client, gid)
-                        text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
-                                 f"{lang('rule')}{lang('colon')}{code(lang('rule_custom'))}\n"
-                                 f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
-                        thread(send_message, (client, glovar.debug_channel_id, text))
-                    except FloodWait as e:
-                        flood_wait = True
-                        wait_flood(e)
-                    except Exception as e:
-                        logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
+                    deleted_members = filter(lambda m: m.user.is_deleted, members)
+                    count = 0
+                    for member in deleted_members:
+                        uid = member.user.id
+                        if member.status not in {"creator", "administrator"}:
+                            thread(kick_user, (client, gid, uid))
+                            count += 1
+
+                    if not count:
+                        continue
+
+                    count_text = f"{count} {lang('members')}"
+                    text = get_debug_text(client, gid)
+                    text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
+                             f"{lang('rule')}{lang('colon')}{code(lang('rule_custom'))}\n"
+                             f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
+                    thread(send_message, (client, glovar.debug_channel_id, text))
+                except FloodWait as e:
+                    flood_wait = True
+                    wait_flood(e)
+                except Exception as e:
+                    logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
 
         return True
     except Exception as e:
