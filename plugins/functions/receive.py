@@ -27,7 +27,7 @@ from pyrogram import Client, InlineKeyboardButton, InlineKeyboardMarkup, Message
 from .. import glovar
 from .channel import get_content, get_debug_text, share_data
 from .etc import code, crypt_str, general_link, get_int, get_now, get_report_record, get_stripped_link, get_text, lang
-from .etc import thread, user_mention
+from .etc import mention_id, thread
 from .file import crypt_file, data_to_file, delete_file, get_new_path, get_downloaded_path, save
 from .filters import is_class_e, is_declared_message_id, is_detected_user_id, is_not_allowed
 from .group import get_config_text, get_message, leave_group
@@ -170,7 +170,7 @@ def receive_clear_data(client: Client, data_type: str, data: dict) -> bool:
 
         # Send debug message
         text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
+                f"{lang('admin_project')}{lang('colon')}{mention_id(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('clear'))}\n"
                 f"{lang('more')}{lang('colon')}{code(f'{data_type} {the_type}')}\n")
         thread(send_message, (client, glovar.debug_channel_id, text))
@@ -238,7 +238,7 @@ def receive_config_show(client: Client, data: dict) -> bool:
         gid = data["group_id"]
 
         # Generate report message's text
-        result = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n"
+        result = (f"{lang('admin')}{lang('colon')}{mention_id(aid)}\n"
                   f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
                   f"{lang('group_id')}{lang('colon')}{code(gid)}\n")
 
@@ -340,7 +340,7 @@ def receive_leave_approve(client: Client, data: dict) -> bool:
             return True
 
         text = get_debug_text(client, the_id)
-        text += (f"{lang('admin_project')}{lang('colon')}{user_mention(admin_id)}\n"
+        text += (f"{lang('admin_project')}{lang('colon')}{mention_id(admin_id)}\n"
                  f"{lang('status')}{lang('colon')}{code(lang('leave_approve'))}\n")
 
         if reason:
@@ -426,7 +426,7 @@ def receive_refresh(client: Client, data: int) -> bool:
 
         # Send debug message
         text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
+                f"{lang('admin_project')}{lang('colon')}{mention_id(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('refresh'))}\n")
         thread(send_message, (client, glovar.debug_channel_id, text))
 
@@ -622,7 +622,7 @@ def receive_rollback(client: Client, message: Message, data: dict) -> bool:
 
         # Send debug message
         text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"
-                f"{lang('admin_project')}{lang('colon')}{user_mention(aid)}\n"
+                f"{lang('admin_project')}{lang('colon')}{mention_id(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('rollback'))}\n"
                 f"{lang('more')}{lang('colon')}{code(the_type)}\n")
         thread(send_message, (client, glovar.debug_channel_id, text))

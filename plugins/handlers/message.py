@@ -23,7 +23,7 @@ from pyrogram import Client, Filters, Message
 from .. import glovar
 from ..functions.channel import get_content, get_debug_text
 from ..functions.etc import code, delay, general_link, get_filename, get_forward_name, get_full_name, get_now, get_text
-from ..functions.etc import lang, thread, user_mention
+from ..functions.etc import lang, mention_id, thread
 from ..functions.file import save
 from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, is_high_score_user
@@ -278,7 +278,7 @@ def init_group(client: Client, message: Message) -> bool:
             text += (f"{lang('status')}{lang('colon')}{code(lang('status_left'))}\n"
                      f"{lang('reason')}{lang('colon')}{code(lang('reason_unauthorized'))}\n")
             if message.from_user.username:
-                text += f"{lang('inviter')}{lang('colon')}{user_mention(invited_by)}\n"
+                text += f"{lang('inviter')}{lang('colon')}{mention_id(invited_by)}\n"
             else:
                 text += f"{lang('inviter')}{lang('colon')}{code(invited_by)}\n"
 

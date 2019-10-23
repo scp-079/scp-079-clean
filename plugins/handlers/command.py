@@ -25,7 +25,7 @@ from pyrogram import Client, Filters, Message
 from .. import glovar
 from ..functions.channel import ask_for_help, forward_evidence, get_debug_text, send_debug, share_data
 from ..functions.etc import bold, code, delay, general_link, get_command_context, get_command_type, get_now, lang
-from ..functions.etc import message_link, thread, user_mention
+from ..functions.etc import mention_id, message_link, thread
 from ..functions.file import save
 from ..functions.filters import from_user, is_class_c, test_group
 from ..functions.group import delete_message, get_config_text
@@ -315,7 +315,7 @@ def dafm(client: Client, message: Message) -> bool:
             ask_for_help(client, "delete", gid, uid)
 
             # Generate the report message's text
-            text = (f"{lang('user')}{lang('colon')}{user_mention(uid)}\n"
+            text = (f"{lang('user')}{lang('colon')}{mention_id(uid)}\n"
                     f"{lang('action')}{lang('colon')}{code(lang('sde_action'))}\n"
                     f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
 
@@ -564,7 +564,7 @@ def version(client: Client, message: Message) -> bool:
         cid = message.chat.id
         aid = message.from_user.id
         mid = message.message_id
-        text = (f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n"
+        text = (f"{lang('admin')}{lang('colon')}{mention_id(aid)}\n\n"
                 f"{lang('version')}{lang('colon')}{bold(glovar.version)}\n")
         thread(send_message, (client, cid, text, mid))
 

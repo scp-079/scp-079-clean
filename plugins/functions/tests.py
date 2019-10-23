@@ -24,7 +24,7 @@ from pyrogram import Client, Message
 
 from .. import glovar
 from .channel import get_content
-from .etc import code, get_int, get_md5sum, get_text, lang, thread, user_mention
+from .etc import code, get_int, get_md5sum, get_text, lang, mention_id, thread
 from .file import delete_file, get_downloaded_path
 from .filters import is_bmd, is_class_e, is_detected_url, is_emoji, is_exe, is_regex_text, is_tgl
 from .image import get_file_id, get_qrcode
@@ -127,7 +127,7 @@ def clean_test(client: Client, message: Message) -> bool:
         if text:
             whitelisted = is_class_e(None, message) or image_hash in glovar.except_ids["temp"]
             text = f"{lang('white_listed')}{lang('colon')}{code(whitelisted)}\n" + text
-            text = f"{lang('admin')}{lang('colon')}{user_mention(aid)}\n\n" + text
+            text = f"{lang('admin')}{lang('colon')}{mention_id(aid)}\n\n" + text
             thread(send_message, (client, glovar.test_group_id, text, message.message_id))
 
         return True
