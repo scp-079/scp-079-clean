@@ -111,6 +111,7 @@ def clean_members(client: Client) -> bool:
     try:
         for gid in list(glovar.configs):
             members_count = get_chat_members_count(client, gid)
+            logger.warning(members_count)
             if members_count and members_count <= 10000:
                 flood_wait = True
                 while flood_wait:
@@ -146,6 +147,7 @@ def clean_members(client: Client) -> bool:
                     except Exception as e:
                         logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
             else:
+                logger.warning("Big")
                 try:
                     members = []
                     offset = 0
@@ -165,10 +167,11 @@ def clean_members(client: Client) -> bool:
                         members.extend(chunk)
                         offset += len(chunk)
 
+                    len(members)
+
                     if not members:
                         continue
 
-                    len(members)
                     test = [member for member in members if member.user.is_deleted]
                     len(test)
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
