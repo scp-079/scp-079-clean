@@ -111,7 +111,6 @@ def clean_members(client: Client) -> bool:
     try:
         for gid in list(glovar.configs):
             members_count = get_chat_members_count(client, gid)
-            logger.warning(members_count)
             if members_count and members_count <= 10000:
                 flood_wait = True
                 while flood_wait:
@@ -151,12 +150,14 @@ def clean_members(client: Client) -> bool:
                 try:
                     members = []
                     offset = 0
+                    logger.warning("try")
                     while True:
                         try:
                             chunk = client.get_chat_members(
                                 chat_id=gid,
                                 offset=offset
                             )
+                            logger.warning(chunk)
                         except FloodWait as e:
                             wait_flood(e)
                             continue
