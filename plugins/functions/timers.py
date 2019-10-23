@@ -157,10 +157,11 @@ def clean_members(client: Client) -> bool:
                                 chat_id=gid,
                                 offset=offset
                             )
-                            logger.warning(chunk)
                         except FloodWait as e:
                             wait_flood(e)
                             continue
+
+                        chunk and logger.warning(len(chunk))
 
                         if not chunk:
                             break
