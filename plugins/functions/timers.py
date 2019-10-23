@@ -146,11 +146,10 @@ def clean_members(client: Client) -> bool:
                     except Exception as e:
                         logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
             else:
-                logger.warning("Big")
+                logger.warning(gid)
                 try:
                     members = []
                     offset = 0
-                    logger.warning("try")
                     while True:
                         try:
                             chunk = client.get_chat_members(
@@ -161,21 +160,19 @@ def clean_members(client: Client) -> bool:
                             wait_flood(e)
                             continue
 
-                        chunk and logger.warning(len(chunk))
-
                         if not chunk:
                             break
 
                         members.extend(chunk)
                         offset += len(chunk)
 
-                    len(members)
+                    logger.warning(len(members))
 
                     if not members:
                         continue
 
                     test = [member for member in members if member.user.is_deleted]
-                    len(test)
+                    logger.warning(len(test))
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
                     count = 0
                     for member in deleted_members:
