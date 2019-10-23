@@ -38,8 +38,6 @@ app = Client(
 )
 app.start()
 
-clean_members(app)
-
 # Send online status
 update_status(app, "online")
 

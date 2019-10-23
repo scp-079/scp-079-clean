@@ -145,53 +145,6 @@ def clean_members(client: Client) -> bool:
                         wait_flood(e)
                     except Exception as e:
                         logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
-            else:
-                logger.warning(gid)
-                try:
-                    members = []
-                    offset = 0
-                    while True:
-                        try:
-                            chunk = client.get_chat_members(
-                                chat_id=gid,
-                                offset=offset
-                            )
-                        except FloodWait as e:
-                            wait_flood(e)
-                            continue
-
-                        if not chunk:
-                            break
-
-                        members.extend(chunk)
-                        offset += len(chunk)
-
-                    logger.warning(len(members))
-
-                    if not members:
-                        continue
-
-                    test = [member for member in members if member.user.is_deleted]
-                    logger.warning(len(test))
-                    deleted_members = filter(lambda m: m.user.is_deleted, members)
-                    count = 0
-                    for member in deleted_members:
-                        uid = member.user.id
-                        if member.status not in {"creator", "administrator"}:
-                            thread(kick_user, (client, gid, uid))
-                            count += 1
-
-                    if not count:
-                        continue
-
-                    count_text = f"{count} {lang('members')}"
-                    text = get_debug_text(client, gid)
-                    text += (f"{lang('action')}{lang('colon')}{code(lang('clean_members'))}\n"
-                             f"{lang('rule')}{lang('colon')}{code(lang('rule_custom'))}\n"
-                             f"{lang('invalid_user')}{lang('colon')}{code(count_text)}\n")
-                    thread(send_message, (client, glovar.debug_channel_id, text))
-                except Exception as e:
-                    logger.warning(f"Clean members in {gid} error: {e}", exc_info=True)
 
         return True
     except Exception as e:
