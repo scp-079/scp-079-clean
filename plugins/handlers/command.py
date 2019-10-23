@@ -36,8 +36,9 @@ from ..functions.telegram import delete_messages, get_group_info, send_message, 
 logger = logging.getLogger(__name__)
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command(["clean"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["clean"], glovar.prefix)
+                   & ~test_group
+                   & from_user)
 def clean(client: Client, message: Message) -> bool:
     # Clean messages
 
@@ -112,8 +113,9 @@ def clean(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command(["config"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["config"], glovar.prefix)
+                   & ~test_group
+                   & from_user)
 def config(client: Client, message: Message) -> bool:
     # Request CONFIG session
 
@@ -181,8 +183,10 @@ def config(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command([f"config_{glovar.sender.lower()}"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group
+                   & Filters.command([f"config_{glovar.sender.lower()}"], glovar.prefix)
+                   & ~test_group
+                   & from_user)
 def config_directly(client: Client, message: Message) -> bool:
     # Config the bot directly
 
@@ -269,8 +273,9 @@ def config_directly(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command(["dafm"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["dafm"], glovar.prefix)
+                   & ~test_group
+                   & from_user)
 def dafm(client: Client, message: Message) -> bool:
     # Delete all from me
 
@@ -342,8 +347,9 @@ def dafm(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command(["purge"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["purge"], glovar.prefix)
+                   & ~test_group
+                   & from_user)
 def purge(client: Client, message: Message) -> bool:
     # Purge messages
 
@@ -418,8 +424,9 @@ def purge(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command(["purge_begin", "pb"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["purge_begin", "pb"], glovar.prefix)
+                   & ~test_group
+                   & from_user)
 def purge_begin(client: Client, message: Message) -> bool:
     # Purge begin
 
@@ -473,8 +480,9 @@ def purge_begin(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
-                   & Filters.command(["purge_end", "pe"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["purge_end", "pe"], glovar.prefix)
+                   & ~test_group
+                   & from_user)
 def purge_end(client: Client, message: Message) -> bool:
     # Purge end
 
@@ -556,8 +564,9 @@ def purge_end(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & test_group & from_user
-                   & Filters.command(["version"], glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & Filters.command(["version"], glovar.prefix)
+                   & test_group
+                   & from_user)
 def version(client: Client, message: Message) -> bool:
     # Check the program's version
     try:
