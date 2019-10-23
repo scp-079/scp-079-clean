@@ -168,6 +168,9 @@ def clean_members(client: Client) -> bool:
                     if not members:
                         continue
 
+                    len(members)
+                    test = [member for member in members if member.user.is_deleted]
+                    len(test)
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
                     count = 0
                     for member in deleted_members:
