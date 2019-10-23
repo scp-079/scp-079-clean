@@ -93,7 +93,7 @@ def receive_add_except(client: Client, data: dict) -> bool:
 
 
 def receive_add_bad(sender: str, data: dict) -> bool:
-    # Receive bad users or channels that other bots shared
+    # Receive bad objects that other bots shared
     try:
         # Basic data
         the_id = data["id"]
