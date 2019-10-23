@@ -45,8 +45,10 @@ from ..functions.user import terminate_user
 logger = logging.getLogger(__name__)
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user & ~Filters.new_chat_members
-                   & ~class_d & ~declared_message)
+@Client.on_message(Filters.incoming & Filters.group & ~Filters.new_chat_members
+                   & ~test_group
+                   & from_user & ~class_d
+                   & ~declared_message)
 def check(client: Client, message: Message) -> bool:
     # Check the messages sent from groups
 
@@ -136,8 +138,10 @@ def check(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user & Filters.new_chat_members & ~new_group
-                   & ~class_d & ~declared_message)
+@Client.on_message(Filters.incoming & Filters.group & Filters.new_chat_members
+                   & ~test_group & ~new_group
+                   & from_user & ~class_d
+                   & ~declared_message)
 def check_join(client: Client, message: Message) -> bool:
     # Check new joined user
     glovar.locks["message"].acquire()
@@ -196,8 +200,8 @@ def check_join(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.channel & hide_channel
-                   & ~Filters.command(glovar.all_commands, glovar.prefix), group=-1)
+@Client.on_message(Filters.incoming & Filters.channel & ~Filters.command(glovar.all_commands, glovar.prefix)
+                   & hide_channel, group=-1)
 def exchange_emergency(client: Client, message: Message) -> bool:
     # Sent emergency channel transfer request
     try:
@@ -240,9 +244,10 @@ def exchange_emergency(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & ~test_group & from_user
+@Client.on_message(Filters.incoming & Filters.group
                    & (Filters.new_chat_members | Filters.group_chat_created | Filters.supergroup_chat_created)
-                   & new_group)
+                   & ~test_group & new_group
+                   & from_user)
 def init_group(client: Client, message: Message) -> bool:
     # Initiate new groups
     try:
@@ -291,8 +296,8 @@ def init_group(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.channel & exchange_channel
-                   & ~Filters.command(glovar.all_commands, glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.channel & ~Filters.command(glovar.all_commands, glovar.prefix)
+                   & exchange_channel)
 def process_data(client: Client, message: Message) -> bool:
     # Process the data in exchange channel
     try:
@@ -314,7 +319,9 @@ def process_data(client: Client, message: Message) -> bool:
             if sender == "CAPTCHA":
 
                 if action == "update":
-                    if action_type == "score":
+                    if action_type == "declare":
+                        receive_declared_message(data)
+                    elif action_type == "score":
                         receive_user_score(sender, data)
 
             elif sender == "CONFIG":
