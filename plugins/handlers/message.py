@@ -25,7 +25,7 @@ from ..functions.channel import get_content, get_debug_text
 from ..functions.etc import code, delay, general_link, get_filename, get_forward_name, get_full_name, get_now, get_text
 from ..functions.etc import lang, mention_id, thread
 from ..functions.file import save
-from ..functions.filters import class_d, declared_message, exchange_channel, from_user, hide_channel
+from ..functions.filters import authorized_group, class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, is_high_score_user
 from ..functions.filters import is_in_config, is_limited_user, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
 from ..functions.filters import new_group, test_group
@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 
 
 @Client.on_message(Filters.incoming & Filters.group & ~Filters.new_chat_members
-                   & ~test_group
+                   & ~test_group & authorized_group
                    & from_user & ~class_d
                    & ~declared_message)
 def check(client: Client, message: Message) -> bool:
@@ -139,7 +139,7 @@ def check(client: Client, message: Message) -> bool:
 
 
 @Client.on_message(Filters.incoming & Filters.group & Filters.new_chat_members
-                   & ~test_group & ~new_group
+                   & ~test_group & ~new_group & authorized_group
                    & from_user & ~class_d
                    & ~declared_message)
 def check_join(client: Client, message: Message) -> bool:
@@ -300,6 +300,7 @@ def init_group(client: Client, message: Message) -> bool:
                    & exchange_channel)
 def process_data(client: Client, message: Message) -> bool:
     # Process the data in exchange channel
+    glovar.locks["receive"].acquire()
     try:
         data = receive_text_data(message)
         if not data:
@@ -489,12 +490,16 @@ def process_data(client: Client, message: Message) -> bool:
         return True
     except Exception as e:
         logger.warning(f"Process data error: {e}", exc_info=True)
+    finally:
+        glovar.locks["receive"].release()
 
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.group & test_group & from_user & ~Filters.service
-                   & ~Filters.command(glovar.all_commands, glovar.prefix))
+@Client.on_message(Filters.incoming & Filters.group & ~Filters.service
+                   & ~Filters.command(glovar.all_commands, glovar.prefix)
+                   & test_group
+                   & from_user)
 def test(client: Client, message: Message) -> bool:
     # Show test results in TEST group
     glovar.locks["test"].acquire()
