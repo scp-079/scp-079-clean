@@ -22,7 +22,7 @@ from copy import deepcopy
 from string import ascii_lowercase
 from typing import Match, Optional, Union
 
-from pyrogram import Client, Filters, Message, User
+from pyrogram import CallbackQuery, Client, Filters, Message, User
 
 from .. import glovar
 from .channel import get_content
@@ -38,21 +38,39 @@ from .telegram import resolve_username
 logger = logging.getLogger(__name__)
 
 
-def is_class_c(_, message: Message) -> bool:
-    # Check if the message is Class C object
+def is_authorized_group(_, update: Union[CallbackQuery, Message]) -> bool:
+    # Check if the message is send from the authorized group
     try:
-        if message.from_user:
-            # Basic data
-            uid = message.from_user.id
-            gid = message.chat.id
+        if isinstance(update, CallbackQuery):
+            message = update.message
+        else:
+            message = update
 
-            # Init the group
-            if not init_group_id(gid):
-                return False
+        if not message.chat:
+            return False
 
-            # Check permission
-            if uid in glovar.admin_ids[gid] or uid in glovar.bot_ids or message.from_user.is_self:
-                return True
+        cid = message.chat.id
+        if init_group_id(cid):
+            return True
+    except Exception as e:
+        logger.warning(f"Is authorized group error: {e}", exc_info=True)
+
+    return False
+
+
+def is_class_c(_, message: Message) -> bool:
+    # Check if the message is Class C personnel
+    try:
+        if not message.from_user:
+            return False
+
+        # Basic data
+        uid = message.from_user.id
+        gid = message.chat.id
+
+        # Check permission
+        if uid in glovar.admin_ids[gid] or uid in glovar.bot_ids or message.from_user.is_self:
+            return True
     except Exception as e:
         logger.warning(f"Is class c error: {e}", exc_info=True)
 
@@ -63,8 +81,7 @@ def is_class_d(_, message: Message) -> bool:
     # Check if the message is Class D object
     try:
         if message.from_user:
-            uid = message.from_user.id
-            if uid in glovar.bad_ids["users"]:
+            if is_class_d_user(message.from_user):
                 return True
 
         if message.forward_from:
@@ -109,10 +126,12 @@ def is_class_e(_, message: Message) -> bool:
 def is_declared_message(_, message: Message) -> bool:
     # Check if the message is declared by other bots
     try:
-        if message.chat:
-            gid = message.chat.id
-            mid = message.message_id
-            return is_declared_message_id(gid, mid)
+        if not message.chat:
+            return False
+
+        gid = message.chat.id
+        mid = message.message_id
+        return is_declared_message_id(gid, mid)
     except Exception as e:
         logger.warning(f"Is declared message error: {e}", exc_info=True)
 
@@ -122,13 +141,14 @@ def is_declared_message(_, message: Message) -> bool:
 def is_exchange_channel(_, message: Message) -> bool:
     # Check if the message is sent from the exchange channel
     try:
-        if message.chat:
-            cid = message.chat.id
-            if glovar.should_hide:
-                if cid == glovar.hide_channel_id:
-                    return True
-            elif cid == glovar.exchange_channel_id:
-                return True
+        if not message.chat:
+            return False
+
+        cid = message.chat.id
+        if glovar.should_hide:
+            return cid == glovar.hide_channel_id
+        else:
+            return cid == glovar.exchange_channel_id
     except Exception as e:
         logger.warning(f"Is exchange channel error: {e}", exc_info=True)
 
@@ -149,10 +169,12 @@ def is_from_user(_, message: Message) -> bool:
 def is_hide_channel(_, message: Message) -> bool:
     # Check if the message is sent from the hide channel
     try:
-        if message.chat:
-            cid = message.chat.id
-            if cid == glovar.hide_channel_id:
-                return True
+        if not message.chat:
+            return False
+
+        cid = message.chat.id
+        if cid == glovar.hide_channel_id:
+            return True
     except Exception as e:
         logger.warning(f"Is hide channel error: {e}", exc_info=True)
 
@@ -164,9 +186,7 @@ def is_new_group(_, message: Message) -> bool:
     try:
         new_users = message.new_chat_members
         if new_users:
-            for user in new_users:
-                if user.is_self:
-                    return True
+            return any(user.is_self for user in new_users)
         elif message.group_chat_created or message.supergroup_chat_created:
             return True
     except Exception as e:
@@ -178,15 +198,22 @@ def is_new_group(_, message: Message) -> bool:
 def is_test_group(_, message: Message) -> bool:
     # Check if the message is sent from the test group
     try:
-        if message.chat:
-            cid = message.chat.id
-            if cid == glovar.test_group_id:
-                return True
+        if not message.chat:
+            return False
+
+        cid = message.chat.id
+        if cid == glovar.test_group_id:
+            return True
     except Exception as e:
         logger.warning(f"Is test group error: {e}", exc_info=True)
 
     return False
 
+
+authorized_group = Filters.create(
+    func=is_authorized_group,
+    name="Authorized Group"
+)
 
 class_c = Filters.create(
     func=is_class_c,
@@ -276,10 +303,8 @@ def is_ban_text(text: str, message: Message = None) -> bool:
 def is_bio_text(text: str) -> bool:
     # Check if the text is bio text
     try:
-        if is_regex_text("bio", text):
-            return True
-
-        if is_ban_text(text):
+        if (is_regex_text("bio", text)
+                or is_ban_text(text)):
             return True
     except Exception as e:
         logger.warning(f"Is bio text error: {e}", exc_info=True)
@@ -297,6 +322,18 @@ def is_bmd(message: Message) -> bool:
                 return True
     except Exception as e:
         logger.warning(f"Is bmd error: {e}", exc_info=True)
+
+    return False
+
+
+def is_class_d_user(user: User) -> bool:
+    # Check if the user is a Class D personnel
+    try:
+        uid = user.id
+        if uid in glovar.bad_ids["users"]:
+            return True
+    except Exception as e:
+        logger.warning(f"Is class d user error: {e}", exc_info=True)
 
     return False
 
@@ -347,11 +384,13 @@ def is_detected_url(message: Message) -> str:
 def is_detected_user(message: Message) -> bool:
     # Check if the message is sent by a detected user
     try:
-        if message.from_user:
-            gid = message.chat.id
-            uid = message.from_user.id
-            now = message.date or get_now()
-            return is_detected_user_id(gid, uid, now)
+        if not message.from_user:
+            return False
+
+        gid = message.chat.id
+        uid = message.from_user.id
+        now = message.date or get_now()
+        return is_detected_user_id(gid, uid, now)
     except Exception as e:
         logger.warning(f"Is detected user error: {e}", exc_info=True)
 
@@ -361,11 +400,13 @@ def is_detected_user(message: Message) -> bool:
 def is_detected_user_id(gid: int, uid: int, now: int) -> bool:
     # Check if the user_id is detected in the group
     try:
-        user = glovar.user_ids.get(uid, {})
-        if user:
-            status = user["detected"].get(gid, 0)
-            if now - status < glovar.time_punish:
-                return True
+        user_status = glovar.user_ids.get(uid, {})
+        if not user_status:
+            return False
+
+        status = user_status["detected"].get(gid, 0)
+        if now - status < glovar.time_punish:
+            return True
     except Exception as e:
         logger.warning(f"Is detected user id error: {e}", exc_info=True)
 
@@ -537,6 +578,7 @@ def is_limited_user(gid: int, user: User, now: int, short: bool = True) -> bool:
 
         track = [gid for gid in glovar.user_ids[uid]["join"]
                  if now - glovar.user_ids[uid]["join"][gid] < glovar.time_track]
+
         if len(track) >= glovar.limit_track:
             return True
     except Exception as e:
@@ -969,15 +1011,16 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
     return False
 
 
-def is_watch_user(message: Message, the_type: str) -> bool:
+def is_watch_user(user: User, the_type: str, now: int) -> bool:
     # Check if the message is sent by a watch user
     try:
-        if message.from_user:
-            uid = message.from_user.id
-            now = message.date or get_now()
-            until = glovar.watch_ids[the_type].get(uid, 0)
-            if now < until:
-                return True
+        if is_class_e_user(user):
+            return False
+
+        uid = user.id
+        until = glovar.watch_ids[the_type].get(uid, 0)
+        if now < until:
+            return True
     except Exception as e:
         logger.warning(f"Is watch user error: {e}", exc_info=True)
 
