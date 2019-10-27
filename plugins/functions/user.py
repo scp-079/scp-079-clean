@@ -105,13 +105,25 @@ def ban_user(client: Client, gid: int, uid: Union[int, str]) -> bool:
 def kick_user(client: Client, gid: int, uid: Union[int, str]) -> bool:
     # Kick a user
     try:
+        thread(kick_user_thread, (client, gid, uid))
+
+        return True
+    except Exception as e:
+        logger.warning(f"Kick user error: {e}", exc_info=True)
+
+    return False
+
+
+def kick_user_thread(client: Client, gid: int, uid: Union[int, str]) -> bool:
+    # Kick a user thread
+    try:
         kick_chat_member(client, gid, uid)
         sleep(3)
         unban_chat_member(client, gid, uid)
 
         return True
     except Exception as e:
-        logger.warning(f"Kick user error: {e}", exc_info=True)
+        logger.warning(f"Kick user thread error: {e}", exc_info=True)
 
     return False
 
@@ -157,7 +169,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         mid=mid,
                         em=result
                     )
-            elif is_watch_user(message, "ban"):
+            elif is_watch_user(message.from_user, "ban", now):
                 result = forward_evidence(
                     client=client,
                     message=message,
@@ -179,8 +191,8 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         mid=mid,
                         em=result
                     )
-            elif is_high_score_user(message):
-                score = is_high_score_user(message)
+            elif is_high_score_user(message.from_user):
+                score = is_high_score_user(message.from_user)
                 result = forward_evidence(
                     client=client,
                     message=message,
@@ -203,7 +215,8 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         mid=mid,
                         em=result
                     )
-            elif is_watch_user(message, "delete") and the_type in {"aff", "exe", "iml", "pho", "tgp", "qrc"}:
+            elif (is_watch_user(message.from_user, "delete", now)
+                  and the_type in {"aff", "exe", "iml", "pho", "tgp", "qrc"}):
                 result = forward_evidence(
                     client=client,
                     message=message,

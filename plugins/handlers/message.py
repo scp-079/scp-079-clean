@@ -101,10 +101,10 @@ def check(client: Client, message: Message) -> bool:
                 return False
 
             # User status
-            if is_watch_user(message, "ban"):
+            if is_watch_user(message.from_user, "ban", now):
                 return False
 
-            if is_high_score_user(message):
+            if is_high_score_user(message.from_user):
                 return False
 
             if is_limited_user(gid, message.from_user, now, False):
