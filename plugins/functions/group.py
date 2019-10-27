@@ -96,6 +96,7 @@ def get_group(client: Client, gid: int, cache: bool = True) -> Optional[Chat]:
     result = None
     try:
         the_cache = glovar.chats.get(gid)
+
         if the_cache:
             result = the_cache
         else:
@@ -130,6 +131,7 @@ def get_member(client: Client, gid: int, uid: int, cache: bool = True) -> Option
             return None
 
         the_cache = glovar.members[gid].get(uid)
+
         if the_cache:
             result = the_cache
         else:
