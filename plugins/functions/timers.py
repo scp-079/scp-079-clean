@@ -230,6 +230,7 @@ def interval_min_10() -> bool:
 
 def reset_data(client: Client) -> bool:
     # Reset user data every month
+    glovar.locks["message"].acquire()
     try:
         glovar.bad_ids = {
             "channels": set(),
@@ -257,6 +258,8 @@ def reset_data(client: Client) -> bool:
         return True
     except Exception as e:
         logger.warning(f"Reset data error: {e}", exc_info=True)
+    finally:
+        glovar.locks["message"].release()
 
     return False
 
