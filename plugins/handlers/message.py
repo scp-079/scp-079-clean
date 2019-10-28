@@ -467,11 +467,7 @@ def process_data(client: Client, message: Message) -> bool:
 
             elif sender == "USER":
 
-                if action == "remove":
-                    if action_type == "bad":
-                        receive_remove_bad(sender, data)
-
-                elif action == "update":
+                if action == "update":
                     if action_type == "preview":
                         delay(10, receive_preview, [client, message, data])
 
