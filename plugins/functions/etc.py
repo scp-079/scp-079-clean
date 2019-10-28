@@ -97,6 +97,7 @@ def crypt_str(operation: str, text: str, key: str) -> str:
     try:
         f = Fernet(key)
         text = text.encode("utf-8")
+
         if operation == "decrypt":
             result = f.decrypt(text)
         else:
@@ -421,11 +422,14 @@ def get_stripped_link(link: str) -> str:
     # Get stripped link
     result = ""
     try:
-        if not link.strip():
+        link = link.strip()
+
+        if not link:
             return ""
 
         result = link.replace("http://", "")
         result = result.replace("https://", "")
+
         if result and result[-1] == "/":
             result = result[:-1]
     except Exception as e:
