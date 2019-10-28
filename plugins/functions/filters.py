@@ -261,14 +261,14 @@ test_group = Filters.create(
 )
 
 
-def is_ad_text(text: str, matched: str = "") -> str:
+def is_ad_text(text: str, ocr: bool, matched: str = "") -> str:
     # Check if the text is ad text
     try:
         if not text:
             return ""
 
         for c in ascii_lowercase:
-            if c != matched and is_regex_text(f"ad{c}", text):
+            if c != matched and is_regex_text(f"ad{c}", text, ocr):
                 return c
     except Exception as e:
         logger.warning(f"Is ad text error: {e}", exc_info=True)
@@ -276,23 +276,23 @@ def is_ad_text(text: str, matched: str = "") -> str:
     return ""
 
 
-def is_ban_text(text: str, message: Message = None) -> bool:
+def is_ban_text(text: str, ocr: bool, message: Message = None) -> bool:
     # Check if the text is ban text
     try:
-        if is_regex_text("ban", text):
+        if is_regex_text("ban", text, ocr):
             return True
 
-        ad = is_regex_text("ad", text) or is_emoji("ad", text, message)
-        con = is_regex_text("con", text) or is_regex_text("iml", text) or is_regex_text("pho", text)
+        ad = is_regex_text("ad", text, ocr) or is_emoji("ad", text, message)
+        con = is_con_text(text, ocr)
         if ad and con:
             return True
 
-        ad = is_ad_text(text)
+        ad = is_ad_text(text, ocr)
         if ad and con:
             return True
 
         if ad:
-            ad = is_ad_text(text, ad)
+            ad = is_ad_text(text, ocr, ad)
             return bool(ad)
     except Exception as e:
         logger.warning(f"Is ban text error: {e}", exc_info=True)
@@ -304,7 +304,7 @@ def is_bio_text(text: str) -> bool:
     # Check if the text is bio text
     try:
         if (is_regex_text("bio", text)
-                or is_ban_text(text)):
+                or is_ban_text(text, False)):
             return True
     except Exception as e:
         logger.warning(f"Is bio text error: {e}", exc_info=True)
@@ -348,6 +348,20 @@ def is_class_e_user(user: User) -> bool:
                 return True
     except Exception as e:
         logger.warning(f"Is class e user error: {e}", exc_info=True)
+
+    return False
+
+
+def is_con_text(text: str, ocr: bool) -> bool:
+    # Check if the text is con text
+    try:
+        if (is_regex_text("con", text, ocr)
+                or is_regex_text("aff", text, ocr)
+                or is_regex_text("iml", text, ocr)
+                or is_regex_text("pho", text, ocr)):
+            return True
+    except Exception as e:
+        logger.warning(f"Is con text error: {e}", exc_info=True)
 
     return False
 
@@ -619,7 +633,7 @@ def is_nm_text(text: str) -> bool:
     try:
         if (is_regex_text("nm", text)
                 or is_regex_text("bio", text)
-                or is_ban_text(text)):
+                or is_ban_text(text, False)):
             return True
     except Exception as e:
         logger.warning(f"Is nm text error: {e}", exc_info=True)
@@ -816,7 +830,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                         # Get QR code
                         qrcode = get_qrcode(image_path)
-                        if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode)):
+                        if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode, False)):
                             return "qrc"
 
             # Schedule to delete stickers and animations
@@ -869,7 +883,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             # QR code
             if image_path:
                 qrcode = get_qrcode(image_path)
-                if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode)):
+                if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode, False)):
                     return "qrc"
     except Exception as e:
         logger.warning(f"Is not allowed error: {e}", exc_info=True)
@@ -880,7 +894,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
     return ""
 
 
-def is_regex_text(word_type: str, text: str, again: bool = False) -> Optional[Match]:
+def is_regex_text(word_type: str, text: str, ocr: bool = False, again: bool = False) -> Optional[Match]:
     # Check if the text hit the regex rules
     result = None
     try:
@@ -898,7 +912,11 @@ def is_regex_text(word_type: str, text: str, again: bool = False) -> Optional[Ma
             words = list(eval(f"glovar.{word_type}_words"))
 
         for word in words:
+            if ocr and "(?# nocr)" in word:
+                continue
+
             result = re.search(word, text, re.I | re.S | re.M)
+
             # Count and return
             if result:
                 count = eval(f"glovar.{word_type}_words").get(word, 0)
@@ -908,7 +926,7 @@ def is_regex_text(word_type: str, text: str, again: bool = False) -> Optional[Ma
                 return result
 
         # Try again
-        return is_regex_text(word_type, text, True)
+        return is_regex_text(word_type, text, ocr, True)
     except Exception as e:
         logger.warning(f"Is regex text error: {e}", exc_info=True)
 

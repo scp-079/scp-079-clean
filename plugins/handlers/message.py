@@ -78,7 +78,7 @@ def check(client: Client, message: Message) -> bool:
 
             # Check the text
             message_text = get_text(message, True)
-            if is_ban_text(message_text):
+            if is_ban_text(message_text, False):
                 return False
 
             if is_regex_text("del", message_text):
@@ -86,7 +86,7 @@ def check(client: Client, message: Message) -> bool:
 
             # File name
             filename = get_filename(message, True)
-            if is_ban_text(filename):
+            if is_ban_text(filename, False):
                 return False
 
             if is_regex_text("fil", filename):
@@ -186,7 +186,7 @@ def check_join(client: Client, message: Message) -> bool:
         # Delete service message
         if is_in_config(gid, "ser"):
             if glovar.message_ids[gid]["service"]:
-                delete_message(client, gid, glovar.message_ids[gid]["service"])
+                delay(10, delete_message, [client, gid, glovar.message_ids[gid]["service"]])
 
             glovar.message_ids[gid]["service"] = mid
             save("message_ids")
