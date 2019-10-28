@@ -293,7 +293,6 @@ lang: Dict[str, str] = {
     "user_name": (zh_cn and "用户昵称") or "User Name",
     "from_name": (zh_cn and "来源名称") or "Forward Name",
     "contact": (zh_cn and "联系方式") or "Contact",
-    "joined": (zh_cn and "入群时间") or "Joined Time",
     "more": (zh_cn and "附加信息") or "Extra Info",
     # Special Types
     "con": (zh_cn and "联系人") or "Contact",

@@ -362,7 +362,6 @@ def get_report_record(message: Message) -> Dict[str, str]:
         "name": "",
         "from": "",
         "contact": "",
-        "joined": "",
         "more": "",
         "unknown": ""
     }
@@ -404,8 +403,6 @@ def get_report_record(message: Message) -> Dict[str, str]:
                 record_type = "from"
             elif re.search(f"^{lang('contact')}{lang('colon')}", r):
                 record_type = "contact"
-            elif re.search(f"^{lang('joined')}{lang('colon')}", r):
-                record_type = "joined"
             elif re.search(f"^{lang('more')}{lang('colon')}", r):
                 record_type = "more"
             else:
