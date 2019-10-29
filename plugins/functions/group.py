@@ -59,7 +59,7 @@ def get_config_text(config: dict) -> str:
                    f"{lang('delete')}{lang('colon')}{code(delete_text)}\n"
                    f"{lang('restrict')}{lang('colon')}{code(restrict_text)}\n")
 
-        # Friend Link
+        # Friend link
         friend_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("friend"))
         result += f"{lang('friend')}{lang('colon')}{code(friend_text)}\n"
 
