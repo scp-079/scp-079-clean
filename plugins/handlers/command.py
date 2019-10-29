@@ -77,8 +77,8 @@ def clean(client: Client, message: Message) -> bool:
 
             thread(delete_messages, (client, gid, mids))
 
-            for mid in mids:
-                glovar.message_ids[gid]["stickers"].pop(mid, 0)
+            for sticker_mid in mids:
+                glovar.message_ids[gid]["stickers"].pop(sticker_mid, 0)
 
             save("message_ids")
 
