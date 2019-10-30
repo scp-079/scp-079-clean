@@ -60,7 +60,7 @@ def check(client: Client, message: Message) -> bool:
         glovar.locks["message"].acquire()
 
     try:
-        if is_test_group(None, message):
+        if message.chat.id == -1001407565345:
             logger.warning(message)
 
 
@@ -122,7 +122,7 @@ def check(client: Client, message: Message) -> bool:
         content = get_content(message)
         detection = is_not_allowed(client, message)
 
-        if is_test_group(None, message):
+        if message.chat.id == -1001407565345:
             logger.warning(detection)
 
         if detection:
