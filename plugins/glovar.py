@@ -496,6 +496,7 @@ other_commands: Set[str] = {
     "content",
     "dafm",
     "forgive",
+    "id",
     "kick",
     "l",
     "long",
@@ -507,7 +508,8 @@ other_commands: Set[str] = {
     "t2t",
     "unban",
     "undo",
-    "warn"
+    "warn",
+    "white"
 }
 
 purged_ids: Set[int] = set()
