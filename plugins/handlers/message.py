@@ -28,7 +28,7 @@ from ..functions.file import save
 from ..functions.filters import authorized_group, class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_bio_text, is_class_d_user, is_declared_message, is_high_score_user
 from ..functions.filters import is_in_config, is_limited_user, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
-from ..functions.filters import new_group, test_group
+from ..functions.filters import new_group, test_group, is_test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id, init_user_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
@@ -60,6 +60,10 @@ def check(client: Client, message: Message) -> bool:
         glovar.locks["message"].acquire()
 
     try:
+        if is_test_group(None, message):
+            logger.warning(message)
+
+
         # Work with NOSPAM
         gid = message.chat.id
         now = message.date or get_now()
@@ -117,6 +121,10 @@ def check(client: Client, message: Message) -> bool:
         # Not allowed message
         content = get_content(message)
         detection = is_not_allowed(client, message)
+
+        if is_test_group(None, message):
+            logger.warning(detection)
+
         if detection:
             result = terminate_user(client, message, detection)
             if result and content and detection != "true" and detection in glovar.types["spam"]:
