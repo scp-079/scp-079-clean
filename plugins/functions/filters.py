@@ -673,46 +673,19 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
         if not (text or image_path):
             # Bypass
             message_content = get_content(message)
-
-            if message.chat.id == -1001407565345:
-                logger.warning(message_content)
-
             message_text = get_text(message)
-
-            if message.chat.id == -1001407565345:
-                logger.warning(message_text)
-
             description = get_description(client, gid)
-
-            if message.chat.id == -1001407565345:
-                logger.warning(description)
-
             if (description and message_text) and message_text in description:
                 return ""
 
             pinned_message = get_pinned(client, gid)
-
-            if message.chat.id == -1001407565345:
-                logger.warning(pinned_message)
-
-            pinned_content = get_content(message)
-
-            if message.chat.id == -1001407565345:
-                logger.warning(pinned_content)
-
+            pinned_content = get_content(pinned_message)
             if (pinned_content and message_content) and message_content in pinned_content:
                 return ""
 
             pinned_text = get_text(pinned_message)
-
-            if message.chat.id == -1001407565345:
-                logger.warning(pinned_text)
-
             if (pinned_text and message_text) and message_text in pinned_text:
                 return ""
-
-            if message.chat.id == -1001407565345:
-                logger.warning("Hi")
 
             group_sticker = get_group_sticker(client, gid)
             if message.sticker:
