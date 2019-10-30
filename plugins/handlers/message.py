@@ -26,7 +26,7 @@ from ..functions.etc import code, delay, general_link, get_filename, get_forward
 from ..functions.etc import lang, mention_id, thread
 from ..functions.file import save
 from ..functions.filters import authorized_group, class_d, declared_message, exchange_channel, from_user, hide_channel
-from ..functions.filters import is_ban_text, is_bio_text, is_declared_message, is_high_score_user
+from ..functions.filters import is_ban_text, is_bio_text, is_class_d_user, is_declared_message, is_high_score_user
 from ..functions.filters import is_in_config, is_limited_user, is_nm_text, is_not_allowed, is_regex_text, is_watch_user
 from ..functions.filters import new_group, test_group
 from ..functions.group import delete_message, leave_group
@@ -156,7 +156,7 @@ def check_join(client: Client, message: Message) -> bool:
             uid = new.id
 
             # Check if the user is Class D personnel
-            if uid in glovar.bad_ids["users"]:
+            if is_class_d_user(new):
                 return True
 
             # Work with NOSPAM
