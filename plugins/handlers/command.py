@@ -85,7 +85,7 @@ def clean(client: Client, message: Message) -> bool:
             # Generate the report message's text
             text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
                     f"{lang('action')}{lang('colon')}{code(lang('clean_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
+                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
             reason = get_command_type(message)
 
             if reason:
@@ -322,7 +322,7 @@ def dafm(client: Client, message: Message) -> bool:
             # Generate the report message's text
             text = (f"{lang('user')}{lang('colon')}{mention_id(uid)}\n"
                     f"{lang('action')}{lang('colon')}{code(lang('sde_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
+                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
 
             # Send the report message
             thread(send_report_message, (15, client, gid, text))
@@ -396,7 +396,7 @@ def purge(client: Client, message: Message) -> bool:
             aid = message.from_user.id
             text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
                     f"{lang('action')}{lang('colon')}{code(lang('pur_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
+                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
             reason = get_command_type(message)
 
             if reason:
@@ -461,7 +461,7 @@ def purge_begin(client: Client, message: Message) -> bool:
         aid = message.from_user.id
         text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
                 f"{lang('action')}{lang('colon')}{code(lang('pur_begin'))}\n"
-                f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n"
+                f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n"
                 f"{lang('triggered_by')}{lang('colon')}{general_link(r_mid, message_link(r_message))}\n")
         reason = get_command_type(message)
 
@@ -536,7 +536,7 @@ def purge_end(client: Client, message: Message) -> bool:
             aid = message.from_user.id
             text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
                     f"{lang('action')}{lang('colon')}{code(lang('pur_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeed'))}\n")
+                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
             reason = get_command_type(message)
 
             if reason:
