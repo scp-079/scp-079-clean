@@ -164,14 +164,18 @@ def get_command_context(message: Message) -> (str, str):
     try:
         text = get_text(message)
         command_list = text.split(" ")
-        if len(list(filter(None, command_list))) > 1:
-            i = 1
-            command_type = command_list[i]
-            while command_type == "" and i < len(command_list):
-                i += 1
-                command_type = command_list[i]
 
-            command_context = text[1 + len(command_list[0]) + i + len(command_type):].strip()
+        if len(list(filter(None, command_list))) <= 1:
+            return "", ""
+
+        i = 1
+        command_type = command_list[i]
+
+        while command_type == "" and i < len(command_list):
+            i += 1
+            command_type = command_list[i]
+
+        command_context = text[1 + len(command_list[0]) + i + len(command_type):].strip()
     except Exception as e:
         logger.warning(f"Get command context error: {e}", exc_info=True)
 
@@ -196,11 +200,14 @@ def get_entity_text(message: Message, entity: MessageEntity) -> str:
     result = ""
     try:
         text = get_text(message)
-        if text and entity:
-            offset = entity.offset
-            length = entity.length
-            text = text.encode("utf-16-le")
-            result = text[offset * 2:(offset + length) * 2].decode("utf-16-le")
+
+        if not text or not entity:
+            return ""
+
+        offset = entity.offset
+        length = entity.length
+        text = text.encode("utf-16-le")
+        result = text[offset * 2:(offset + length) * 2].decode("utf-16-le")
     except Exception as e:
         logger.warning(f"Get entity text error: {e}", exc_info=True)
 
@@ -251,12 +258,14 @@ def get_full_name(user: User, normal: bool = False) -> str:
     # Get user's full name
     text = ""
     try:
-        if user and not user.is_deleted:
-            text = user.first_name
-            if user.last_name:
-                text += f" {user.last_name}"
+        if not user or user.is_deleted:
+            return ""
 
-        if text:
+        text = user.first_name
+        if user.last_name:
+            text += f" {user.last_name}"
+
+        if text and normal:
             text = t2t(text, normal)
     except Exception as e:
         logger.warning(f"Get full name error: {e}", exc_info=True)
@@ -282,28 +291,38 @@ def get_links(message: Message) -> List[str]:
         entities = message.entities or message.caption_entities
         if entities:
             for en in entities:
-                link = ""
                 if en.type == "url":
                     link = get_entity_text(message, en)
                 elif en.url:
                     link = en.url
+                else:
+                    continue
 
                 link = get_stripped_link(link)
-                if link:
-                    result.append(link)
 
-        if message.reply_markup and isinstance(message.reply_markup, InlineKeyboardMarkup):
-            reply_markup = message.reply_markup
-            if reply_markup.inline_keyboard:
-                inline_keyboard = reply_markup.inline_keyboard
-                if inline_keyboard:
-                    for button_row in inline_keyboard:
-                        for button in button_row:
-                            if button:
-                                if button.url:
-                                    url = get_stripped_link(button.url)
-                                    if url:
-                                        result.append(get_stripped_link(url))
+                if not link:
+                    continue
+
+                result.append(link)
+
+        reply_markup = message.reply_markup
+        if (reply_markup
+                and isinstance(reply_markup, InlineKeyboardMarkup)
+                and reply_markup.inline_keyboard):
+            for button_row in reply_markup.inline_keyboard:
+                for button in button_row:
+                    if not button:
+                        continue
+
+                    if not button.url:
+                        continue
+
+                    url = get_stripped_link(button.url)
+
+                    if not url:
+                        continue
+
+                    result.append(url)
     except Exception as e:
         logger.warning(f"Get links error: {e}", exc_info=True)
 
@@ -319,6 +338,7 @@ def get_md5sum(the_type: str, ctx: str) -> str:
 
         if the_type == "file":
             hash_md5 = md5()
+
             with open(ctx, "rb") as f:
                 for chunk in iter(lambda: f.read(4096), b""):
                     hash_md5.update(chunk)
@@ -448,22 +468,25 @@ def get_text(message: Message, normal: bool = False, printable: bool = True) -> 
             entities = message.entities or message.caption_entities
             if entities:
                 for en in entities:
-                    if en.url:
-                        text += f"\n{en.url}"
+                    if not en.url:
+                        continue
 
-        if message.reply_markup and isinstance(message.reply_markup, InlineKeyboardMarkup):
-            reply_markup = message.reply_markup
-            if reply_markup.inline_keyboard:
-                inline_keyboard = reply_markup.inline_keyboard
-                if inline_keyboard:
-                    for button_row in inline_keyboard:
-                        for button in button_row:
-                            if button:
-                                if button.text:
-                                    text += f"\n{button.text}"
+                    text += f"\n{en.url}"
 
-                                if button.url:
-                                    text += f"\n{button.url}"
+        reply_markup = message.reply_markup
+        if (reply_markup
+                and isinstance(reply_markup, InlineKeyboardMarkup)
+                and reply_markup.inline_keyboard):
+            for button_row in reply_markup.inline_keyboard:
+                for button in button_row:
+                    if not button:
+                        continue
+
+                    if button.text:
+                        text += f"\n{button.text}"
+
+                    if button.url:
+                        text += f"\n{button.url}"
 
         if text:
             text = t2t(text, normal, printable)

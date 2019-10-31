@@ -487,7 +487,7 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
     return False
 
 
-def receive_remove_bad(sender: str, data: dict) -> bool:
+def receive_remove_bad(data: dict) -> bool:
     # Receive removed bad objects
     try:
         # Basic data
@@ -495,7 +495,7 @@ def receive_remove_bad(sender: str, data: dict) -> bool:
         the_type = data["type"]
 
         # Remove bad channel
-        if sender == "MANAGE" and the_type == "channel":
+        if the_type == "channel":
             glovar.bad_ids["channels"].discard(the_id)
 
         # Remove bad user
@@ -616,9 +616,11 @@ def receive_rollback(client: Client, message: Message, data: dict) -> bool:
         the_type = data["type"]
         the_data = receive_file_data(client, message)
 
-        if the_data:
-            exec(f"glovar.{the_type} = the_data")
-            save(the_type)
+        if not the_data:
+            return True
+
+        exec(f"glovar.{the_type} = the_data")
+        save(the_type)
 
         # Send debug message
         text = (f"{lang('project')}{lang('colon')}{general_link(glovar.project_name, glovar.project_link)}\n"

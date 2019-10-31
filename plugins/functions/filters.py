@@ -113,10 +113,9 @@ def is_class_e(_, message: Message) -> bool:
                 return True
 
         content = get_content(message)
-        if content:
-            if (content in glovar.except_ids["long"]
-                    or content in glovar.except_ids["temp"]):
-                return True
+        if (content and (content in glovar.except_ids["long"]
+                         or content in glovar.except_ids["temp"])):
+            return True
     except Exception as e:
         logger.warning(f"Is class e error: {e}", exc_info=True)
 
@@ -428,6 +427,7 @@ def is_detected_user_id(gid: int, uid: int, now: int) -> bool:
     # Check if the user_id is detected in the group
     try:
         user_status = glovar.user_ids.get(uid, {})
+
         if not user_status:
             return False
 
@@ -552,10 +552,13 @@ def is_high_score_user(user: User) -> float:
 
         uid = user.id
         user_status = glovar.user_ids.get(uid, {})
-        if user_status:
-            score = sum(user_status["score"].values())
-            if score >= 3.0:
-                return score
+
+        if not user_status:
+            return 0.0
+
+        score = sum(user_status["score"].values())
+        if score >= 3.0:
+            return score
     except Exception as e:
         logger.warning(f"Is high score user error: {e}", exc_info=True)
 

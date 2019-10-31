@@ -186,7 +186,7 @@ def check_join(client: Client, message: Message) -> bool:
         # Delete service message
         if is_in_config(gid, "ser"):
             if glovar.message_ids[gid]["service"]:
-                delay(3, delete_message, [client, gid, glovar.message_ids[gid]["service"]])
+                delay(10, delete_message, [client, gid, glovar.message_ids[gid]["service"]])
 
             glovar.message_ids[gid]["service"] = mid
             save("message_ids")
@@ -391,7 +391,7 @@ def process_data(client: Client, message: Message) -> bool:
 
                 elif action == "remove":
                     if action_type == "bad":
-                        receive_remove_bad(sender, data)
+                        receive_remove_bad(data)
                     elif action_type == "except":
                         receive_remove_except(client, data)
                     elif action_type == "score":
