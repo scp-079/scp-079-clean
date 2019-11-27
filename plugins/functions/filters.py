@@ -113,8 +113,12 @@ def is_class_e(_, message: Message) -> bool:
                 return True
 
         content = get_content(message)
-        if (content and (content in glovar.except_ids["long"]
-                         or content in glovar.except_ids["temp"])):
+
+        if not content:
+            return False
+
+        if (content in glovar.except_ids["long"]
+                or content in glovar.except_ids["temp"]):
             return True
     except Exception as e:
         logger.warning(f"Is class e error: {e}", exc_info=True)
