@@ -484,6 +484,7 @@ other_commands: Set[str] = {
     "admin",
     "admins",
     "ban",
+    "captcha",
     "check",
     "comment",
     "config_captcha",
