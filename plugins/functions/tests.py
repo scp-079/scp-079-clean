@@ -62,7 +62,7 @@ def clean_test(client: Client, message: Message) -> bool:
             text += f"{lang('bmd')}{lang('colon')}{code('True')}\n"
 
         # AFF link
-        if is_regex_text("aff", message_text):
+        if is_regex_text("adi", message_text):
             text += f"{lang('aff')}{lang('colon')}{code('True')}\n"
 
         # Emoji
