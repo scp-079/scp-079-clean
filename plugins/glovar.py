@@ -541,7 +541,6 @@ recorded_ids: Dict[int, Set[int]] = {}
 
 regex: Dict[str, bool] = {
     "ad": False,
-    "aff": True,
     "ban": False,
     "bio": False,
     "con": False,
@@ -551,15 +550,18 @@ regex: Dict[str, bool] = {
     "nm": False,
     "pho": False,
     "sho": True,
-    "spc": False,
+    "spc": True,
     "spe": False,
     "sti": False,
     "tgl": True,
     "tgp": True,
     "wb": True
 }
+
 for c in ascii_lowercase:
     regex[f"ad{c}"] = False
+
+regex["adi"] = True
 
 sender: str = "CLEAN"
 
@@ -581,7 +583,7 @@ usernames: Dict[str, Dict[str, Union[int, str]]] = {}
 #     }
 # }
 
-version: str = "0.2.5"
+version: str = "0.2.6"
 
 # Load data from pickle
 

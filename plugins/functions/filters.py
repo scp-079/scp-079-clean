@@ -290,15 +290,20 @@ def is_ban_text(text: str, ocr: bool, message: Message = None) -> bool:
         if is_regex_text("ban", text, ocr):
             return True
 
+        # ad + con
         ad = is_regex_text("ad", text, ocr) or is_emoji("ad", text, message)
         con = is_con_text(text, ocr)
+
         if ad and con:
             return True
 
+        # ad_ + con
         ad = is_ad_text(text, ocr)
+
         if ad and con:
             return True
 
+        # ad_ + ad_
         if ad:
             ad = is_ad_text(text, ocr, ad)
             return bool(ad)
@@ -375,7 +380,6 @@ def is_con_text(text: str, ocr: bool) -> bool:
     # Check if the text is con text
     try:
         if (is_regex_text("con", text, ocr)
-                or is_regex_text("aff", text, ocr)
                 or is_regex_text("iml", text, ocr)
                 or is_regex_text("pho", text, ocr)):
             return True
@@ -807,7 +811,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                 # AFF link
                 if is_in_config(gid, "aff"):
-                    if is_regex_text("aff", message_text):
+                    if is_regex_text("adi", message_text):
                         return "aff"
 
                 # Emoji
@@ -880,7 +884,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             if text:
                 # AFF link
                 if is_in_config(gid, "aff"):
-                    if is_regex_text("aff", text):
+                    if is_regex_text("adi", text):
                         return "aff"
 
                 # Instant messenger link
@@ -1067,5 +1071,25 @@ def is_watch_user(user: User, the_type: str, now: int) -> bool:
             return True
     except Exception as e:
         logger.warning(f"Is watch user error: {e}", exc_info=True)
+
+    return False
+
+
+def is_wb_text(text: str, ocr: bool) -> bool:
+    # Check if the text is wb text
+    try:
+        if (is_regex_text("wb", text, ocr)
+                or is_regex_text("ad", text, ocr)
+                or is_regex_text("iml", text, ocr)
+                or is_regex_text("pho", text, ocr)
+                or is_regex_text("sho", text, ocr)
+                or is_regex_text("spc", text, ocr)):
+            return True
+
+        for c in ascii_lowercase:
+            if is_regex_text(f"ad{c}", text, ocr):
+                return True
+    except Exception as e:
+        logger.warning(f"Is wb text error: {e}", exc_info=True)
 
     return False
