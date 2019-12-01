@@ -290,10 +290,6 @@ def dafm(client: Client, message: Message) -> bool:
 
     glovar.locks["message"].acquire()
     try:
-        # Init the group's status
-        if not init_group_id(gid):
-            return True
-
         # Check permission
         if not glovar.configs[gid].get("sde", False) and not is_class_c(None, message):
             return True
