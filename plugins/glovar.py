@@ -516,6 +516,7 @@ other_commands: Set[str] = {
     "print",
     "report",
     "resend",
+    "result",
     "rm",
     "static",
     "t2t",
