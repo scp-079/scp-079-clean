@@ -27,7 +27,7 @@ from pyrogram import CallbackQuery, Client, Filters, Message, User
 from .. import glovar
 from .channel import get_content
 from .etc import get_channel_link, get_command_type, get_entity_text, get_now, get_links, get_md5sum
-from .etc import get_stripped_link, get_text
+from .etc import get_stripped_link, get_text, thread
 from .file import delete_file, get_downloaded_path, save
 from .group import get_description, get_group_sticker, get_member, get_pinned
 from .ids import init_group_id
@@ -934,7 +934,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
         logger.warning(f"Is not allowed error: {e}", exc_info=True)
     finally:
         for file in need_delete:
-            delete_file(file)
+            thread(delete_file, (file,))
 
     return ""
 

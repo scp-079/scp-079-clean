@@ -99,7 +99,7 @@ def clean_test(client: Client, message: Message) -> bool:
         image_path = big and get_downloaded_path(client, file_id, file_ref)
         image_hash = image_path and get_md5sum("file", image_path)
         qrcode = image_path and get_qrcode(image_path)
-        image_path and delete_file(image_path)
+        image_path and thread(delete_file, (image_path,))
 
         if qrcode:
             text += f"{lang('qrc')}{lang('colon')}{code('True')}\n"

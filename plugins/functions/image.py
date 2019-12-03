@@ -23,7 +23,7 @@ from pyrogram import Client, Message
 from pyzbar.pyzbar import decode
 
 from .. import glovar
-from .etc import get_md5sum, t2t
+from .etc import get_md5sum, t2t, thread
 from .file import delete_file, get_downloaded_path
 
 # Enable logging
@@ -99,7 +99,7 @@ def get_image_hash(client: Client, message: Message) -> str:
             return ""
 
         result = get_md5sum("file", image_path)
-        delete_file(image_path)
+        thread(delete_file, (image_path,))
     except Exception as e:
         logger.warning(f"Get image hash error: {e}", exc_info=True)
 
