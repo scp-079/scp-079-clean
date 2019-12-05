@@ -504,7 +504,6 @@ other_commands: Set[str] = {
     "content",
     "count",
     "dafm",
-    "escape",
     "findall",
     "forgive",
     "group",
