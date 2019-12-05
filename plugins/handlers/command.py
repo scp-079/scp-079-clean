@@ -29,7 +29,6 @@ from ..functions.etc import mention_id, message_link, thread
 from ..functions.file import save
 from ..functions.filters import authorized_group, from_user, is_class_c, test_group
 from ..functions.group import delete_message, get_config_text
-from ..functions.ids import init_group_id
 from ..functions.telegram import delete_messages, get_group_info, send_message, send_report_message
 
 # Enable logging

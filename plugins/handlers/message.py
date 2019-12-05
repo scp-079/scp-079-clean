@@ -298,7 +298,8 @@ def init_group(client: Client, message: Message) -> bool:
     return False
 
 
-@Client.on_message(Filters.incoming & Filters.channel & ~Filters.command(glovar.all_commands, glovar.prefix)
+@Client.on_message((Filters.incoming or glovar.aio) & Filters.channel
+                   & ~Filters.command(glovar.all_commands, glovar.prefix)
                    & exchange_channel)
 def process_data(client: Client, message: Message) -> bool:
     # Process the data in exchange channel
