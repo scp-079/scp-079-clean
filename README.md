@@ -4,7 +4,7 @@ This bot is used to auto delete specific types of messages.
 
 ## How to use
 
-- See [manual](https://telegra.ph/SCP-079-CLEAN-12-04)
+- See the [manual](https://telegra.ph/SCP-079-CLEAN-12-04)
 - See [this article](https://scp-079.org/clean/) to build a bot by yourself
 - Discuss [group](https://t.me/SCP_079_CHAT)
 
