@@ -23,7 +23,7 @@ from pyrogram import Client, Filters, Message
 from .. import glovar
 from ..functions.channel import get_content, get_debug_text
 from ..functions.etc import code, delay, general_link, get_filename, get_forward_name, get_full_name, get_now, get_text
-from ..functions.etc import lang, mention_id, thread
+from ..functions.etc import lang, mention_id, t2t, thread
 from ..functions.file import save
 from ..functions.filters import authorized_group, class_d, declared_message, exchange_channel, from_user, hide_channel
 from ..functions.filters import is_ban_text, is_bio_text, is_class_d_user, is_declared_message, is_high_score_user
@@ -65,15 +65,15 @@ def check(client: Client, message: Message) -> bool:
         now = message.date or get_now()
         if glovar.nospam_id in glovar.admin_ids[gid]:
             # Check the forward from name
-            forward_name = get_forward_name(message, True, True)
+            forward_name = get_forward_name(message)
             if forward_name and forward_name not in glovar.except_ids["long"]:
-                if is_nm_text(forward_name):
+                if is_nm_text(t2t(forward_name, True, True)):
                     return False
 
             # Check the user's name
-            name = get_full_name(message.from_user, True, True)
+            name = get_full_name(message.from_user)
             if name and name not in glovar.except_ids["long"]:
-                if is_nm_text(name):
+                if is_nm_text(t2t(name, True, True)):
                     return False
 
             # Check the text
