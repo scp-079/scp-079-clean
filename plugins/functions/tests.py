@@ -44,7 +44,7 @@ def clean_test(client: Client, message: Message) -> bool:
             aid = message.from_user.id
 
         text = ""
-        message_text = get_text(message, True)
+        message_text = get_text(message, True, True)
 
         # Detected record
         content = get_content(message)

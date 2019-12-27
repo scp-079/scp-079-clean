@@ -1024,7 +1024,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
             return True
 
         # Check text
-        message_text = get_text(message, True).lower()
+        message_text = get_text(message, True, True).lower()
         for bypass in bypass_list:
             message_text = message_text.replace(bypass, "")
 
