@@ -136,7 +136,7 @@ def forward_evidence(client: Client, message: Message, level: str, rule: str, th
     result = None
     try:
         # Forwarding is unnecessary
-        if the_type in {"bmd", "ser"}:
+        if the_type in glovar.types["basic"]:
             return message
 
         # Basic information

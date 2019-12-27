@@ -65,13 +65,13 @@ def check(client: Client, message: Message) -> bool:
         now = message.date or get_now()
         if glovar.nospam_id in glovar.admin_ids[gid]:
             # Check the forward from name
-            forward_name = get_forward_name(message, True)
+            forward_name = get_forward_name(message, True, True)
             if forward_name and forward_name not in glovar.except_ids["long"]:
                 if is_nm_text(forward_name):
                     return False
 
             # Check the user's name
-            name = get_full_name(message.from_user, True)
+            name = get_full_name(message.from_user, True, True)
             if name and name not in glovar.except_ids["long"]:
                 if is_nm_text(name):
                     return False
@@ -85,7 +85,7 @@ def check(client: Client, message: Message) -> bool:
                 return False
 
             # File name
-            filename = get_filename(message, True)
+            filename = get_filename(message, True, True)
             if is_ban_text(filename, False):
                 return False
 
@@ -162,12 +162,12 @@ def check_join(client: Client, message: Message) -> bool:
             # Work with NOSPAM
             if glovar.nospam_id in glovar.admin_ids[gid]:
                 # Check name
-                name = get_full_name(new, True)
+                name = get_full_name(new, True, True)
                 if name and is_nm_text(name):
                     return True
 
                 # Check bio
-                bio = get_user_bio(client, uid, True)
+                bio = get_user_bio(client, uid, True, True)
                 if bio and is_bio_text(bio):
                     return True
 

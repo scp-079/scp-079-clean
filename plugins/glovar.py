@@ -519,6 +519,7 @@ other_commands: Set[str] = {
     "pass",
     "print",
     "report",
+    "regex",
     "resend",
     "rm",
     "show",
@@ -582,6 +583,8 @@ types: Dict[str, Union[List[str], Set[str]]] = {
     "all": ["con", "loc", "vdn", "voi",
             "ast", "aud", "bmd", "doc", "gam", "gif", "via", "vid", "ser", "sti",
             "aff", "emo", "exe", "iml", "pho", "sho", "tgl", "tgp", "qrc"],
+    "basic": {"con", "loc", "vdn", "voi",
+              "ast", "aud", "bmd", "doc", "gam", "gif", "via", "vid", "ser", "sti"},
     "function": ["sde", "tcl", "ttd"],
     "spam": {"aff", "emo", "exe", "iml", "pho", "sho", "tgl", "tgp", "qrc", "true"}
 }
@@ -594,7 +597,7 @@ usernames: Dict[str, Dict[str, Union[int, str]]] = {}
 #     }
 # }
 
-version: str = "0.2.6"
+version: str = "0.2.7"
 
 # Load data from pickle
 

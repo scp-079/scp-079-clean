@@ -143,8 +143,8 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
         now = message.date or get_now()
 
         if the_type in glovar.types["spam"]:
-            full_name = get_full_name(message.from_user, True)
-            forward_name = get_forward_name(message, True)
+            full_name = get_full_name(message.from_user, True, True)
+            forward_name = get_forward_name(message, True, True)
             if ((is_wb_text(full_name, False) or is_wb_text(forward_name, False))
                     and (full_name not in glovar.except_ids["long"] and forward_name not in glovar.except_ids["long"])
                     and not is_class_e_user(message.from_user)):
@@ -306,7 +306,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
                     declare_message(client, gid, mid)
-                    the_type = (lambda x: x if x in {"bmd", "ser"} else None)(the_type)
+                    the_type = (lambda x: x if x in glovar.types["basic"] else None)(the_type)
                     send_debug(
                         client=client,
                         chat=message.chat,
