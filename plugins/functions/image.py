@@ -91,10 +91,12 @@ def get_image_hash(client: Client, message: Message) -> str:
     result = ""
     try:
         file_id, file_ref, big = get_file_id(message)
+
         if not file_id:
             return ""
 
         image_path = get_downloaded_path(client, file_id, file_ref)
+
         if not image_path:
             return ""
 
@@ -127,6 +129,7 @@ def get_qrcode(path: str) -> str:
 
         # Decode
         decoded_list = decode(image)
+
         if decoded_list:
             for decoded in decoded_list:
                 if decoded.type == "QRCODE":

@@ -38,6 +38,7 @@ def clean_test(client: Client, message: Message) -> bool:
     # Test image porn score in the test group
     try:
         origin_text = get_text(message)
+
         if re.search(f"^{lang('admin')}{lang('colon')}[0-9]", origin_text):
             aid = get_int(origin_text.split("\n\n")[0].split(lang('colon'))[1])
         else:
@@ -49,11 +50,13 @@ def clean_test(client: Client, message: Message) -> bool:
         # Detected record
         content = get_content(message)
         detection = glovar.contents.get(content, "")
+
         if detection:
             text += f"{lang('record_content')}{lang('colon')}{code(lang(detection))}\n"
 
         # Detected url
         detection = is_detected_url(message, True)
+
         if detection:
             text += f"{lang('record_link')}{lang('colon')}{code(lang(detection))}\n"
 

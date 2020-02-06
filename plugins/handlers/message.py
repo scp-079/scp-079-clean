@@ -60,24 +60,29 @@ def check(client: Client, message: Message) -> bool:
         glovar.locks["message"].acquire()
 
     try:
-        # Work with NOSPAM
+        # Basic data
         gid = message.chat.id
         now = message.date or get_now()
+
+        # Work with NOSPAM
         if glovar.nospam_id in glovar.admin_ids[gid]:
             # Check the forward from name
             forward_name = get_forward_name(message)
+
             if forward_name and forward_name not in glovar.except_ids["long"]:
                 if is_nm_text(t2t(forward_name, True, True)):
                     return False
 
             # Check the user's name
             name = get_full_name(message.from_user)
+
             if name and name not in glovar.except_ids["long"]:
                 if is_nm_text(t2t(name, True, True)):
                     return False
 
             # Check the text
             message_text = get_text(message, True, True)
+
             if is_ban_text(message_text, False):
                 return False
 
@@ -86,6 +91,7 @@ def check(client: Client, message: Message) -> bool:
 
             # File name
             filename = get_filename(message, True, True)
+
             if is_ban_text(filename, False):
                 return False
 
@@ -97,6 +103,7 @@ def check(client: Client, message: Message) -> bool:
 
             # Check sticker
             set_name = message.sticker and message.sticker.set_name
+
             if is_regex_text("sti", set_name):
                 return False
 
@@ -117,8 +124,10 @@ def check(client: Client, message: Message) -> bool:
         # Not allowed message
         content = get_content(message)
         detection = is_not_allowed(client, message)
+
         if detection:
             result = terminate_user(client, message, detection)
+
             if result and content and detection != "true" and detection in glovar.types["spam"]:
                 glovar.contents[content] = detection
         elif message.sticker:
@@ -163,11 +172,13 @@ def check_join(client: Client, message: Message) -> bool:
             if glovar.nospam_id in glovar.admin_ids[gid]:
                 # Check name
                 name = get_full_name(new, True, True)
+
                 if name and is_nm_text(name):
                     return True
 
                 # Check bio
                 bio = get_user_bio(client, uid, True, True)
+
                 if bio and is_bio_text(bio):
                     return True
 
@@ -273,10 +284,21 @@ def init_group(client: Client, message: Message) -> bool:
             admin_members = get_admins(client, gid)
 
             if admin_members:
+                # Admin list
                 glovar.admin_ids[gid] = {admin.user.id for admin in admin_members
+                                         if (((not admin.user.is_bot and not admin.user.is_deleted)
+                                             or admin.user.id in glovar.bot_ids)
+                                             and admin.can_delete_messages
+                                             and admin.can_restrict_members)}
+                save("admin_ids")
+
+                # Trust list
+                glovar.trust_ids[gid] = {admin.user.id for admin in admin_members
                                          if ((not admin.user.is_bot and not admin.user.is_deleted)
                                              or admin.user.id in glovar.bot_ids)}
-                save("admin_ids")
+                save("trust_ids")
+
+                # Text
                 text += f"{lang('status')}{lang('colon')}{code(lang('status_joined'))}\n"
             else:
                 thread(leave_group, (client, gid))

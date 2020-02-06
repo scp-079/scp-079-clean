@@ -145,6 +145,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
         if the_type in glovar.types["spam"]:
             full_name = get_full_name(message.from_user, True, True)
             forward_name = get_forward_name(message, True, True)
+
             if ((is_wb_text(full_name, False) or is_wb_text(forward_name, False))
                     and (full_name not in glovar.except_ids["long"] and forward_name not in glovar.except_ids["long"])
                     and not is_class_e_user(message.from_user)):
@@ -155,6 +156,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     rule=lang("name_examine"),
                     the_type=the_type
                 )
+
                 if result:
                     add_bad_user(client, uid)
                     ban_user(client, gid, uid)
@@ -177,6 +179,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     rule=lang("watch_user"),
                     the_type=the_type
                 )
+
                 if result:
                     add_bad_user(client, uid)
                     ban_user(client, gid, uid)
@@ -201,6 +204,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     the_type=the_type,
                     score=score
                 )
+
                 if result:
                     add_bad_user(client, uid)
                     ban_user(client, gid, uid)
@@ -224,6 +228,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     rule=lang("watch_user"),
                     the_type=the_type
                 )
+
                 if result:
                     add_watch_user(client, "ban", uid, now)
                     delete_message(client, gid, mid)
@@ -249,6 +254,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     rule=lang("op_upgrade"),
                     the_type=the_type
                 )
+
                 if result:
                     add_watch_user(client, "ban", uid, now)
                     delete_message(client, gid, mid)
@@ -276,6 +282,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     rule=lang("rule_custom"),
                     the_type=the_type
                 )
+
                 if result:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)
@@ -302,6 +309,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     rule=lang("rule_custom"),
                     the_type=the_type
                 )
+
                 if result:
                     glovar.recorded_ids[gid].add(uid)
                     delete_message(client, gid, mid)

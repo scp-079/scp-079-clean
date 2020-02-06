@@ -74,11 +74,13 @@ def clean_banned(client: Client) -> bool:
                         continue
 
                     members = get_members(client, gid, "kicked")
+
                     if not members:
                         continue
 
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
                     count = 0
+
                     for member in deleted_members:
                         uid = member.user.id
                         thread(unban_user, (client, gid, uid))
@@ -123,15 +125,16 @@ def clean_members(client: Client) -> bool:
                         continue
 
                     members = get_members(client, gid, "all")
+
                     if not members:
                         continue
 
                     deleted_members = filter(lambda m: m.user.is_deleted, members)
                     count = 0
+
                     for member in deleted_members:
-                        uid = member.user.id
                         if member.status not in {"creator", "administrator"}:
-                            thread(kick_user, (client, gid, uid))
+                            thread(kick_user, (client, gid, member.user.id))
                             count += 1
 
                     if not count:
@@ -165,6 +168,7 @@ def interval_hour_01(client: Client) -> bool:
         # Reset purge status
         for gid in list(glovar.configs):
             mid, time = glovar.message_ids[gid]["purge"]
+
             if not mid or not time:
                 continue
 
@@ -268,6 +272,7 @@ def send_count(client: Client) -> bool:
         for word_type in glovar.regex:
             share_regex_count(client, word_type)
             word_list = list(eval(f"glovar.{word_type}_words"))
+
             for word in word_list:
                 eval(f"glovar.{word_type}_words")[word] = 0
 
@@ -291,10 +296,22 @@ def update_admins(client: Client) -> bool:
             should_leave = True
             reason = "permissions"
             admin_members = get_admins(client, gid)
+
             if admin_members and any([admin.user.is_self for admin in admin_members]):
+                # Admin list
                 glovar.admin_ids[gid] = {admin.user.id for admin in admin_members
+                                         if (((not admin.user.is_bot and not admin.user.is_deleted)
+                                             or admin.user.id in glovar.bot_ids)
+                                             and admin.can_delete_messages
+                                             and admin.can_restrict_members)}
+                save("admin_ids")
+
+                # Trust list
+                glovar.trust_ids[gid] = {admin.user.id for admin in admin_members
                                          if ((not admin.user.is_bot and not admin.user.is_deleted)
                                              or admin.user.id in glovar.bot_ids)}
+                save("trust_ids")
+
                 if glovar.user_id not in glovar.admin_ids[gid]:
                     reason = "user"
                 else:
@@ -303,29 +320,29 @@ def update_admins(client: Client) -> bool:
                             if admin.can_delete_messages and admin.can_restrict_members:
                                 should_leave = False
 
-                if should_leave:
-                    group_name, group_link = get_group_info(client, gid)
-                    share_data(
-                        client=client,
-                        receivers=["MANAGE"],
-                        action="leave",
-                        action_type="request",
-                        data={
-                            "group_id": gid,
-                            "group_name": group_name,
-                            "group_link": group_link,
-                            "reason": reason
-                        }
-                    )
-                    reason = lang(f"reason_{reason}")
-                    project_link = general_link(glovar.project_name, glovar.project_link)
-                    debug_text = (f"{lang('project')}{lang('colon')}{project_link}\n"
-                                  f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
-                                  f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
-                                  f"{lang('status')}{lang('colon')}{code(reason)}\n")
-                    thread(send_message, (client, glovar.debug_channel_id, debug_text))
-                else:
-                    save("admin_ids")
+                if not should_leave:
+                    continue
+
+                group_name, group_link = get_group_info(client, gid)
+                share_data(
+                    client=client,
+                    receivers=["MANAGE"],
+                    action="leave",
+                    action_type="request",
+                    data={
+                        "group_id": gid,
+                        "group_name": group_name,
+                        "group_link": group_link,
+                        "reason": reason
+                    }
+                )
+                reason = lang(f"reason_{reason}")
+                project_link = general_link(glovar.project_name, glovar.project_link)
+                debug_text = (f"{lang('project')}{lang('colon')}{project_link}\n"
+                              f"{lang('group_name')}{lang('colon')}{general_link(group_name, group_link)}\n"
+                              f"{lang('group_id')}{lang('colon')}{code(gid)}\n"
+                              f"{lang('status')}{lang('colon')}{code(reason)}\n")
+                thread(send_message, (client, glovar.debug_channel_id, debug_text))
             elif admin_members is False or any([admin.user.is_self for admin in admin_members]) is False:
                 # Bot is not in the chat, leave automatically without approve
                 group_name, group_link = get_group_info(client, gid)

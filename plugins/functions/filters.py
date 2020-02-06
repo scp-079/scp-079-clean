@@ -50,6 +50,7 @@ def is_authorized_group(_, update: Union[CallbackQuery, Message]) -> bool:
             return False
 
         cid = message.chat.id
+
         if init_group_id(cid):
             return True
     except Exception as e:
@@ -86,11 +87,13 @@ def is_class_d(_, message: Message) -> bool:
 
         if message.forward_from:
             fid = message.forward_from.id
+
             if fid in glovar.bad_ids["users"]:
                 return True
 
         if message.forward_from_chat:
             cid = message.forward_from_chat.id
+
             if cid in glovar.bad_ids["channels"]:
                 return True
     except Exception as e:
@@ -104,11 +107,13 @@ def is_class_e(_, message: Message) -> bool:
     try:
         if message.forward_from_chat:
             cid = message.forward_from_chat.id
+
             if cid in glovar.except_ids["channels"]:
                 return True
 
         if message.game:
             short_name = message.game.short_name
+
             if short_name in glovar.except_ids["long"]:
                 return True
 
@@ -134,6 +139,7 @@ def is_declared_message(_, message: Message) -> bool:
 
         gid = message.chat.id
         mid = message.message_id
+
         return is_declared_message_id(gid, mid)
     except Exception as e:
         logger.warning(f"Is declared message error: {e}", exc_info=True)
@@ -148,6 +154,7 @@ def is_exchange_channel(_, message: Message) -> bool:
             return False
 
         cid = message.chat.id
+
         if glovar.should_hide:
             return cid == glovar.hide_channel_id
         else:
@@ -176,6 +183,7 @@ def is_hide_channel(_, message: Message) -> bool:
             return False
 
         cid = message.chat.id
+
         if cid == glovar.hide_channel_id:
             return True
     except Exception as e:
@@ -188,6 +196,7 @@ def is_new_group(_, message: Message) -> bool:
     # Check if the bot joined a new group
     try:
         new_users = message.new_chat_members
+
         if new_users:
             return any(user.is_self for user in new_users)
         elif message.group_chat_created or message.supergroup_chat_created:
@@ -210,6 +219,7 @@ def is_test_group(_, update: Union[CallbackQuery, Message]) -> bool:
             return False
 
         cid = message.chat.id
+
         if cid == glovar.test_group_id:
             return True
     except Exception as e:
@@ -376,9 +386,10 @@ def is_class_e_user(user: Union[int, User]) -> bool:
         if uid in glovar.bot_ids:
             return True
 
-        group_list = list(glovar.admin_ids)
+        group_list = list(glovar.trust_ids)
+
         for gid in group_list:
-            if uid in glovar.admin_ids.get(gid, set()):
+            if uid in glovar.trust_ids.get(gid, set()):
                 return True
     except Exception as e:
         logger.warning(f"Is class e user error: {e}", exc_info=True)
@@ -418,8 +429,10 @@ def is_detected_url(message: Message, test: bool = False) -> str:
 
         gid = message.chat.id
         links = get_links(message)
+
         for link in links:
             detected_type = glovar.contents.get(link, "")
+
             if detected_type and is_in_config(gid, detected_type):
                 return detected_type
     except Exception as e:
@@ -437,6 +450,7 @@ def is_detected_user(message: Message) -> bool:
         gid = message.chat.id
         uid = message.from_user.id
         now = message.date or get_now()
+
         return is_detected_user_id(gid, uid, now)
     except Exception as e:
         logger.warning(f"Is detected user error: {e}", exc_info=True)
@@ -453,6 +467,7 @@ def is_detected_user_id(gid: int, uid: int, now: int) -> bool:
             return False
 
         status = user_status["detected"].get(gid, 0)
+
         if now - status < glovar.time_punish:
             return True
     except Exception as e:
@@ -508,20 +523,24 @@ def is_exe(message: Message) -> bool:
     # Check if the message contain a exe
     try:
         extensions = ["apk", "bat", "cmd", "com", "exe", "msi", "pif", "scr", "vbs"]
+
         if message.document:
             if message.document.file_name:
                 file_name = message.document.file_name
+
                 for file_type in extensions:
                     if re.search(f"[.]{file_type}$", file_name, re.I):
                         return True
 
             if message.document.mime_type:
                 mime_type = message.document.mime_type
+
                 if "application/x-ms" in mime_type or "executable" in mime_type:
                     return True
 
         extensions.remove("com")
         links = get_links(message)
+
         for link in links:
             for file_type in extensions:
                 if re.search(f"[.]{file_type}$", link, re.I):
@@ -536,6 +555,7 @@ def is_friend_username(client: Client, gid: int, username: str, friend: bool, fr
     # Check if it is a friend username
     try:
         username = username.strip()
+
         if not username:
             return False
 
@@ -546,6 +566,7 @@ def is_friend_username(client: Client, gid: int, username: str, friend: bool, fr
             return False
 
         peer_type, peer_id = resolve_username(client, username)
+
         if peer_type == "channel":
             if glovar.configs[gid].get("friend") or friend:
                 if peer_id in glovar.except_ids["channels"] or glovar.admin_ids.get(peer_id, {}):
@@ -560,6 +581,7 @@ def is_friend_username(client: Client, gid: int, username: str, friend: bool, fr
                     return True
 
             member = get_member(client, gid, peer_id)
+
             if member and member.status in {"creator", "administrator", "member"}:
                 return True
     except Exception as e:
@@ -581,6 +603,7 @@ def is_high_score_user(user: User) -> float:
             return 0.0
 
         score = sum(user_status["score"].values())
+
         if score >= 3.0:
             return score
     except Exception as e:
@@ -622,6 +645,7 @@ def is_limited_user(gid: int, user: User, now: int, short: bool = True) -> bool:
             return True
 
         join = glovar.user_ids[uid]["join"].get(gid, 0)
+
         if short and now - join < glovar.time_short:
             return True
 
@@ -655,11 +679,13 @@ def is_new_user(user: User, now: int, gid: int = 0, joined: bool = False) -> boo
 
         if gid:
             join = glovar.user_ids[uid]["join"].get(gid, 0)
+
             if now - join < glovar.time_new:
                 return True
         else:
             for gid in list(glovar.user_ids[uid]["join"]):
                 join = glovar.user_ids[uid]["join"].get(gid, 0)
+
                 if now - join < glovar.time_new:
                     return True
     except Exception as e:
@@ -702,21 +728,26 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             message_content = get_content(message)
             message_text = get_text(message)
             description = get_description(client, gid)
+
             if (description and message_text) and message_text in description:
                 return ""
 
             pinned_message = get_pinned(client, gid)
             pinned_content = get_content(pinned_message)
+
             if (pinned_content and message_content) and message_content in pinned_content:
                 return ""
 
             pinned_text = get_text(pinned_message)
+
             if (pinned_text and message_text) and message_text in pinned_text:
                 return ""
 
             group_sticker = get_group_sticker(client, gid)
+
             if message.sticker:
                 sticker_name = message.sticker.set_name
+
                 if sticker_name and sticker_name == group_sticker:
                     return ""
 
@@ -729,11 +760,13 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                 # Content
                 if message_content:
                     detection = glovar.contents.get(message_content, "")
+
                     if detection and is_in_config(gid, detection):
                         return detection
 
                 # Url
                 detected_url = is_detected_url(message)
+
                 if is_in_config(gid, detected_url):
                     return detected_url
 
@@ -868,6 +901,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                     # Check hash
                     image_hash = image_path and get_md5sum("file", image_path)
+
                     if image_path and image_hash and image_hash not in glovar.except_ids["temp"]:
                         # Check declare status
                         if is_declared_message(None, message):
@@ -875,6 +909,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
 
                         # Get QR code
                         qrcode = get_qrcode(image_path)
+
                         if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode, False)):
                             return "qrc"
 
@@ -909,6 +944,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                         message_text = text.split("\n\n")[0]
                         url = text.split("\n\n")[1]
                         tgl_text = text.replace(message_text, "")
+
                         if get_stripped_link(url) in message_text:
                             tgl_text = tgl_text.replace(url, "")
 
@@ -928,6 +964,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
             # QR code
             if image_path:
                 qrcode = get_qrcode(image_path)
+
                 if qrcode and not (glovar.nospam_id in glovar.admin_ids[gid] and is_ban_text(qrcode, False)):
                     return "qrc"
     except Exception as e:
@@ -996,6 +1033,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
         def is_bypass_link(link: str) -> bool:
             try:
                 link_username = re.match(r"t\.me/([a-z][0-9a-z_]{4,31})/", f"{link}/")
+
                 if link_username:
                     link_username = link_username.group(1).lower()
 
@@ -1020,11 +1058,13 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
             return False
 
         bypass_list = [link for link in tg_links if is_bypass_link(link)]
+
         if len(bypass_list) != len(tg_links):
             return True
 
         # Check text
         message_text = get_text(message, True, True).lower()
+
         for bypass in bypass_list:
             message_text = message_text.replace(bypass, "")
 
@@ -1033,6 +1073,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
 
         # Check mentions
         entities = message.entities or message.caption_entities
+
         if not entities:
             return False
 
@@ -1058,6 +1099,7 @@ def is_tgl(client: Client, message: Message, friend: bool = False) -> bool:
             if en.type == "user":
                 uid = en.user.id
                 member = get_member(client, gid, uid)
+
                 if member is False:
                     return True
 
@@ -1077,6 +1119,7 @@ def is_watch_user(user: User, the_type: str, now: int) -> bool:
 
         uid = user.id
         until = glovar.watch_ids[the_type].get(uid, 0)
+
         if now < until:
             return True
     except Exception as e:

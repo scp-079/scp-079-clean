@@ -67,41 +67,44 @@ def clean(client: Client, message: Message) -> bool:
             rule=lang("rule_custom"),
             the_type="cln"
         )
-        if result:
-            # Clean
-            glovar.cleaned_ids.add(gid)
 
-            with glovar.locks["message"]:
-                mids = deepcopy(glovar.message_ids[gid]["stickers"])
+        if not result:
+            return True
 
-            thread(delete_messages, (client, gid, mids))
+        # Clean
+        glovar.cleaned_ids.add(gid)
 
-            for sticker_mid in mids:
-                glovar.message_ids[gid]["stickers"].pop(sticker_mid, 0)
+        with glovar.locks["message"]:
+            mids = deepcopy(glovar.message_ids[gid]["stickers"])
 
-            save("message_ids")
+        thread(delete_messages, (client, gid, mids))
 
-            # Generate the report message's text
-            text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
-                    f"{lang('action')}{lang('colon')}{code(lang('clean_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
-            reason = get_command_type(message)
+        for sticker_mid in mids:
+            glovar.message_ids[gid]["stickers"].pop(sticker_mid, 0)
 
-            if reason:
-                text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+        save("message_ids")
 
-            # Send the report message
-            thread(send_report_message, (20, client, gid, text))
+        # Generate the report message's text
+        text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('clean_action'))}\n"
+                f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
+        reason = get_command_type(message)
 
-            # Send debug message
-            send_debug(
-                client=client,
-                chat=message.chat,
-                action=lang("clean_debug"),
-                uid=aid,
-                mid=mid,
-                em=result
-            )
+        if reason:
+            text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+
+        # Send the report message
+        thread(send_report_message, (20, client, gid, text))
+
+        # Send debug message
+        send_debug(
+            client=client,
+            chat=message.chat,
+            action=lang("clean_debug"),
+            uid=aid,
+            mid=mid,
+            em=result
+        )
 
         return True
     except Exception as e:
@@ -132,6 +135,7 @@ def config(client: Client, message: Message) -> bool:
 
         # Check command format
         command_type = get_command_type(message)
+
         if not command_type or not re.search(f"^{glovar.sender}$", command_type, re.I):
             return True
 
@@ -209,6 +213,7 @@ def config_directly(client: Client, message: Message) -> bool:
 
         # Check command format
         command_type, command_context = get_command_context(message)
+
         if command_type:
             if command_type == "show":
                 text += f"{lang('action')}{lang('colon')}{code(lang('config_show'))}\n"
@@ -295,11 +300,13 @@ def dafm(client: Client, message: Message) -> bool:
 
         # Check record
         uid = message.from_user.id
+
         if uid in glovar.deleted_ids[gid]:
             return True
 
         # Check confirmation
         confirm_text = get_command_type(message)
+
         if not confirm_text or not re.search("^yes$|^y$", confirm_text, re.I):
             return True
 
@@ -311,28 +318,31 @@ def dafm(client: Client, message: Message) -> bool:
             rule=lang("rule_custom"),
             the_type="sde"
         )
-        if result:
-            # Delete
-            glovar.deleted_ids[gid].add(uid)
-            ask_for_help(client, "delete", gid, uid)
 
-            # Generate the report message's text
-            text = (f"{lang('user')}{lang('colon')}{mention_id(uid)}\n"
-                    f"{lang('action')}{lang('colon')}{code(lang('sde_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
+        if not result:
+            return True
 
-            # Send the report message
-            thread(send_report_message, (15, client, gid, text))
+        # Delete
+        glovar.deleted_ids[gid].add(uid)
+        ask_for_help(client, "delete", gid, uid)
 
-            # Send debug message
-            send_debug(
-                client=client,
-                chat=message.chat,
-                action=lang("sde_debug"),
-                uid=uid,
-                mid=mid,
-                em=result
-            )
+        # Generate the report message's text
+        text = (f"{lang('user')}{lang('colon')}{mention_id(uid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('sde_action'))}\n"
+                f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
+
+        # Send the report message
+        thread(send_report_message, (15, client, gid, text))
+
+        # Send debug message
+        send_debug(
+            client=client,
+            chat=message.chat,
+            action=lang("sde_debug"),
+            uid=uid,
+            mid=mid,
+            em=result
+        )
 
         return True
     except Exception as e:
@@ -368,11 +378,13 @@ def purge(client: Client, message: Message) -> bool:
 
         # Validation
         r_message = message.reply_to_message
+
         if not r_message:
             return True
 
         # Check total count
         r_mid = r_message.message_id
+
         if mid - r_mid > 1000:
             return True
 
@@ -384,33 +396,36 @@ def purge(client: Client, message: Message) -> bool:
             rule=lang("rule_custom"),
             the_type="pur"
         )
-        if result:
-            # Purge
-            glovar.purged_ids.add(gid)
-            thread(delete_messages, (client, gid, range(r_mid, mid)))
 
-            # Generate the report message's text
-            aid = message.from_user.id
-            text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
-                    f"{lang('action')}{lang('colon')}{code(lang('pur_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
-            reason = get_command_type(message)
+        if not result:
+            return True
 
-            if reason:
-                text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+        # Purge
+        glovar.purged_ids.add(gid)
+        thread(delete_messages, (client, gid, range(r_mid, mid)))
 
-            # Send the report message
-            thread(send_report_message, (20, client, gid, text))
+        # Generate the report message's text
+        aid = message.from_user.id
+        text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('pur_action'))}\n"
+                f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
+        reason = get_command_type(message)
 
-            # Send debug message
-            send_debug(
-                client=client,
-                chat=message.chat,
-                action=lang("pur_debug"),
-                uid=aid,
-                mid=mid,
-                em=result
-            )
+        if reason:
+            text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+
+        # Send the report message
+        thread(send_report_message, (20, client, gid, text))
+
+        # Send debug message
+        send_debug(
+            client=client,
+            chat=message.chat,
+            action=lang("pur_debug"),
+            uid=aid,
+            mid=mid,
+            em=result
+        )
 
         return True
     except Exception as e:
@@ -445,6 +460,7 @@ def purge_begin(client: Client, message: Message) -> bool:
 
         # Validation
         r_message = message.reply_to_message
+
         if not r_message:
             return True
 
@@ -501,12 +517,14 @@ def purge_end(client: Client, message: Message) -> bool:
 
         # Validation
         r_message = message.reply_to_message
+
         if not r_message:
             return True
 
         # Check usage
         bid, _ = glovar.message_ids[gid]["purge"]
         eid = r_message.message_id
+
         if not bid or bid > eid:
             return True
 
@@ -522,35 +540,38 @@ def purge_end(client: Client, message: Message) -> bool:
             rule=lang("rule_custom"),
             the_type="pur"
         )
-        if result:
-            # Purge
-            glovar.purged_ids.add(gid)
-            thread(delete_messages, (client, gid, range(bid, eid + 1)))
-            glovar.message_ids[gid]["purge"] = (0, 0)
-            save("message_ids")
 
-            # Generate the report message's text
-            aid = message.from_user.id
-            text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
-                    f"{lang('action')}{lang('colon')}{code(lang('pur_action'))}\n"
-                    f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
-            reason = get_command_type(message)
+        if not result:
+            return True
 
-            if reason:
-                text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+        # Purge
+        glovar.purged_ids.add(gid)
+        thread(delete_messages, (client, gid, range(bid, eid + 1)))
+        glovar.message_ids[gid]["purge"] = (0, 0)
+        save("message_ids")
 
-            # Send the report message
-            thread(send_report_message, (20, client, gid, text))
+        # Generate the report message's text
+        aid = message.from_user.id
+        text = (f"{lang('admin')}{lang('colon')}{code(aid)}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('pur_action'))}\n"
+                f"{lang('status')}{lang('colon')}{code(lang('status_succeeded'))}\n")
+        reason = get_command_type(message)
 
-            # Send debug message
-            send_debug(
-                client=client,
-                chat=message.chat,
-                action=lang("pur_debug"),
-                uid=aid,
-                mid=mid,
-                em=result
-            )
+        if reason:
+            text += f"{lang('reason')}{lang('colon')}{code(reason)}\n"
+
+        # Send the report message
+        thread(send_report_message, (20, client, gid, text))
+
+        # Send debug message
+        send_debug(
+            client=client,
+            chat=message.chat,
+            action=lang("pur_debug"),
+            uid=aid,
+            mid=mid,
+            em=result
+        )
 
         return True
     except Exception as e:
