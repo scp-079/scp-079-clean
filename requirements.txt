@@ -1,5 +1,5 @@
 APScheduler==3.6.3
-cffi==1.13.2
+cffi==1.14.0
 cryptography==2.8
 emoji==0.5.4
 OpenCC==0.2
