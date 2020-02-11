@@ -292,6 +292,7 @@ def update_admins(client: Client) -> bool:
     glovar.locks["admin"].acquire()
     try:
         group_list = list(glovar.admin_ids)
+
         for gid in group_list:
             should_leave = True
             reason = "permissions"
