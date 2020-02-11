@@ -1,5 +1,5 @@
 # SCP-079-CLEAN - Filter specific types of messages
-# Copyright (C) 2019 SCP-079 <https://scp-079.org>
+# Copyright (C) 2019-2020 SCP-079 <https://scp-079.org>
 #
 # This file is part of SCP-079-CLEAN.
 #
