@@ -317,9 +317,10 @@ def update_admins(client: Client) -> bool:
                     reason = "user"
                 else:
                     for admin in admin_members:
-                        if admin.user.is_self:
-                            if admin.can_delete_messages and admin.can_restrict_members:
-                                should_leave = False
+                        if (admin.user.is_self
+                                and admin.can_delete_messages
+                                and admin.can_restrict_members):
+                            should_leave = False
 
                 if not should_leave:
                     continue
