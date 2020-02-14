@@ -240,6 +240,7 @@ def get_user_bio(client: Client, uid: int, normal: bool = False, printable: bool
             flood_wait = False
             try:
                 user: UserFull = client.send(GetFullUser(id=user_id))
+
                 if user and user.about:
                     result = t2t(user.about, normal, printable)
             except FloodWait as e:
