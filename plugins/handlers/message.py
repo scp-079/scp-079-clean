@@ -495,7 +495,11 @@ def process_data(client: Client, message: Message) -> bool:
 
             elif sender == "REGEX":
 
-                if action == "regex":
+                if action == "add":
+                    if action_type == "bad":
+                        receive_add_bad(sender, data)
+
+                elif action == "regex":
                     if action_type == "update":
                         receive_regex(client, message, data)
                     elif action_type == "count":
