@@ -254,6 +254,7 @@ lang: Dict[str, str] = {
     "delete": (zh_cn and "协助删除") or "Help Delete",
     "restrict": (zh_cn and "禁言模式") or "Restriction Mode",
     "friend": (zh_cn and "放行友链") or "Ignore Friend Links",
+    "clean": (zh_cn and "无痕模式") or "Clean Mode",
     "filter": (zh_cn and "过滤") or "Filter",
     "ignore": (zh_cn and "忽略") or "Ignore",
     # Debug
@@ -421,6 +422,7 @@ default_config: Dict[str, Union[bool, int]] = {
     "delete": True,
     "restrict": False,
     "friend": True,
+    "clean": False,
     "con": True,
     "loc": True,
     "vdn": True,
@@ -603,7 +605,7 @@ usernames: Dict[str, Dict[str, Union[int, str]]] = {}
 #     }
 # }
 
-version: str = "0.2.8"
+version: str = "0.2.9"
 
 # Load data from pickle
 
@@ -710,6 +712,7 @@ configs: Dict[int, Dict[str, Union[bool, int]]] = {}
 #         "delete": True,
 #         "restrict": False,
 #         "friend": True,
+#         "clean": False,
 #         "con": True,
 #         "loc": True,
 #         "vdn": True,

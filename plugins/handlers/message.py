@@ -195,12 +195,18 @@ def check_join(client: Client, message: Message) -> bool:
             save("user_ids")
 
         # Delete service message
-        if is_in_config(gid, "ser"):
-            if glovar.message_ids[gid]["service"]:
-                delay(10, delete_message, [client, gid, glovar.message_ids[gid]["service"]])
+        if not is_in_config(gid, "ser"):
+            return True
 
-            glovar.message_ids[gid]["service"] = mid
-            save("message_ids")
+        if glovar.configs[gid].get("clean") and glovar.captcha_id not in glovar.admin_ids[gid]:
+            delay(10, delete_message, [client, gid, mid])
+            return True
+
+        if glovar.message_ids[gid]["service"]:
+            delay(10, delete_message, [client, gid, glovar.message_ids[gid]["service"]])
+
+        glovar.message_ids[gid]["service"] = mid
+        save("message_ids")
 
         return True
     except Exception as e:

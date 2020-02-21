@@ -63,6 +63,10 @@ def get_config_text(config: dict) -> str:
         friend_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("friend"))
         result += f"{lang('friend')}{lang('colon')}{code(friend_text)}\n"
 
+        # Clean mode
+        clean_text = (lambda x: lang("enabled") if x else lang("disabled"))(config.get("clean"))
+        result += f"{lang('clean')}{lang('colon')}{code(clean_text)}\n"
+
         # Types
         for name in glovar.types["all"]:
             name_text = (lambda x: lang('filter') if x else lang('ignore'))(config.get(name))
