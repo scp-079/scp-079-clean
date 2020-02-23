@@ -30,10 +30,10 @@ from .etc import code, crypt_str, general_link, get_int, get_now, get_report_rec
 from .etc import mention_id, thread
 from .file import crypt_file, data_to_file, delete_file, get_new_path, get_downloaded_path, save
 from .filters import is_class_e, is_declared_message_id, is_detected_user_id, is_not_allowed
-from .group import get_config_text, get_message, leave_group
+from .group import get_config_text, leave_group
 from .ids import init_group_id, init_user_id
 from .image import get_image_hash
-from .telegram import send_message, send_report_message
+from .telegram import get_messages, send_message, send_report_message
 from .timers import update_admins
 from .user import terminate_user
 
@@ -78,7 +78,7 @@ def receive_add_except(client: Client, data: dict) -> bool:
 
         # Receive except content
         if the_type in {"long", "temp"}:
-            message = get_message(client, glovar.logging_channel_id, the_id)
+            message = get_messages(client, glovar.logging_channel_id, the_id)
 
             if not message:
                 return True
@@ -401,7 +401,7 @@ def receive_preview(client: Client, message: Message, data: dict) -> bool:
             return True
 
         # Get the message
-        the_message = get_message(client, gid, mid)
+        the_message = get_messages(client, gid, mid)
 
         if not the_message or is_class_e(None, the_message):
             return True
@@ -543,7 +543,7 @@ def receive_remove_except(client: Client, data: dict) -> bool:
 
         # Remove except content
         if the_type in {"long", "temp"}:
-            message = get_message(client, glovar.logging_channel_id, the_id)
+            message = get_messages(client, glovar.logging_channel_id, the_id)
 
             if not message:
                 return True
