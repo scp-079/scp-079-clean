@@ -525,6 +525,7 @@ other_commands: Set[str] = {
     "l",
     "long",
     "mention",
+    "nospam",
     "open",
     "ot",
     "pass",
