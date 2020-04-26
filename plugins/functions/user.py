@@ -148,7 +148,8 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
 
             if ((is_wb_text(full_name, False) or is_wb_text(forward_name, False))
                     and (full_name not in glovar.except_ids["long"] and forward_name not in glovar.except_ids["long"])
-                    and not is_class_e_user(message.from_user)):
+                    and not is_class_e_user(message.from_user)
+                    and uid not in glovar.white_ids):
                 result = forward_evidence(
                     client=client,
                     message=message,
@@ -171,7 +172,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         mid=mid,
                         em=result
                     )
-            elif is_watch_user(message.from_user, "ban", now):
+            elif is_watch_user(message.from_user, "ban", now) and uid not in glovar.white_ids:
                 result = forward_evidence(
                     client=client,
                     message=message,
@@ -220,6 +221,7 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         em=result
                     )
             elif (is_watch_user(message.from_user, "delete", now)
+                  and uid not in glovar.white_ids
                   and the_type in {"aff", "exe", "iml", "pho", "tgp", "qrc"}):
                 result = forward_evidence(
                     client=client,
@@ -244,9 +246,10 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                         mid=mid,
                         em=result
                     )
-            elif ((is_new_user(message.from_user, now, 0, True) and the_type in {"exe", "qrc"})
-                  or (is_new_user(message.from_user, now, gid) and the_type in {"aff", "sho", "tgp"})
-                  or (is_limited_user(gid, message.from_user, now) and the_type in {"iml", "pho", "tgl"})):
+            elif (((is_new_user(message.from_user, now, 0, True) and the_type in {"exe", "qrc"})
+                   or (is_new_user(message.from_user, now, gid) and the_type in {"aff", "sho", "tgp"})
+                   or (is_limited_user(gid, message.from_user, now) and the_type in {"iml", "pho", "tgl"}))
+                  and uid not in glovar.white_ids):
                 result = forward_evidence(
                     client=client,
                     message=message,

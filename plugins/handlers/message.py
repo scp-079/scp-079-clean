@@ -34,8 +34,9 @@ from ..functions.ids import init_group_id, init_user_id
 from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
 from ..functions.receive import receive_config_reply, receive_config_show, receive_declared_message, receive_preview
 from ..functions.receive import receive_leave_approve, receive_regex, receive_refresh, receive_remove_bad
-from ..functions.receive import receive_remove_except, receive_remove_score, receive_remove_watch, receive_rollback
-from ..functions.receive import receive_text_data, receive_user_score, receive_watch_user
+from ..functions.receive import receive_remove_except, receive_remove_score, receive_remove_watch, receive_remove_white
+from ..functions.receive import receive_rollback, receive_text_data, receive_user_score, receive_watch_user
+from ..functions.receive import receive_white_users
 from ..functions.telegram import get_admins, get_user_bio, send_message
 from ..functions.tests import clean_test
 from ..functions.timers import backup_files, send_count
@@ -360,7 +361,17 @@ def process_data(client: Client, message: Message) -> bool:
         # so it is intentionally written like this
         if glovar.sender in receivers:
 
-            if sender == "CAPTCHA":
+            if sender == "AVATAR":
+
+                if action == "add":
+                    if action_type == "white":
+                        receive_white_users(client, message)
+
+                elif action == "remove":
+                    if action_type == "white":
+                        receive_remove_white(data)
+
+            elif sender == "CAPTCHA":
 
                 if action == "update":
                     if action_type == "declare":
@@ -472,20 +483,6 @@ def process_data(client: Client, message: Message) -> bool:
                         receive_user_score(sender, data)
 
             elif sender == "NOSPAM":
-
-                if action == "add":
-                    if action_type == "bad":
-                        receive_add_bad(sender, data)
-                    elif action_type == "watch":
-                        receive_watch_user(data)
-
-                elif action == "update":
-                    if action_type == "declare":
-                        receive_declared_message(data)
-                    elif action_type == "score":
-                        receive_user_score(sender, data)
-
-            elif sender == "RECHECK":
 
                 if action == "add":
                     if action_type == "bad":
