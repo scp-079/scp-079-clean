@@ -94,9 +94,10 @@ def code_block(text: Any) -> str:
     return ""
 
 
-def crypt_str(operation: str, text: str, key: str) -> str:
+def crypt_str(operation: str, text: str, key: bytes) -> str:
     # Encrypt or decrypt a string
     result = ""
+
     try:
         f = Fernet(key)
         text = text.encode("utf-8")
@@ -282,6 +283,7 @@ def get_full_name(user: User, normal: bool = False, printable: bool = False) -> 
 def get_int(text: str) -> Optional[int]:
     # Get a int from a string
     result = None
+
     try:
         result = int(text)
     except Exception as e:
@@ -340,6 +342,7 @@ def get_links(message: Message) -> List[str]:
 def get_md5sum(the_type: str, ctx: str) -> str:
     # Get the md5sum of a string or file
     result = ""
+
     try:
         if not ctx.strip():
             return ""

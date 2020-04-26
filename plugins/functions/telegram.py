@@ -191,6 +191,7 @@ def get_group_info(client: Client, chat: Union[int, Chat], cache: bool = True) -
 def get_members(client: Client, cid: int, query: str = "all") -> Optional[Generator[ChatMember, None, None]]:
     # Get a members generator of a chat
     result = None
+
     try:
         flood_wait = True
         while flood_wait:

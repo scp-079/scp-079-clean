@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 def clean_test(client: Client, message: Message) -> bool:
-    # Test image porn score in the test group
+    # Test clean
     try:
         origin_text = get_text(message)
 

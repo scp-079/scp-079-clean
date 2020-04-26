@@ -458,7 +458,7 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
 
         words_data = receive_file_data(client, message)
 
-        if not words_data:
+        if words_data is None:
             return True
 
         pop_set = set(eval(f"glovar.{file_name}")) - set(words_data)
@@ -473,24 +473,26 @@ def receive_regex(client: Client, message: Message, data: str) -> bool:
         save(file_name)
 
         # Regenerate special characters dictionary if possible
-        if file_name in {"spc_words", "spe_words"}:
-            special = file_name.split("_")[0]
-            exec(f"glovar.{special}_dict = {{}}")
+        if file_name not in {"spc_words", "spe_words"}:
+            return True
 
-            for rule in words_data:
-                # Check keys
-                if "[" not in rule:
-                    continue
+        special = file_name.split("_")[0]
+        exec(f"glovar.{special}_dict = {{}}")
 
-                # Check value
-                if "?#" not in rule:
-                    continue
+        for rule in words_data:
+            # Check keys
+            if "[" not in rule:
+                continue
 
-                keys = rule.split("]")[0][1:]
-                value = rule.split("?#")[1][1]
+            # Check value
+            if "?#" not in rule:
+                continue
 
-                for k in keys:
-                    eval(f"glovar.{special}_dict")[k] = value
+            keys = rule.split("]")[0][1:]
+            value = rule.split("?#")[1][1]
+
+            for k in keys:
+                eval(f"glovar.{special}_dict")[k] = value
 
         return True
     except Exception as e:
@@ -609,17 +611,15 @@ def receive_remove_score(data: int) -> bool:
     return False
 
 
-def receive_remove_watch(data: dict) -> bool:
+def receive_remove_watch(data: int) -> bool:
     # Receive removed watching users
     try:
         # Basic data
-        uid = data["id"]
-        the_type = data["type"]
+        uid = data
 
-        if the_type == "all":
-            glovar.watch_ids["ban"].pop(uid, 0)
-            glovar.watch_ids["delete"].pop(uid, 0)
-
+        # Reset watch status
+        glovar.watch_ids["ban"].pop(uid, 0)
+        glovar.watch_ids["delete"].pop(uid, 0)
         save("watch_ids")
 
         return True
@@ -674,6 +674,7 @@ def receive_text_data(message: Message) -> dict:
 def receive_user_score(project: str, data: dict) -> bool:
     # Receive and update user's score
     glovar.locks["message"].acquire()
+
     try:
         # Basic data
         project = project.lower()
