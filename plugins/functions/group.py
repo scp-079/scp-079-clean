@@ -132,18 +132,19 @@ def get_group_sticker(client: Client, gid: int, cache: bool = True) -> str:
 def get_member(client: Client, gid: int, uid: int, cache: bool = True) -> Optional[ChatMember]:
     # Get a member in the group
     result = None
+
     try:
         if not init_group_id(gid):
             return None
 
         the_cache = glovar.members[gid].get(uid)
 
-        if the_cache:
-            result = the_cache
-        else:
-            result = get_chat_member(client, gid, uid)
+        if cache and the_cache:
+            return the_cache
 
-        if cache and result:
+        result = get_chat_member(client, gid, uid)
+
+        if result:
             glovar.members[gid][uid] = result
     except Exception as e:
         logger.warning(f"Get member error: {e}", exc_info=True)

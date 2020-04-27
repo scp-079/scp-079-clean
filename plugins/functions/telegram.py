@@ -121,6 +121,7 @@ def get_chat(client: Client, cid: Union[int, str]) -> Union[Chat, ChatPreview, N
 def get_chat_member(client: Client, cid: int, uid: int) -> Union[bool, ChatMember, None]:
     # Get information about one member of a chat
     result = None
+
     try:
         flood_wait = True
         while flood_wait:
