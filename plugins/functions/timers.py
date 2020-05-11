@@ -112,10 +112,10 @@ def clean_members(client: Client) -> bool:
     # Clean deleted accounts in groups
     try:
         for gid in list(glovar.configs):
-            # members_count = get_chat_members_count(client, gid)
-            #
-            # if not members_count or members_count > 10000:
-            #     continue
+            members_count = get_chat_members_count(client, gid)
+
+            if not members_count or members_count > 10000:
+                continue
 
             flood_wait = True
             while flood_wait:
