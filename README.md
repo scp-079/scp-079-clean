@@ -19,7 +19,7 @@ This bot is used to auto delete specific types of messages.
 
 - Python 3.6 or higher
 - Debian 10: `sudo apt update && sudo apt install libzbar0 opencc -y`
-- pip: `pip install -r requirements.txt` or `pip install -U APScheduler emoji OpenCC Pillow pyAesCrypt pyrogram[fast] pyzbar`
+- pip: `pip install -r requirements.txt` or `pip install -U APScheduler emoji OpenCC Pillow pyAesCrypt pyrogram pyzbar tgcrypto`
 
 ## Files
 
