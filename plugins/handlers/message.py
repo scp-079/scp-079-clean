@@ -31,12 +31,13 @@ from ..functions.filters import is_in_config, is_limited_user, is_nm_text, is_no
 from ..functions.filters import new_group, test_group
 from ..functions.group import delete_message, leave_group
 from ..functions.ids import init_group_id, init_user_id
-from ..functions.receive import receive_add_bad, receive_add_except, receive_config_commit, receive_clear_data
-from ..functions.receive import receive_config_reply, receive_config_show, receive_declared_message, receive_preview
-from ..functions.receive import receive_leave_approve, receive_regex, receive_refresh, receive_remove_bad
-from ..functions.receive import receive_remove_except, receive_remove_score, receive_remove_watch, receive_remove_white
-from ..functions.receive import receive_rollback, receive_text_data, receive_user_score, receive_watch_user
-from ..functions.receive import receive_white_users
+from ..functions.receive import receive_add_bad, receive_add_except, receive_captcha_flood, receive_captcha_kicked_user
+from ..functions.receive import receive_captcha_kicked_users, receive_config_commit, receive_clear_data
+from ..functions.receive import receive_config_reply, receive_config_show, receive_declared_message
+from ..functions.receive import receive_flood_score, receive_preview, receive_leave_approve, receive_regex
+from ..functions.receive import receive_refresh, receive_remove_bad, receive_remove_except, receive_remove_score
+from ..functions.receive import receive_remove_watch, receive_remove_white, receive_rollback, receive_text_data
+from ..functions.receive import receive_user_score, receive_watch_user, receive_white_users
 from ..functions.telegram import get_admins, get_user_bio, send_message
 from ..functions.tests import clean_test
 from ..functions.timers import backup_files, send_count
@@ -154,7 +155,10 @@ def check(client: Client, message: Message) -> bool:
                    & ~declared_message)
 def check_join(client: Client, message: Message) -> bool:
     # Check new joined user
+    result = False
+
     glovar.locks["message"].acquire()
+
     try:
         # Basic data
         gid = message.chat.id
@@ -162,6 +166,10 @@ def check_join(client: Client, message: Message) -> bool:
         now = message.date or get_now()
 
         for new in message.new_chat_members:
+            # Check group status
+            if gid in glovar.flooded_ids:
+                continue
+
             # Basic data
             uid = new.id
 
@@ -209,13 +217,13 @@ def check_join(client: Client, message: Message) -> bool:
         glovar.message_ids[gid]["service"] = mid
         save("message_ids")
 
-        return True
+        result = True
     except Exception as e:
         logger.warning(f"Check join error: {e}", exc_info=True)
     finally:
         glovar.locks["message"].release()
 
-    return False
+    return result
 
 
 @Client.on_message(Filters.incoming & Filters.channel & ~Filters.command(glovar.all_commands, glovar.prefix)
@@ -373,6 +381,12 @@ def process_data(client: Client, message: Message) -> bool:
 
             elif sender == "CAPTCHA":
 
+                if action == "flood":
+                    if action_type == "score":
+                        receive_flood_score(client, message)
+                    elif action_type == "status":
+                        receive_captcha_flood(data)
+
                 if action == "update":
                     if action_type == "declare":
                         receive_declared_message(data)
@@ -526,6 +540,18 @@ def process_data(client: Client, message: Message) -> bool:
                 if action == "add":
                     if action_type == "watch":
                         receive_watch_user(data)
+
+        elif "USER" in receivers:
+
+            if sender == "CAPTCHA":
+
+                if action == "flood":
+                    if action_type == "delete":
+                        receive_captcha_kicked_users(client, message, data)
+
+                elif action == "help":
+                    if action_type == "delete":
+                        receive_captcha_kicked_user(data)
 
         return True
     except Exception as e:
