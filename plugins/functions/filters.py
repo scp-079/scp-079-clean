@@ -939,7 +939,8 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                     or message.animation
                     or (message.document
                         and message.document.mime_type
-                        and "gif" in message.document.mime_type)):
+                        and "gif" in message.document.mime_type)
+                    or message.dice):
                 mid = message.message_id
                 glovar.message_ids[gid]["stickers"][mid] = now
                 save("message_ids")
