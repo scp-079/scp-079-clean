@@ -861,8 +861,12 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                         return "vid"
 
                 # Sticker
-                if is_in_config(gid, "sti"):
+                if is_in_config(gid, "sti") and message.sticker:
                     return "sti"
+
+                # Dice
+                if is_in_config(gid, "dic") and message.dice:
+                    return "dic"
 
             # Spam messages
 
