@@ -329,7 +329,7 @@ lang: Dict[str, str] = {
     "ttd": (zh_cn and "定时删除贴纸动图") or "Schedule to Delete Stickers",
     "pur": (zh_cn and "命令清空消息") or "Purge",
     "cln": (zh_cn and "命令清理消息") or "Clean Messages on Demand",
-    "dic": (zh_cn and "骰子类游戏") or "Dice",
+    "dic": (zh_cn and "骰子类表情") or "Dice",
     # Special
     "clean_action": (zh_cn and "清理消息") or "Clean Messages",
     "clean_debug": (zh_cn and "清理消息") or "Clean Messages",
