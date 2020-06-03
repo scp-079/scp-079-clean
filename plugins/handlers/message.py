@@ -563,7 +563,7 @@ def process_data(client: Client, message: Message) -> bool:
 
 
 @Client.on_message(Filters.incoming & Filters.group & ~Filters.service
-                   & ~Filters.command(glovar.all_commands, glovar.prefix)
+                   & ~Filters.command(glovar.all_commands + list(glovar.other_commands), glovar.prefix)
                    & test_group
                    & from_user)
 def test(client: Client, message: Message) -> bool:
