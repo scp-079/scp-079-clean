@@ -66,7 +66,8 @@ def clean(client: Client, message: Message) -> bool:
             message=message,
             level=lang("auto_delete"),
             rule=lang("rule_custom"),
-            the_type="cln"
+            the_type="cln",
+            general=False
         )
 
         if not result:
@@ -286,6 +287,7 @@ def config_directly(client: Client, message: Message) -> bool:
                    & from_user)
 def dafm(client: Client, message: Message) -> bool:
     # Delete all from me
+    result = False
 
     if not message or not message.chat:
         return True
@@ -295,6 +297,7 @@ def dafm(client: Client, message: Message) -> bool:
     mid = message.message_id
 
     glovar.locks["message"].acquire()
+
     try:
         # Check permission
         if not glovar.configs[gid].get("sde", False) and not is_class_c(None, message):
@@ -318,7 +321,8 @@ def dafm(client: Client, message: Message) -> bool:
             message=message,
             level=lang("auto_delete"),
             rule=lang("rule_custom"),
-            the_type="sde"
+            the_type="sde",
+            general=False
         )
 
         if not result:
@@ -346,14 +350,14 @@ def dafm(client: Client, message: Message) -> bool:
             em=result
         )
 
-        return True
+        result = True
     except Exception as e:
         logger.warning(f"DAFM error: {e}", exc_info=True)
     finally:
         glovar.locks["message"].release()
         delete_message(client, gid, mid)
 
-    return False
+    return result
 
 
 @Client.on_message(Filters.incoming & Filters.group & Filters.command(["purge"], glovar.prefix)
@@ -396,7 +400,8 @@ def purge(client: Client, message: Message) -> bool:
             message=message,
             level=lang("auto_delete"),
             rule=lang("rule_custom"),
-            the_type="pur"
+            the_type="pur",
+            general=False
         )
 
         if not result:
@@ -540,7 +545,8 @@ def purge_end(client: Client, message: Message) -> bool:
             message=message,
             level=lang("auto_delete"),
             rule=lang("rule_custom"),
-            the_type="pur"
+            the_type="pur",
+            general=False
         )
 
         if not result:

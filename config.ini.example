@@ -32,6 +32,7 @@ user_id = [DATA EXPUNGED]
 warn_id = [DATA EXPUNGED]
 
 [channels]
+clean_channel_id = 0
 critical_channel_id = [DATA EXPUNGED]
 debug_channel_id = [DATA EXPUNGED]
 exchange_channel_id = [DATA EXPUNGED]
