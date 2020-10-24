@@ -82,6 +82,12 @@ def check(client: Client, message: Message) -> bool:
                 if is_nm_text(t2t(name, True, True)):
                     return False
 
+            # Check contact
+            contact_name = get_full_name(message.contact, True, True, True)
+
+            if contact_name and contact_name not in glovar.except_ids["long"] and is_nm_text(contact_name):
+                return False
+
             # Check the text
             message_text = get_text(message, True, True)
 
