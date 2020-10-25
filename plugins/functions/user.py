@@ -283,7 +283,8 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     message=message,
                     level=lang("auto_delete"),
                     rule=lang("rule_custom"),
-                    the_type=the_type
+                    the_type=the_type,
+                    general=False
                 )
 
                 if result:
@@ -310,7 +311,8 @@ def terminate_user(client: Client, message: Message, the_type: str) -> bool:
                     message=message,
                     level=lang("auto_delete"),
                     rule=lang("rule_custom"),
-                    the_type=the_type
+                    the_type=the_type,
+                    general=False
                 )
 
                 if result:
