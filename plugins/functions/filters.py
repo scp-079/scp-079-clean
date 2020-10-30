@@ -865,7 +865,7 @@ def is_not_allowed(client: Client, message: Message, text: str = None, image_pat
                     return "sti"
 
                 # Dice
-                if is_in_config(gid, "dic") and message.dice or message_text == "🎰":
+                if is_in_config(gid, "dic") and (message.dice or message_text == "🎰"):
                     return "dic"
 
             # Spam messages
