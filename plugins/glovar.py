@@ -518,6 +518,7 @@ other_commands: Set[str] = {
     "dafm",
     "debug",
     "findall",
+    "find_pin",
     "forgive",
     "group",
     "groupdict",
