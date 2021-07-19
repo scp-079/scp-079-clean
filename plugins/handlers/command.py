@@ -309,6 +309,8 @@ def dafm(client: Client, message: Message) -> bool:
         if uid in glovar.deleted_ids[gid]:
             return True
 
+        return thread(send_report_message, (10, client, gid, f"{mention_id(uid)} 抱歉，本实例下此功能已停用"))
+
         # Check confirmation
         confirm_text = get_command_type(message)
 
